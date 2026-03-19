@@ -5,371 +5,254 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoreClone AI — Générateur</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
-:root{--white:#fff;--off:#f5f5f7;--black:#000;--dark:#1d1d1f;--gray:#6e6e73;--light:#e8e8ed;--border:rgba(0,0,0,0.08);--bmd:rgba(0,0,0,0.12);--bstr:rgba(0,0,0,0.2);--green:#1a7f4b;--gp:#e8f5ee;--red:#c0392b;--rp:#fdf0ef;--blue:#0071e3;--bp:#e8f0fb;}
+:root{--white:#fff;--off:#f5f5f7;--black:#000;--dark:#1d1d1f;--gray:#6e6e73;--light:#e8e8ed;--border:rgba(0,0,0,0.08);--bmd:rgba(0,0,0,0.12);--green:#1a7f4b;--gp:#e8f5ee;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:var(--dark);min-height:100vh;-webkit-font-smoothing:antialiased;}
-.view{display:none;} .view.active{display:flex;}
-
-/* ── SETUP VIEW (API Key) ── */
-#view-setup{min-height:100vh;align-items:center;justify-content:center;background:var(--white);position:relative;overflow:hidden;}
-#view-setup::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,0,0,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
-.setup-card{background:var(--white);border:1px solid var(--bmd);border-radius:20px;padding:44px 40px;width:100%;max-width:440px;box-shadow:0 8px 40px rgba(0,0,0,0.06);position:relative;z-index:1;animation:fadeUp 0.5s ease both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.setup-logo{font-size:17px;font-weight:600;letter-spacing:-0.3px;margin-bottom:28px;color:var(--dark);}
-.setup-logo span{font-weight:300;}
-.setup-icon{font-size:32px;margin-bottom:16px;}
-.setup-title{font-size:24px;font-weight:600;letter-spacing:-0.7px;margin-bottom:8px;}
-.setup-sub{font-size:14px;color:var(--gray);margin-bottom:24px;font-weight:300;line-height:1.6;}
-.setup-info{background:var(--off);border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:13px;color:var(--gray);line-height:1.6;}
-.setup-info strong{color:var(--dark);}
-.form-label{display:block;font-size:12px;font-weight:500;color:var(--dark);margin-bottom:6px;}
-.form-input{width:100%;height:42px;padding:0 14px;border:1px solid var(--bmd);border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;color:var(--dark);background:var(--white);outline:none;transition:border-color 0.2s;letter-spacing:0.5px;}
-.form-input:focus{border-color:var(--black);}
-.form-input::placeholder{color:#aaa;letter-spacing:0;}
-.btn-full{width:100%;height:42px;background:var(--black);color:var(--white);border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;margin-top:10px;}
-.btn-full:hover{background:#222;}
-.setup-link{font-size:13px;color:var(--gray);text-align:center;margin-top:14px;}
-.setup-link a{color:var(--dark);font-weight:500;cursor:pointer;}
-
-/* ── AUTH VIEW ── */
+.view{display:none;}.view.active{display:flex;}
 #view-auth{min-height:100vh;align-items:center;justify-content:center;background:var(--white);position:relative;overflow:hidden;}
 #view-auth::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,0,0,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
 .auth-card{background:var(--white);border:1px solid var(--bmd);border-radius:20px;padding:44px 40px;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,0.06);position:relative;z-index:1;animation:fadeUp 0.5s ease both;}
-.auth-logo{font-size:17px;font-weight:600;letter-spacing:-0.3px;margin-bottom:28px;color:var(--dark);}
-.auth-logo span{font-weight:300;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.auth-logo{font-size:17px;font-weight:600;letter-spacing:-0.3px;margin-bottom:28px;}.auth-logo span{font-weight:300;}
 .auth-title{font-size:26px;font-weight:600;letter-spacing:-0.8px;margin-bottom:6px;}
 .auth-sub{font-size:14px;color:var(--gray);margin-bottom:28px;font-weight:300;line-height:1.5;}
-.form-group{margin-bottom:14px;}
-.form-group label{display:block;font-size:12px;font-weight:500;color:var(--dark);margin-bottom:6px;}
-.auth-switch{font-size:13px;color:var(--gray);text-align:center;margin-top:18px;}
-.auth-switch a{color:var(--dark);font-weight:500;cursor:pointer;}
-
-/* ── APP LAYOUT ── */
+.fg{margin-bottom:14px;}.fg label{display:block;font-size:12px;font-weight:500;margin-bottom:6px;}
+.fi{width:100%;height:42px;padding:0 14px;border:1px solid var(--bmd);border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;color:var(--dark);background:var(--white);outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--black);}.fi::placeholder{color:#aaa;}
+.bf{width:100%;height:42px;background:var(--black);color:var(--white);border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;margin-top:6px;}
+.bf:hover{background:#222;}
+.asw{font-size:13px;color:var(--gray);text-align:center;margin-top:18px;}.asw a{color:var(--dark);font-weight:500;cursor:pointer;}
 #view-app{flex-direction:row;min-height:100vh;}
 .sidebar{width:232px;min-height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 14px;flex-shrink:0;position:sticky;top:0;height:100vh;}
-.sidebar-logo{font-size:16px;font-weight:600;letter-spacing:-0.3px;color:var(--dark);padding:6px 10px;margin-bottom:20px;}
-.sidebar-logo span{font-weight:300;}
-.sb-section{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);padding:4px 10px;margin:10px 0 4px;}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--gray);cursor:pointer;transition:all 0.15s;user-select:none;margin-bottom:1px;}
-.nav-item:hover{background:var(--off);color:var(--dark);}
-.nav-item.active{background:var(--off);color:var(--dark);font-weight:500;}
-.nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
-.sidebar-user{margin-top:auto;padding:10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;}
-.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--dark);color:var(--white);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.user-name{font-size:13px;font-weight:500;color:var(--dark);}
-.user-plan{font-size:11px;color:var(--gray);}
-
-.app-main{flex:1;padding:32px 40px;overflow-y:auto;}
-.page{display:none;} .page.active{display:block;}
-.page-header{margin-bottom:28px;}
-.page-title{font-size:28px;font-weight:600;letter-spacing:-0.8px;color:var(--dark);margin-bottom:4px;}
-.page-sub{font-size:14px;color:var(--gray);font-weight:300;line-height:1.5;}
+.sl{font-size:16px;font-weight:600;letter-spacing:-0.3px;color:var(--dark);padding:6px 10px;margin-bottom:20px;}.sl span{font-weight:300;}
+.sbs{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);padding:4px 10px;margin:10px 0 4px;}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--gray);cursor:pointer;transition:all 0.15s;user-select:none;margin-bottom:1px;}
+.ni:hover{background:var(--off);color:var(--dark);}.ni.active{background:var(--off);color:var(--dark);font-weight:500;}
+.nii{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.su{margin-top:auto;padding:10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;}
+.ua{width:30px;height:30px;border-radius:50%;background:var(--dark);color:var(--white);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.un{font-size:13px;font-weight:500;color:var(--dark);}.up{font-size:11px;color:var(--gray);}
+.am{flex:1;padding:32px 40px;overflow-y:auto;}
+.page{display:none;}.page.active{display:block;}
+.ph{margin-bottom:28px;}.pt{font-size:28px;font-weight:600;letter-spacing:-0.8px;color:var(--dark);margin-bottom:4px;}
+.ps{font-size:14px;color:var(--gray);font-weight:300;line-height:1.5;}
 .card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px;}
-.card-title{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:16px;letter-spacing:-0.2px;}
-
-/* ── GENERATOR ── */
-.gen-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
-.gen-input-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:16px;}
-.gen-input-title{font-size:15px;font-weight:600;color:var(--dark);margin-bottom:4px;letter-spacing:-0.3px;}
-.gen-input-sub{font-size:13px;color:var(--gray);margin-bottom:20px;font-weight:300;}
-.gen-niche-wrap{display:flex;gap:10px;background:var(--off);border:1px solid var(--bmd);border-radius:12px;padding:10px 14px;margin-bottom:16px;transition:border-color 0.2s;}
-.gen-niche-wrap:focus-within{border-color:var(--black);}
-.gen-niche-input{flex:1;background:transparent;border:none;outline:none;font-size:14px;font-family:'Inter',sans-serif;color:var(--dark);}
-.gen-niche-input::placeholder{color:#aaa;}
-.gen-btn{padding:10px 22px;background:var(--black);color:var(--white);border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;white-space:nowrap;}
-.gen-btn:hover:not(:disabled){background:#222;}
-.gen-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.niches-label{font-size:12px;color:var(--gray);margin-bottom:8px;}
-.niches-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
-.niche-pill{padding:5px 12px;background:var(--off);border:1px solid var(--border);border-radius:100px;font-size:12px;color:var(--gray);cursor:pointer;transition:all 0.15s;}
-.niche-pill:hover{border-color:var(--bstr);color:var(--dark);}
-.gen-options{display:flex;gap:8px;flex-wrap:wrap;}
-.gen-option{display:flex;align-items:center;gap:7px;padding:6px 13px;border:1px solid var(--bmd);border-radius:8px;font-size:12px;cursor:pointer;transition:all 0.15s;user-select:none;}
-.gen-option:hover{border-color:var(--bstr);}
-.gen-option.on{background:var(--dark);color:var(--white);border-color:var(--dark);}
-.gen-option input{display:none;}
-
-/* PROGRESS */
-.gen-progress{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;display:none;}
-.gen-progress.visible{display:block;}
-.prog-bar{height:2px;background:var(--light);border-radius:2px;overflow:hidden;margin-bottom:14px;}
-.prog-fill{height:100%;background:var(--black);width:0;transition:width 0.1s linear;border-radius:2px;}
-.prog-steps{display:flex;flex-direction:column;gap:7px;}
-.prog-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gray);font-weight:300;}
-.prog-step.done{color:var(--green);}
-.prog-step.act{color:var(--dark);font-weight:500;}
-.prog-step-ic{width:16px;text-align:center;font-size:12px;flex-shrink:0;}
-
-/* RESULTS */
-.gen-results{display:none;} .gen-results.visible{display:block;}
-.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.results-title{font-size:15px;font-weight:600;color:var(--dark);letter-spacing:-0.2px;}
-.results-actions{display:flex;gap:8px;}
-.btn-sm{padding:7px 15px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;border:1px solid var(--bmd);background:var(--white);color:var(--dark);}
-.btn-sm:hover{background:var(--off);}
-.btn-sm.primary{background:var(--black);color:var(--white);border-color:var(--black);}
-.btn-sm.green{background:var(--green);color:var(--white);border-color:var(--green);}
-
-.products-grid{display:flex;flex-direction:column;gap:12px;}
-.pc{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color 0.2s;}
-.pc:hover{border-color:var(--bmd);}
-.pc-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;}
-.pc-left{display:flex;align-items:center;gap:10px;}
-.pc-badge{padding:3px 9px;background:var(--off);border-radius:6px;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;}
-.pc-name{font-size:14px;font-weight:500;color:var(--dark);letter-spacing:-0.2px;}
-.pc-price{font-size:14px;font-weight:600;color:var(--dark);}
-.pc-body{padding:16px 20px;display:none;}
-.pc-body.open{display:block;}
-.pc-section{margin-bottom:14px;}
-.pc-section:last-child{margin-bottom:0;}
-.pc-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:7px;}
-.pc-desc{font-size:13px;color:var(--dark);line-height:1.65;font-weight:300;}
-.tags-wrap{display:flex;flex-wrap:wrap;gap:4px;}
-.tag{padding:3px 8px;background:var(--off);border-radius:5px;font-size:11px;color:var(--gray);}
-.pc-actions{display:flex;gap:6px;margin-top:12px;}
-.copy-btn{padding:6px 13px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid var(--bmd);background:transparent;color:var(--gray);transition:all 0.15s;}
-.copy-btn:hover{background:var(--off);color:var(--dark);}
-
-/* SIDEBAR INFO */
-.info-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;}
-.info-card-title{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:12px;letter-spacing:-0.2px;}
-.info-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
-.info-row:last-child{border-bottom:none;}
-.info-label{color:var(--gray);font-weight:300;}
-.info-val{font-weight:500;color:var(--dark);}
-.platform-list{display:flex;flex-direction:column;gap:6px;}
-.platform-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--off);border-radius:9px;font-size:13px;}
-.platform-name{font-weight:500;color:var(--dark);}
-.platform-status{font-size:11px;font-weight:500;padding:2px 8px;border-radius:100px;}
-.ps-avail{background:var(--off);color:var(--gray);border:1px solid var(--bmd);}
-.plan-card{background:var(--black);border-radius:14px;padding:20px;}
-.plan-name{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.4);margin-bottom:6px;}
-.plan-title{font-size:18px;font-weight:600;color:var(--white);letter-spacing:-0.4px;margin-bottom:4px;}
-.plan-desc{font-size:12px;color:rgba(255,255,255,0.4);font-weight:300;margin-bottom:14px;line-height:1.5;}
-.plan-btn{width:100%;padding:10px;background:var(--white);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;}
-
-/* DASHBOARD */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
-.stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;}
-.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);font-weight:500;margin-bottom:8px;}
-.stat-val{font-size:30px;font-weight:600;color:var(--dark);letter-spacing:-1px;line-height:1;margin-bottom:4px;}
-.stat-sub{font-size:12px;color:var(--gray);font-weight:300;}
-.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.ct{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:16px;letter-spacing:-0.2px;}
+.gl{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}
+.gic{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:16px;}
+.git{font-size:15px;font-weight:600;color:var(--dark);margin-bottom:4px;letter-spacing:-0.3px;}
+.gis{font-size:13px;color:var(--gray);margin-bottom:20px;font-weight:300;}
+.gnw{display:flex;gap:10px;background:var(--off);border:1px solid var(--bmd);border-radius:12px;padding:10px 14px;margin-bottom:16px;transition:border-color 0.2s;}
+.gnw:focus-within{border-color:var(--black);}
+.gni{flex:1;background:transparent;border:none;outline:none;font-size:14px;font-family:'Inter',sans-serif;color:var(--dark);}.gni::placeholder{color:#aaa;}
+.gb{padding:10px 22px;background:var(--black);color:var(--white);border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;white-space:nowrap;}
+.gb:hover:not(:disabled){background:#222;}.gb:disabled{opacity:0.4;cursor:not-allowed;}
+.nl{font-size:12px;color:var(--gray);margin-bottom:8px;}
+.np{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;}
+.np span{padding:5px 12px;background:var(--off);border:1px solid var(--border);border-radius:100px;font-size:12px;color:var(--gray);cursor:pointer;transition:all 0.15s;}
+.np span:hover{border-color:var(--bmd);color:var(--dark);}
+.gp{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:16px;display:none;}
+.gp.visible{display:block;}
+.gpt{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:16px;}
+.pb{height:3px;background:var(--light);border-radius:2px;overflow:hidden;margin-bottom:16px;}
+.pf{height:100%;background:var(--black);width:0;transition:width 0.4s ease;border-radius:2px;}
+.pss{display:flex;flex-direction:column;gap:8px;}
+.pst{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gray);font-weight:300;}
+.pst.done{color:var(--green);}.pst.act{color:var(--dark);font-weight:500;}
+.psic{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;background:var(--off);}
+.pst.done .psic{background:var(--green);color:white;}.pst.act .psic{background:var(--dark);color:white;}
+.gr{display:none;}.gr.visible{display:block;}
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.rt{font-size:15px;font-weight:600;color:var(--dark);letter-spacing:-0.2px;}
+.ras{display:flex;gap:8px;}
+.bs{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;border:1px solid var(--bmd);background:var(--white);color:var(--dark);}
+.bs:hover{background:var(--off);}.bs.primary{background:var(--black);color:var(--white);border-color:var(--black);}
+.bs.green{background:var(--green);color:var(--white);border-color:var(--green);}
+.bs:disabled{opacity:0.5;cursor:not-allowed;}
+.pg{display:flex;flex-direction:column;gap:10px;}
+.pc{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.pch{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;}
+.pcl{display:flex;align-items:center;gap:10px;}
+.pcb{padding:3px 9px;background:var(--off);border-radius:6px;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;}
+.pcn{font-size:14px;font-weight:500;color:var(--dark);letter-spacing:-0.2px;}
+.pcr{display:flex;align-items:center;gap:8px;}
+.pcp{font-size:14px;font-weight:600;color:var(--dark);}
+.pcs{font-size:11px;padding:3px 8px;border-radius:100px;font-weight:500;}
+.pcs.done{background:var(--gp);color:var(--green);}
+.pct{cursor:pointer;font-size:11px;color:var(--gray);background:none;border:none;font-family:'Inter',sans-serif;padding:0;}
+.pcb2{padding:0 20px 16px;display:none;}.pcb2.open{display:block;}
+.pcsec{margin-bottom:12px;}
+.pcsl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:5px;}
+.pcd{font-size:13px;color:var(--dark);line-height:1.65;font-weight:300;}
+.tw{display:flex;flex-wrap:wrap;gap:4px;}
+.tg{padding:3px 8px;background:var(--off);border-radius:5px;font-size:11px;color:var(--gray);}
+.ic{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;}
+.ict{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:12px;letter-spacing:-0.2px;}
+.ir{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.ir:last-child{border-bottom:none;}.il{color:var(--gray);font-weight:300;}.iv{font-weight:500;color:var(--dark);}
+.wi{display:flex;flex-direction:column;gap:7px;}
+.wii{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dark);}
+.wic{font-size:14px;}
+.plc{background:var(--black);border-radius:14px;padding:20px;}
+.pln{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.4);margin-bottom:6px;}
+.plt{font-size:18px;font-weight:600;color:var(--white);letter-spacing:-0.4px;margin-bottom:4px;}
+.pld{font-size:12px;color:rgba(255,255,255,0.4);font-weight:300;margin-bottom:14px;line-height:1.5;}
+.plb{width:100%;padding:10px;background:var(--white);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;}
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.sc{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.sl2{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);font-weight:500;margin-bottom:8px;}
+.sv{font-size:30px;font-weight:600;color:var(--dark);letter-spacing:-1px;line-height:1;margin-bottom:4px;}
+.ss{font-size:12px;color:var(--gray);font-weight:300;}
+.qa2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
 .qa{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all 0.15s;}
 .qa:hover{border-color:var(--bmd);background:var(--off);}
-.qa-icon{font-size:20px;margin-bottom:10px;}
-.qa-title{font-size:14px;font-weight:500;color:var(--dark);margin-bottom:3px;letter-spacing:-0.2px;}
-.qa-desc{font-size:12px;color:var(--gray);font-weight:300;line-height:1.4;}
-
-/* HISTORY */
-.history-empty{text-align:center;padding:80px 40px;color:var(--gray);}
-.history-empty-icon{font-size:36px;margin-bottom:12px;}
-.history-empty-text{font-size:14px;line-height:1.6;font-weight:300;}
-.history-item{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;transition:border-color 0.15s;cursor:pointer;margin-bottom:8px;}
-.history-item:hover{border-color:var(--bmd);}
-.h-niche{font-size:14px;font-weight:500;color:var(--dark);margin-bottom:3px;letter-spacing:-0.2px;}
-.h-meta{font-size:12px;color:var(--gray);font-weight:300;}
-.h-count{padding:3px 9px;background:var(--off);border-radius:100px;font-size:12px;color:var(--gray);}
-
-/* SETTINGS */
-.api-key-display{font-family:monospace;font-size:12px;color:var(--gray);background:var(--off);padding:8px 12px;border-radius:8px;margin-top:8px;word-break:break-all;}
-
-/* TOAST */
+.qi{font-size:20px;margin-bottom:10px;}.qtt{font-size:14px;font-weight:500;color:var(--dark);margin-bottom:3px;letter-spacing:-0.2px;}.qd{font-size:12px;color:var(--gray);font-weight:300;line-height:1.4;}
+.he{text-align:center;padding:80px 40px;color:var(--gray);}.hei{font-size:36px;margin-bottom:12px;}.het{font-size:14px;line-height:1.6;font-weight:300;}
+.hi{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:pointer;transition:all 0.15s;}
+.hi:hover{border-color:var(--bmd);}.hn{font-size:14px;font-weight:500;color:var(--dark);margin-bottom:3px;letter-spacing:-0.2px;}.hm{font-size:12px;color:var(--gray);font-weight:300;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:var(--white);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
 
-<!-- auth follows -->
-
-<!-- ══ AUTH VIEW ══ -->
 <div class="view active" id="view-auth">
   <div class="auth-card">
     <div class="auth-logo">StoreClone <span>AI</span></div>
     <div id="auth-login">
       <div class="auth-title">Connexion</div>
       <div class="auth-sub">Accédez à votre espace de génération.</div>
-      <div class="form-group"><label>Adresse e-mail</label><input type="email" class="form-input" id="loginEmail" placeholder="vous@exemple.com"></div>
-      <div class="form-group"><label>Mot de passe</label><input type="password" class="form-input" id="loginPass" placeholder="••••••••"></div>
-      <button class="btn-full" onclick="login()">Se connecter</button>
-      <div class="auth-switch">Pas de compte ? <a onclick="showReg()">Créer un compte</a></div>
+      <div class="fg"><label>E-mail</label><input type="email" class="fi" id="loginEmail" placeholder="vous@exemple.com" onkeydown="if(event.key==='Enter')login()"></div>
+      <div class="fg"><label>Mot de passe</label><input type="password" class="fi" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+      <button class="bf" onclick="login()">Se connecter</button>
+      <div class="asw">Pas de compte ? <a onclick="showReg()">Créer un compte</a></div>
     </div>
     <div id="auth-reg" style="display:none">
       <div class="auth-title">Créer un compte</div>
       <div class="auth-sub">Commencez gratuitement.</div>
-      <div class="form-group"><label>Prénom</label><input type="text" class="form-input" id="regName" placeholder="Thomas"></div>
-      <div class="form-group"><label>E-mail</label><input type="email" class="form-input" id="regEmail" placeholder="vous@exemple.com"></div>
-      <div class="form-group"><label>Mot de passe</label><input type="password" class="form-input" id="regPass" placeholder="Minimum 8 caractères"></div>
-      <button class="btn-full" onclick="register()">Créer mon compte</button>
-      <div class="auth-switch">Déjà un compte ? <a onclick="showLogin()">Se connecter</a></div>
+      <div class="fg"><label>Prénom</label><input type="text" class="fi" id="regName" placeholder="Thomas"></div>
+      <div class="fg"><label>E-mail</label><input type="email" class="fi" id="regEmail" placeholder="vous@exemple.com"></div>
+      <div class="fg"><label>Mot de passe</label><input type="password" class="fi" id="regPass" placeholder="Minimum 8 caractères"></div>
+      <button class="bf" onclick="register()">Créer mon compte</button>
+      <div class="asw">Déjà un compte ? <a onclick="showLogin()">Se connecter</a></div>
     </div>
   </div>
 </div>
 
-<!-- ══ APP VIEW ══ -->
 <div class="view" id="view-app">
   <nav class="sidebar">
-    <div class="sidebar-logo">StoreClone <span>AI</span></div>
-    <div class="sb-section">Principal</div>
-    <div class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')"><span class="nav-icon">◉</span> Tableau de bord</div>
-    <div class="nav-item" id="nav-generator" onclick="showPage('generator')"><span class="nav-icon">⚡</span> Générateur</div>
-    <div class="nav-item" id="nav-history" onclick="showPage('history')"><span class="nav-icon">↺</span> Historique</div>
-    <div class="sb-section">Plateformes</div>
-    <div class="nav-item" id="nav-platforms" onclick="showPage('platforms')"><span class="nav-icon">⬡</span> Connexions API</div>
-    <div class="sb-section">Compte</div>
-    <div class="nav-item" id="nav-settings" onclick="showPage('settings')"><span class="nav-icon">◎</span> Paramètres</div>
-    <div class="sidebar-user" onclick="logout()">
-      <div class="user-avatar" id="userAvatar">T</div>
-      <div><div class="user-name" id="userName">Thomas</div><div class="user-plan">Plan Starter</div></div>
+    <div class="sl">StoreClone <span>AI</span></div>
+    <div class="sbs">Principal</div>
+    <div class="ni active" id="nav-dashboard" onclick="showPage('dashboard')"><span class="nii">◉</span> Tableau de bord</div>
+    <div class="ni" id="nav-generator" onclick="showPage('generator')"><span class="nii">⚡</span> Générateur</div>
+    <div class="ni" id="nav-history" onclick="showPage('history')"><span class="nii">↺</span> Historique</div>
+    <div class="sbs">Compte</div>
+    <div class="ni" id="nav-settings" onclick="showPage('settings')"><span class="nii">◎</span> Paramètres</div>
+    <div class="su" onclick="logout()">
+      <div class="ua" id="userAvatar">T</div>
+      <div><div class="un" id="userName">Thomas</div><div class="up">Plan Starter</div></div>
     </div>
   </nav>
 
-  <main class="app-main">
+  <main class="am">
 
-    <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
-      <div class="page-header">
-        <div class="page-title" id="dashWelcome">Bonjour 👋</div>
-        <div class="page-sub">Voici un aperçu de votre activité StoreClone AI.</div>
+      <div class="ph"><div class="pt" id="dashWelcome">Bonjour 👋</div><div class="ps">Bienvenue sur StoreClone AI.</div></div>
+      <div class="sr">
+        <div class="sc"><div class="sl2">Boutiques générées</div><div class="sv" id="statStores">0</div><div class="ss">depuis le début</div></div>
+        <div class="sc"><div class="sl2">Produits créés</div><div class="sv" id="statProducts">0</div><div class="ss">fichiers HTML interactifs</div></div>
+        <div class="sc"><div class="sl2">ZIPs téléchargés</div><div class="sv" id="statZips">0</div><div class="ss">prêts à publier</div></div>
       </div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-label">Boutiques générées</div><div class="stat-val" id="statStores">0</div><div class="stat-sub">depuis le début</div></div>
-        <div class="stat-card"><div class="stat-label">Produits créés</div><div class="stat-val" id="statProducts">0</div><div class="stat-sub">prêts à publier</div></div>
-        <div class="stat-card"><div class="stat-label">Plateformes connectées</div><div class="stat-val">0</div><div class="stat-sub">sur 3 disponibles</div></div>
+      <div class="qa2">
+        <div class="qa" onclick="showPage('generator')"><div class="qi">⚡</div><div class="qtt">Nouvelle boutique</div><div class="qd">Générez une boutique avec vrais fichiers HTML</div></div>
+        <div class="qa" onclick="showPage('history')"><div class="qi">↺</div><div class="qtt">Historique</div><div class="qd">Retrouvez vos générations précédentes</div></div>
       </div>
-      <div class="quick-actions">
-        <div class="qa" onclick="showPage('generator')"><div class="qa-icon">⚡</div><div class="qa-title">Nouvelle boutique</div><div class="qa-desc">Générez une boutique complète en 60 secondes</div></div>
-        <div class="qa" onclick="showPage('platforms')"><div class="qa-icon">⬡</div><div class="qa-title">Connecter une plateforme</div><div class="qa-desc">Etsy, Gumroad ou Payhip pour publier automatiquement</div></div>
-        <div class="qa" onclick="showPage('history')"><div class="qa-icon">↺</div><div class="qa-title">Voir l'historique</div><div class="qa-desc">Retrouvez vos générations précédentes</div></div>
-        <div class="qa" onclick="showPage('settings')"><div class="qa-icon">◎</div><div class="qa-title">Passer en Pro</div><div class="qa-desc">Publication API automatique, boutiques illimitées</div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Activité récente</div>
-        <div id="dashRecent"><div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage('generator')">Créer votre première boutique →</span></div></div>
-      </div>
+      <div class="card"><div class="ct">Activité récente</div><div id="dashRecent"><div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage('generator')">Créer votre première boutique →</span></div></div></div>
     </div>
 
-    <!-- GENERATOR -->
     <div class="page" id="page-generator">
-      <div class="page-header">
-        <div class="page-title">Générateur</div>
-        <div class="page-sub">Entrez une niche — l'IA crée vos produits, descriptions SEO, tags et prix.</div>
-      </div>
-      <div class="gen-layout">
+      <div class="ph"><div class="pt">Générateur</div><div class="ps">Entrez une niche — l'IA génère 3 vrais produits HTML interactifs + un ZIP prêt à uploader sur Etsy.</div></div>
+      <div class="gl">
         <div>
-          <div class="gen-input-card">
-            <div class="gen-input-title">Quelle est votre niche ?</div>
-            <div class="gen-input-sub">Soyez précis pour de meilleurs résultats.</div>
-            <div class="gen-niche-wrap">
-              <input class="gen-niche-input" id="nicheInput" placeholder="Ex: yoga pour femmes, budget zéro déchet, mariage bohème..." onkeydown="if(event.key==='Enter')generate()">
-              <button class="gen-btn" id="genBtn" onclick="generate()">Générer</button>
-            </div>
-            <div class="niches-label">Niches populaires</div>
-            <div class="niches-pills">
-              <span class="niche-pill" onclick="setNiche('Planification de mariage')">💍 Mariage</span>
-              <span class="niche-pill" onclick="setNiche('Fitness et musculation')">💪 Fitness</span>
-              <span class="niche-pill" onclick="setNiche('Méditation et bien-être')">🧘 Bien-être</span>
-              <span class="niche-pill" onclick="setNiche('Gestion du budget personnel')">💰 Budget</span>
-              <span class="niche-pill" onclick="setNiche('Recettes de cuisine')">🍳 Cuisine</span>
-              <span class="niche-pill" onclick="setNiche('Productivité et organisation')">📋 Productivité</span>
-              <span class="niche-pill" onclick="setNiche('Jardinage et plantes')">🌱 Jardinage</span>
-              <span class="niche-pill" onclick="setNiche('Voyage et aventure')">✈️ Voyage</span>
-            </div>
-            <div style="margin-top:14px">
-              <div class="niches-label">Options de génération</div>
-              <div class="gen-options">
-                <label class="gen-option on" id="opt-fr"><input type="checkbox" checked onchange="toggleOpt('fr',this)"><span>🇫🇷 Français</span></label>
-                <label class="gen-option on" id="opt-en"><input type="checkbox" checked onchange="toggleOpt('en',this)"><span>🇬🇧 English</span></label>
-                <label class="gen-option on" id="opt-seo"><input type="checkbox" checked onchange="toggleOpt('seo',this)"><span>🔍 SEO</span></label>
-                <label class="gen-option on" id="opt-price"><input type="checkbox" checked onchange="toggleOpt('price',this)"><span>€ Prix</span></label>
-              </div>
+          <div class="gic">
+            <div class="git">Quelle est votre niche ?</div>
+            <div class="gis">L'IA va créer de vrais fichiers HTML interactifs adaptés à votre niche.</div>
+            <div class="gnw"><input class="gni" id="nicheInput" placeholder="Ex: yoga, mariage, budget, cuisine, productivité..." onkeydown="if(event.key==='Enter')generate()"><button class="gb" id="genBtn" onclick="generate()">Générer ↗</button></div>
+            <div class="nl">Niches populaires</div>
+            <div class="np">
+              <span onclick="setNiche('Yoga et méditation')">🧘 Yoga</span>
+              <span onclick="setNiche('Planification de mariage')">💍 Mariage</span>
+              <span onclick="setNiche('Fitness et musculation')">💪 Fitness</span>
+              <span onclick="setNiche('Gestion du budget')">💰 Budget</span>
+              <span onclick="setNiche('Recettes de cuisine')">🍳 Cuisine</span>
+              <span onclick="setNiche('Productivité')">📋 Productivité</span>
+              <span onclick="setNiche('Voyage')">✈️ Voyage</span>
+              <span onclick="setNiche('Jardinage')">🌱 Jardinage</span>
             </div>
           </div>
-
-          <div class="gen-progress" id="genProgress">
-            <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
-            <div class="prog-steps" id="progSteps"></div>
+          <div class="gp" id="genProgress">
+            <div class="gpt" id="progTitle">Génération en cours...</div>
+            <div class="pb"><div class="pf" id="progFill"></div></div>
+            <div class="pss" id="progSteps"></div>
           </div>
-
-          <div class="gen-results" id="genResults">
-            <div class="results-header">
-              <div class="results-title" id="resultsTitle">0 produits générés</div>
-              <div class="results-actions">
-                <button class="btn-sm" onclick="copyAll()">Tout copier</button>
-                <button class="btn-sm green" onclick="downloadPack()">↓ Télécharger ZIP</button>
+          <div class="gr" id="genResults">
+            <div class="rh">
+              <div class="rt" id="resultsTitle">Boutique générée</div>
+              <div class="ras">
+                <button class="bs" onclick="copyAllText()">📋 Copier</button>
+                <button class="bs green" id="downloadBtn" onclick="downloadZip()">↓ Télécharger ZIP</button>
               </div>
             </div>
-            <div class="products-grid" id="productsGrid"></div>
+            <div class="pg" id="productsGrid"></div>
           </div>
         </div>
-
         <div>
-          <div class="info-card">
-            <div class="info-card-title">Génération en cours</div>
-            <div class="info-row"><span class="info-label">Produits</span><span class="info-val" id="infoProducts">—</span></div>
-            <div class="info-row"><span class="info-label">Langues</span><span class="info-val" id="infoLangs">FR + EN</span></div>
-            <div class="info-row"><span class="info-label">SEO</span><span class="info-val" id="infoSEO">✓ Inclus</span></div>
-            <div class="info-row"><span class="info-label">Format</span><span class="info-val">HTML + Pack</span></div>
-          </div>
-          <div class="info-card">
-            <div class="info-card-title">Plateformes de publication</div>
-            <div class="platform-list">
-              <div class="platform-item"><span class="platform-name">Etsy</span><span class="platform-status ps-avail">Connecter</span></div>
-              <div class="platform-item"><span class="platform-name">Gumroad</span><span class="platform-status ps-avail">Connecter</span></div>
-              <div class="platform-item"><span class="platform-name">Payhip</span><span class="platform-status ps-avail">Connecter</span></div>
+          <div class="ic">
+            <div class="ict">Ce que vous obtenez</div>
+            <div class="wi">
+              <div class="wii"><span class="wic">📄</span> 3 vrais fichiers HTML interactifs</div>
+              <div class="wii"><span class="wic">🇫🇷</span> Descriptions SEO en français</div>
+              <div class="wii"><span class="wic">🇬🇧</span> Descriptions SEO en anglais</div>
+              <div class="wii"><span class="wic">🏷️</span> 13 tags Etsy optimisés</div>
+              <div class="wii"><span class="wic">💰</span> Prix recommandés</div>
+              <div class="wii"><span class="wic">📦</span> ZIP prêt à uploader</div>
             </div>
           </div>
-          <div class="plan-card">
-            <div class="plan-name">Plan Starter</div>
-            <div class="plan-title">Passez en Pro</div>
-            <div class="plan-desc">Publication API automatique. Boutiques et produits illimités.</div>
-            <button class="plan-btn" onclick="showPage('settings')">Voir le Plan Pro →</button>
+          <div class="ic">
+            <div class="ict">Statistiques</div>
+            <div class="ir"><span class="il">Niche</span><span class="iv" id="infoNiche">—</span></div>
+            <div class="ir"><span class="il">Produits</span><span class="iv" id="infoProducts">—</span></div>
+            <div class="ir"><span class="il">Statut</span><span class="iv" id="infoStatus">En attente</span></div>
+          </div>
+          <div class="plc">
+            <div class="pln">Plan Starter</div>
+            <div class="plt">Passez en Pro</div>
+            <div class="pld">Publication automatique sur Etsy, Gumroad et Payhip. Boutiques illimitées.</div>
+            <button class="plb" onclick="showPage('settings')">Voir le Plan Pro →</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- HISTORY -->
     <div class="page" id="page-history">
-      <div class="page-header"><div class="page-title">Historique</div><div class="page-sub">Retrouvez toutes vos générations précédentes.</div></div>
-      <div id="historyContent"><div class="history-empty"><div class="history-empty-icon">↺</div><div class="history-empty-text">Aucune génération pour le moment.</div></div></div>
+      <div class="ph"><div class="pt">Historique</div><div class="ps">Vos générations précédentes.</div></div>
+      <div id="historyContent"><div class="he"><div class="hei">↺</div><div class="het">Aucune génération pour le moment.</div></div></div>
     </div>
 
-    <!-- PLATFORMS -->
-    <div class="page" id="page-platforms">
-      <div class="page-header"><div class="page-title">Connexions API</div><div class="page-sub">Connectez vos plateformes de vente (Plan Pro).</div></div>
-      <div style="display:flex;flex-direction:column;gap:12px;max-width:600px">
-        <div class="card" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:15px;font-weight:500;margin-bottom:3px">Etsy</div><div style="font-size:13px;color:var(--gray);font-weight:300">Publication directe sur votre boutique</div></div><button class="btn-sm" onclick="showToast('Disponible avec le Plan Pro')">Connecter</button></div>
-        <div class="card" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:15px;font-weight:500;margin-bottom:3px">Gumroad</div><div style="font-size:13px;color:var(--gray);font-weight:300">Vendez vos produits sur Gumroad</div></div><button class="btn-sm" onclick="showToast('Disponible avec le Plan Pro')">Connecter</button></div>
-        <div class="card" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:15px;font-weight:500;margin-bottom:3px">Payhip</div><div style="font-size:13px;color:var(--gray);font-weight:300">Publiez automatiquement sur Payhip</div></div><button class="btn-sm" onclick="showToast('Disponible avec le Plan Pro')">Connecter</button></div>
-        <div class="card" style="background:var(--off);border-style:dashed;text-align:center;padding:32px"><div style="font-size:13px;color:var(--gray);font-weight:300;line-height:1.6">Disponible avec le <strong style="color:var(--dark)">Plan Pro à 29€/mois</strong></div><button class="btn-sm primary" style="margin-top:14px" onclick="showPage('settings')">Voir le Plan Pro</button></div>
-      </div>
-    </div>
-
-    <!-- SETTINGS -->
     <div class="page" id="page-settings">
-      <div class="page-header"><div class="page-title">Paramètres</div><div class="page-sub">Gérez votre compte et votre abonnement.</div></div>
-      <div style="max-width:600px;display:flex;flex-direction:column;gap:12px">
-        <div class="card">
-          <div class="card-title">Mon compte</div>
-          <div class="form-group"><label class="form-label">Prénom</label><input type="text" class="form-input" id="settingName"></div>
-          <div class="form-group" style="margin-bottom:0"><label class="form-label">E-mail</label><input type="email" class="form-input" id="settingEmail"></div>
-          <button class="btn-sm primary" style="margin-top:14px" onclick="saveSettings()">Enregistrer</button>
+      <div class="ph"><div class="pt">Paramètres</div><div class="ps">Gérez votre compte.</div></div>
+      <div style="max-width:500px;display:flex;flex-direction:column;gap:12px">
+        <div class="card"><div class="ct">Mon compte</div>
+          <div class="fg"><label style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">Prénom</label><input type="text" class="fi" id="settingName"></div>
+          <div class="fg" style="margin-bottom:0"><label style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">E-mail</label><input type="email" class="fi" id="settingEmail"></div>
+          <button class="bs primary" style="margin-top:14px" onclick="saveSettings()">Enregistrer</button>
         </div>
-        <div class="card">
-          <div class="card-title">Clé API</div>
-          <div style="font-size:13px;color:var(--gray);font-weight:300;margin-bottom:10px">Clé actuellement configurée :</div>
-          <div class="api-key-display" id="apiKeyDisplay">—</div>
-          <button class="btn-sm" style="margin-top:12px" onclick="resetApiKey()">Changer la clé API</button>
-        </div>
-        <div class="card">
-          <div class="card-title">Abonnement</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-            <div style="border:1px solid var(--border);border-radius:10px;padding:16px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px">Starter</div><div style="font-size:24px;font-weight:600;letter-spacing:-1px;margin-bottom:4px">0€</div><div style="font-size:12px;color:var(--gray);margin-bottom:12px">pour toujours</div><div style="padding:8px;background:var(--off);border-radius:6px;text-align:center;font-size:12px;font-weight:500;color:var(--green)">✓ Plan actuel</div></div>
-            <div style="border:2px solid var(--black);border-radius:10px;padding:16px;position:relative"><div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--black);color:var(--white);font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap">Le plus populaire</div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px">Pro</div><div style="font-size:24px;font-weight:600;letter-spacing:-1px;margin-bottom:4px">29€</div><div style="font-size:12px;color:var(--gray);margin-bottom:12px">par mois</div><button class="btn-sm primary" style="width:100%" onclick="showToast('Paiement Stripe — bientôt disponible !')">Passer en Pro</button></div>
-            <div style="border:1px solid var(--border);border-radius:10px;padding:16px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px">Agency</div><div style="font-size:24px;font-weight:600;letter-spacing:-1px;margin-bottom:4px">79€</div><div style="font-size:12px;color:var(--gray);margin-bottom:12px">par mois</div><button class="btn-sm" style="width:100%" onclick="showToast('Contactez-nous pour l\'offre Agency')">Contacter</button></div>
+        <div class="card"><div class="ct">Abonnement</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="border:1px solid var(--border);border-radius:10px;padding:16px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px">Starter</div><div style="font-size:24px;font-weight:600;letter-spacing:-1px;margin-bottom:12px">0€</div><div style="padding:8px;background:var(--off);border-radius:6px;text-align:center;font-size:12px;font-weight:500;color:var(--green)">✓ Plan actuel</div></div>
+            <div style="border:2px solid var(--black);border-radius:10px;padding:16px;position:relative"><div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--black);color:var(--white);font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap">Populaire</div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px">Pro</div><div style="font-size:24px;font-weight:600;letter-spacing:-1px;margin-bottom:12px">29€<span style="font-size:12px;font-weight:300;color:var(--gray)">/mois</span></div><button class="bs primary" style="width:100%" onclick="showToast('Paiement Stripe — bientôt disponible !')">Passer en Pro</button></div>
           </div>
         </div>
       </div>
@@ -381,255 +264,259 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 <div class="toast" id="toast"></div>
 
 <script>
-// ── STATE ──
-let user = null;
-let history = [];
-let currentGen = null;
-let opts = { fr:true, en:true, seo:true, price:true };
-const STEPS = ['Analyse de la niche…','Identification des produits porteurs…','Génération des contenus…','Optimisation SEO…','Calcul des prix optimisés…','Finalisation du pack…'];
+let user=null,history=[],currentGen=null;
+const STEPS=['Analyse de la niche…','Identification des 3 meilleurs produits…','Génération Produit 1 (HTML interactif)…','Génération Produit 2 (HTML interactif)…','Génération Produit 3 (HTML interactif)…','Optimisation SEO et tags…','Préparation du ZIP…'];
 
-// ── INIT ──
-window.addEventListener('load', () => {
-  const savedUser = localStorage.getItem('sc_user');
-  if (savedUser) {
-    user = JSON.parse(savedUser);
-    history = JSON.parse(localStorage.getItem('sc_history') || '[]');
-    history = history.map(h => ({...h, date: new Date(h.date)}));
-    startApp();
-  } else {
-    showView('auth');
-  }
+window.addEventListener('load',()=>{
+  const s=localStorage.getItem('sc_user');
+  if(s){user=JSON.parse(s);history=JSON.parse(localStorage.getItem('sc_history')||'[]');history=history.map(h=>({...h,date:new Date(h.date)}));startApp();}
+  else showView('auth');
 });
 
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + id).classList.add('active');
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');}
+function showReg(){document.getElementById('auth-login').style.display='none';document.getElementById('auth-reg').style.display='block';}
+function showLogin(){document.getElementById('auth-reg').style.display='none';document.getElementById('auth-login').style.display='block';}
+function login(){
+  const email=document.getElementById('loginEmail').value.trim(),pass=document.getElementById('loginPass').value;
+  if(!email||!pass){showToast('Remplissez tous les champs');return;}
+  saveUser({name:cap(email.split('@')[0]),email});
 }
-
-// ── AUTH ──
-function showReg() { document.getElementById('auth-login').style.display='none'; document.getElementById('auth-reg').style.display='block'; }
-function showLogin() { document.getElementById('auth-reg').style.display='none'; document.getElementById('auth-login').style.display='block'; }
-function login() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value;
-  if (!email||!pass) { showToast('Veuillez remplir tous les champs'); return; }
-  const name = capitalize(email.split('@')[0]);
-  saveUser({ name, email });
+function register(){
+  const name=document.getElementById('regName').value.trim(),email=document.getElementById('regEmail').value.trim(),pass=document.getElementById('regPass').value;
+  if(!name||!email||!pass){showToast('Remplissez tous les champs');return;}
+  if(pass.length<8){showToast('Mot de passe trop court');return;}
+  saveUser({name,email});
 }
-function register() {
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const pass = document.getElementById('regPass').value;
-  if (!name||!email||!pass) { showToast('Veuillez remplir tous les champs'); return; }
-  if (pass.length < 8) { showToast('Mot de passe trop court'); return; }
-  saveUser({ name, email });
+function saveUser(u){user=u;localStorage.setItem('sc_user',JSON.stringify(u));startApp();}
+function startApp(){
+  document.getElementById('userAvatar').textContent=user.name[0].toUpperCase();
+  document.getElementById('userName').textContent=user.name;
+  document.getElementById('dashWelcome').textContent=`Bonjour, ${user.name} 👋`;
+  document.getElementById('settingName').value=user.name;
+  document.getElementById('settingEmail').value=user.email;
+  updateStats();renderDashRecent();showView('app');showToast(`Bienvenue, ${user.name} !`);
 }
-function saveUser(u) {
-  user = u;
-  localStorage.setItem('sc_user', JSON.stringify(u));
-  startApp();
-}
-function startApp() {
-  document.getElementById('userAvatar').textContent = user.name[0].toUpperCase();
-  document.getElementById('userName').textContent = user.name;
-  document.getElementById('dashWelcome').textContent = `Bonjour, ${user.name} 👋`;
-  document.getElementById('settingName').value = user.name;
-  document.getElementById('settingEmail').value = user.email;
-  updateStats();
-  renderDashRecent();
-  showView('app');
-  showToast(`Bienvenue, ${user.name} !`);
-}
-function logout() {
-  if (!confirm('Se déconnecter ?')) return;
-  user = null; localStorage.removeItem('sc_user');
-  showView('auth');
-}
-function capitalize(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
-
-// ── NAV ──
-function showPage(p) {
-  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+function logout(){if(!confirm('Se déconnecter ?'))return;user=null;localStorage.removeItem('sc_user');showView('auth');}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p)?.classList.add('active');
   document.getElementById('nav-'+p)?.classList.add('active');
-  if (p==='history') renderHistory();
+  if(p==='history')renderHistory();
+}
+function setNiche(v){document.getElementById('nicheInput').value=v;document.getElementById('nicheInput').focus();}
+
+async function callAPI(prompt,type='metadata'){
+  const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,type})});
+  const data=await res.json();
+  if(data.error)throw new Error(data.error.message||'Erreur API');
+  return data.content.map(b=>b.text||'').join('');
 }
 
-// ── OPTIONS ──
-function toggleOpt(k, el) {
-  opts[k]=el.checked;
-  document.getElementById('opt-'+k).classList.toggle('on', el.checked);
-  document.getElementById('infoLangs').textContent = [opts.fr?'FR':'',opts.en?'EN':''].filter(Boolean).join(' + ')||'—';
-  document.getElementById('infoSEO').textContent = opts.seo?'✓ Inclus':'✗ Désactivé';
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function initProgress(){
+  const prog=document.getElementById('genProgress'),fill=document.getElementById('progFill'),stepsEl=document.getElementById('progSteps');
+  prog.classList.add('visible');
+  stepsEl.innerHTML=STEPS.map((s,i)=>`<div class="pst" id="pstep-${i}"><div class="psic">${i+1}</div><span>${s}</span></div>`).join('');
+  fill.style.width='0%';
+  return{
+    set(i){
+      document.querySelectorAll('.pst').forEach((el,idx)=>{
+        el.classList.remove('act','done');
+        if(idx<i){el.classList.add('done');el.querySelector('.psic').textContent='✓';}
+        else if(idx===i){el.classList.add('act');}
+      });
+      fill.style.width=Math.round((i/STEPS.length)*100)+'%';
+    },
+    done(){fill.style.width='100%';setTimeout(()=>prog.classList.remove('visible'),600);}
+  };
 }
-function setNiche(v) { document.getElementById('nicheInput').value=v; document.getElementById('nicheInput').focus(); }
 
-// ── GENERATOR ──
-async function generate() {
-  const niche = document.getElementById('nicheInput').value.trim();
-  if (!niche) { showToast('Entrez une niche pour continuer'); return; }
-
-  const btn = document.getElementById('genBtn');
-  const progress = document.getElementById('genProgress');
-  const results = document.getElementById('genResults');
-
-  btn.disabled = true;
-  results.classList.remove('visible');
-  progress.classList.add('visible');
-
-  const fill = document.getElementById('progFill');
-  const stepsEl = document.getElementById('progSteps');
-  stepsEl.innerHTML = STEPS.map((s,i) => `<div class="prog-step" id="pstep-${i}"><span class="prog-step-ic">○</span><span>${s}</span></div>`).join('');
-
-  let pct=0, stepIdx=0;
-  const iv = setInterval(() => {
-    pct = Math.min(pct+1.2, 88);
-    fill.style.width = pct+'%';
-    const ns = Math.floor((pct/88)*STEPS.length);
-    if (ns>stepIdx&&ns<STEPS.length) {
-      const prev = document.getElementById(`pstep-${stepIdx}`);
-      if(prev){prev.classList.remove('act');prev.classList.add('done');prev.querySelector('.prog-step-ic').textContent='✓';}
-      stepIdx=ns;
-      const next=document.getElementById(`pstep-${stepIdx}`);
-      if(next){next.classList.add('act');next.querySelector('.prog-step-ic').textContent='→';}
+async function generate(){
+  const niche=document.getElementById('nicheInput').value.trim();
+  if(!niche){showToast('Entrez une niche');return;}
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true;
+  document.getElementById('genResults').classList.remove('visible');
+  document.getElementById('infoNiche').textContent=niche;
+  document.getElementById('infoStatus').textContent='En cours…';
+  const prog=initProgress();
+  prog.set(0);
+  try{
+    prog.set(1);
+    const metaRaw=await callAPI(`Tu es expert Etsy. Pour la niche "${niche}", génère 3 produits digitaux premium.
+Réponds UNIQUEMENT en JSON sans backticks:
+{"boutique":"Nom boutique créatif","products":[
+{"type":"Tracker|Planner|Journal|Guide|Workbook","nameFr":"Nom FR premium","nameEn":"Name EN premium","descFr":"Description 80 mots FR très convaincante","descEn":"English description 80 words","tags":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13"],"tagsEn":["tag1","tag2","tag3","tag4","tag5"],"price":"X.XX","color":"#hexcouleur","emoji":"emoji"},
+{"type":"...","nameFr":"...","nameEn":"...","descFr":"...","descEn":"...","tags":[13 tags],"tagsEn":[5 tags],"price":"...","color":"#hex","emoji":"..."},
+{"type":"...","nameFr":"...","nameEn":"...","descFr":"...","descEn":"...","tags":[13 tags],"tagsEn":[5 tags],"price":"...","color":"#hex","emoji":"..."}
+]}
+Prix entre 9.99 et 24.99. Vraiment adapté à "${niche}".`,'metadata');
+    const s=metaRaw.indexOf('{'),e=metaRaw.lastIndexOf('}');
+    const meta=JSON.parse(metaRaw.slice(s,e+1));
+    const products=[];
+    for(let i=0;i<meta.products.length;i++){
+      prog.set(2+i);
+      const p=meta.products[i];
+      const html=await genHTML(p,niche);
+      products.push({...p,htmlContent:html});
     }
-  }, 80);
-
-  const langStr = [opts.fr?'français':'',opts.en?'anglais':''].filter(Boolean).join(' et ');
-  const prompt = `Tu es un expert Etsy, SEO et e-commerce. Génère 3 produits digitaux premium pour une boutique sur la niche: "${niche}".
-
-Réponds UNIQUEMENT en JSON valide sans markdown ni backticks:
-{"boutique":"Nom de boutique accrocheur","products":[{"type":"Type (Tracker/Planner/Template/Guide/Workbook)","name":"Nom accrocheur","nameFr":"Nom en français","nameEn":"Name in English","description":"Description 80 mots convaincante en français","descriptionEn":"English description 80 words","tags":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13"],"tagsEn":["tag1","tag2","tag3","tag4","tag5"],"price":"X.XX","features":["Feature 1","Feature 2","Feature 3","Feature 4"]}]}
-
-Langue: ${langStr}. Prix entre 9.99 et 24.99. Noms distinctifs et premium.`;
-
-  try {
-    const res = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-    const raw = data.content.map(b=>b.text||'').join('');
-    const s=raw.indexOf('{'), e=raw.lastIndexOf('}');
-    const parsed = JSON.parse(raw.slice(s,e+1));
-    clearInterval(iv);
-    fill.style.width='100%';
-    setTimeout(()=>showResults(niche,parsed),400);
-  } catch(err) {
-    clearInterval(iv);
-    console.error(err);
-    showResults(niche, getFallback(niche));
-    if (err.message?.includes('401')||err.message?.includes('auth')) showToast('Clé API invalide — vérifiez dans Paramètres');
+    prog.set(5);await sleep(200);prog.set(6);await sleep(200);prog.done();
+    currentGen={niche,boutique:meta.boutique,products,date:new Date()};
+    history.unshift(currentGen);
+    try{localStorage.setItem('sc_history',JSON.stringify(history.slice(0,10).map(h=>({...h,products:h.products.map(p=>({...p,htmlContent:''}))}))));} catch(e){}
+    updateStats();renderDashRecent();
+    showResults();
+  }catch(err){
+    console.error(err);prog.done();
+    showToast('Erreur: '+err.message);
+    document.getElementById('infoStatus').textContent='Erreur';
   }
+  btn.disabled=false;
 }
 
-function getFallback(niche) {
-  return {boutique:niche+' Studio',products:[
-    {type:'Planner',name:'Premium Annual Planner',nameFr:'Planner Annuel Premium',nameEn:'Annual Premium Planner',description:'Un planner complet pour organiser votre année avec clarté et efficacité. Conçu pour les personnes qui veulent atteindre leurs objectifs avec méthode et constance.',descriptionEn:'A complete planner to organise your year with clarity and efficiency.',tags:['planner','organisation','template','digital','download','pdf','agenda','productivite','objectifs','annuel','premium','fr','planification'],tagsEn:['planner','organizer','template','digital','download'],price:'14.99',features:['12 mois complets','Objectifs annuels','Suivi hebdomadaire','Sections notes']},
-    {type:'Tracker',name:'Habit Tracker Pro',nameFr:"Tracker d'Habitudes Pro",nameEn:'Pro Habit Tracker',description:'Suivez et développez vos habitudes avec ce tracker visuel et motivant. Barres de progression, statistiques automatiques et design premium inclus.',descriptionEn:'Track and build your habits with this visual and motivating tracker.',tags:['habit','tracker','habitude','suivi','template','digital','productivite','routine','objectif','quotidien','premium','fr','motivation'],tagsEn:['habit','tracker','routine','template','digital'],price:'12.99',features:['Suivi quotidien','Statistiques visuelles','Design premium','Version bilingue']},
-    {type:'Guide',name:'Ultimate Starter Guide',nameFr:'Guide Ultime Débutant',nameEn:'Ultimate Starter Guide',description:'Le guide complet pour débuter dans cette niche. Méthodes éprouvées, conseils d\'experts et plan d\'action concret pour démarrer efficacement.',descriptionEn:'The complete guide to get started with proven methods.',tags:['guide','starter','debutant','methode','template','digital','conseils','premium','fr','formation','apprentissage','decouverte','niche'],tagsEn:['guide','starter','beginners','method','template'],price:'9.99',features:["Plan d'action complet",'Conseils experts','Ressources incluses','Version bilingue']}
-  ]};
+async function genHTML(p,niche){
+  const prompt=`Crée un fichier HTML interactif premium pour un produit digital Etsy.
+
+Produit: ${p.nameFr} (${p.type}) - Niche: ${niche}
+Couleur: ${p.color} - Emoji: ${p.emoji}
+
+Crée un VRAI outil fonctionnel adapté à la niche:
+- Tracker → vrai système de suivi avec checkboxes, compteurs, barre de progression
+- Planner → vrai planificateur avec zones de saisie, sections organisées
+- Journal → vrai journal avec entrées, humeur, réflexions datées
+- Guide → guide illustré avec étapes claires, conseils pratiques
+- Workbook → cahier d'exercices avec questions, espaces de réponse
+
+EXIGENCES TECHNIQUES:
+- Fichier HTML unique avec CSS et JS inline
+- Design élégant avec la couleur ${p.color}
+- Police depuis Google Fonts (link dans le head)
+- Bilingue FR/EN avec bouton switcher
+- 100% fonctionnel (localStorage pour sauvegarder)
+- Footer: "Budget Bloom Studio — StoreClone AI"
+- Vraiment adapté à "${niche}" — noms, catégories, exemples spécifiques
+- Minimum 300 lignes
+
+Commence DIRECTEMENT par <!DOCTYPE html> sans aucun texte avant.`;
+  try{
+    const html=await callAPI(prompt,'product_html');
+    const start=html.indexOf('<!DOCTYPE');
+    return start>=0?html.slice(start):html;
+  }catch(e){return fallbackHTML(p,niche);}
 }
 
-function showResults(niche, data) {
-  const progress = document.getElementById('genProgress');
-  const results = document.getElementById('genResults');
-  const grid = document.getElementById('productsGrid');
-  progress.classList.remove('visible');
-  document.getElementById('genBtn').disabled = false;
+function fallbackHTML(p,niche){
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${p.nameFr}</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"><style>:root{--c:${p.color}}*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',sans-serif;background:#f8f8f8;color:#1d1d1f}.hd{background:var(--c);padding:40px;color:white;text-align:center}.hd h1{font-size:28px;font-weight:700;margin-bottom:8px}.mn{max-width:700px;margin:24px auto;padding:0 20px}.cd{background:white;border-radius:12px;padding:24px;margin-bottom:16px;border:1px solid rgba(0,0,0,0.08)}.cd h2{font-size:16px;font-weight:600;color:var(--c);margin-bottom:14px}.row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.row label{font-size:12px;font-weight:500;color:#666;text-transform:uppercase}.row input,.row textarea{padding:10px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:14px;font-family:inherit;outline:none}.row input:focus,.row textarea:focus{border-color:var(--c)}.btn{background:var(--c);color:white;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.cell{background:${p.color}22;border:2px solid var(--c);border-radius:6px;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.2s}.cell.on{background:var(--c);color:white}.ft{text-align:center;padding:20px;font-size:11px;color:#999;border-top:1px solid rgba(0,0,0,0.06);margin-top:20px}</style></head><body><div class="hd"><div style="font-size:48px;margin-bottom:12px">${p.emoji}</div><h1>${p.nameFr}</h1><p style="opacity:0.8;font-size:14px">${niche} — Premium Template</p></div><div class="mn"><div class="cd"><h2>📋 Mes entrées ${niche}</h2>${[1,2,3].map(i=>`<div class="row"><label>Entrée ${i}</label><input type="text" placeholder="Saisissez ici..." oninput="save()"></div>`).join('')}<button class="btn" onclick="save();showT('Sauvegardé ✓')">Sauvegarder</button></div><div class="cd"><h2>✅ Suivi de la semaine</h2><div class="grid">${['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(d=>`<div class="cell" onclick="this.classList.toggle('on');save()">${d}</div>`).join('')}</div></div><div class="cd"><h2>📊 Notes et réflexions</h2><div class="row"><textarea rows="4" placeholder="Vos notes..." oninput="save()"></textarea></div></div></div><div class="ft">Budget Bloom Studio — StoreClone AI</div><script>function save(){const d={};document.querySelectorAll('input,textarea').forEach((el,i)=>d['f'+i]=el.value);document.querySelectorAll('.cell').forEach((el,i)=>d['c'+i]=el.classList.contains('on'));try{localStorage.setItem('sc_${niche.replace(/\s/g,'')}',JSON.stringify(d))}catch(e){}}function load(){try{const d=JSON.parse(localStorage.getItem('sc_${niche.replace(/\s/g,'')}'));if(d){document.querySelectorAll('input,textarea').forEach((el,i)=>{if(d['f'+i])el.value=d['f'+i]});document.querySelectorAll('.cell').forEach((el,i)=>{if(d['c'+i])el.classList.add('on')})}}catch(e){}}function showT(m){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:white;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;font-family:Inter,sans-serif';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000)}load();<\/script></body></html>`;
+}
 
-  currentGen = { niche, data, date:new Date() };
-  history.unshift(currentGen);
-  localStorage.setItem('sc_history', JSON.stringify(history.slice(0,20)));
-  updateStats(); renderDashRecent();
-
-  document.getElementById('resultsTitle').textContent = `${data.products.length} produits générés — ${data.boutique}`;
-  document.getElementById('infoProducts').textContent = data.products.length;
-
+function showResults(){
+  const{niche,boutique,products}=currentGen;
+  document.getElementById('resultsTitle').textContent=`${products.length} produits — ${boutique}`;
+  document.getElementById('infoProducts').textContent=products.length;
+  document.getElementById('infoStatus').textContent='✅ Terminé';
+  const grid=document.getElementById('productsGrid');
   grid.innerHTML='';
-  data.products.forEach((p,i) => {
-    const card = document.createElement('div');
+  products.forEach((p,i)=>{
+    const card=document.createElement('div');
     card.className='pc';
-    const tagsHtml=(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
-    const tagsEnHtml=(p.tagsEn||[]).map(t=>`<span class="tag">${t}</span>`).join('');
-    const featHtml=(p.features||[]).map(f=>`<li style="font-size:13px;color:var(--dark);margin-bottom:4px;font-weight:300;list-style:none">&mdash; ${f}</li>`).join('');
-    card.innerHTML=`
-      <div class="pc-header" onclick="toggleProd(${i})">
-        <div class="pc-left"><span class="pc-badge">${p.type}</span><span class="pc-name">${opts.fr?p.nameFr:p.nameEn}</span></div>
-        <span class="pc-price">€${p.price}</span>
-      </div>
-      <div class="pc-body" id="pb-${i}">
-        ${opts.fr?`<div class="pc-section"><div class="pc-section-label">Titre FR</div><div class="pc-desc" style="font-weight:500">${p.nameFr}</div></div>`:''}
-        ${opts.en?`<div class="pc-section"><div class="pc-section-label">Title EN</div><div class="pc-desc" style="font-weight:500">${p.nameEn}</div></div>`:''}
-        ${opts.fr?`<div class="pc-section"><div class="pc-section-label">Description FR</div><div class="pc-desc">${p.description}</div></div>`:''}
-        ${opts.en?`<div class="pc-section"><div class="pc-section-label">Description EN</div><div class="pc-desc">${p.descriptionEn}</div></div>`:''}
-        ${opts.seo?`<div class="pc-section"><div class="pc-section-label">Tags Etsy (${(p.tags||[]).length})</div><div class="tags-wrap">${tagsHtml}</div></div>`:''}
-        ${opts.en&&opts.seo?`<div class="pc-section"><div class="pc-section-label">Tags EN</div><div class="tags-wrap">${tagsEnHtml}</div></div>`:''}
-        <div class="pc-section"><div class="pc-section-label">Fonctionnalités</div><ul>${featHtml}</ul></div>
-        <div class="pc-actions">
-          <button class="copy-btn" onclick="copyProd(${i})">Copier tout</button>
-          <button class="copy-btn" onclick="copyTags(${i})">Copier les tags</button>
-        </div>
-      </div>`;
+    card.innerHTML=`<div class="pch"><div class="pcl"><span class="pcb">${p.type}</span><span class="pcn">${p.emoji} ${p.nameFr}</span></div><div class="pcr"><span class="pcp">€${p.price}</span><span class="pcs done">✓ HTML prêt</span><button class="pct" onclick="document.getElementById('pb${i}').classList.toggle('open')">Détails ↓</button></div></div><div class="pcb2" id="pb${i}"><div class="pcsec"><div class="pcsl">Titre FR</div><div class="pcd" style="font-weight:500">${p.nameFr}</div></div><div class="pcsec"><div class="pcsl">Title EN</div><div class="pcd" style="font-weight:500">${p.nameEn}</div></div><div class="pcsec"><div class="pcsl">Description FR</div><div class="pcd">${p.descFr}</div></div><div class="pcsec"><div class="pcsl">Description EN</div><div class="pcd">${p.descEn}</div></div><div class="pcsec"><div class="pcsl">Tags Etsy (${p.tags.length})</div><div class="tw">${p.tags.map(t=>`<span class="tg">${t}</span>`).join('')}</div></div><div style="margin-top:10px;display:flex;gap:6px"><button class="bs" onclick="copyProd(${i})">📋 Copier</button><button class="bs" onclick="preview(${i})">👁 Prévisualiser</button></div></div>`;
     grid.appendChild(card);
-    setTimeout(()=>card.style.opacity='1', i*80);
   });
-  setTimeout(()=>toggleProd(0), 200);
-  results.classList.add('visible');
-  showToast(`${data.products.length} produits générés !`);
+  document.getElementById('genResults').classList.add('visible');
+  showToast(`${products.length} vrais fichiers HTML générés ! Téléchargez le ZIP 🎉`);
 }
 
-function toggleProd(i){document.getElementById('pb-'+i)?.classList.toggle('open');}
-function copyProd(i){
-  if(!currentGen) return;
-  const p=currentGen.data.products[i];
-  const t=`${p.nameFr}\n\n${p.description}\n\nTags: ${(p.tags||[]).join(', ')}\nPrix: €${p.price}`;
-  navigator.clipboard.writeText(t).then(()=>showToast('Produit copié !'));
-}
-function copyTags(i){
-  if(!currentGen) return;
-  navigator.clipboard.writeText((currentGen.data.products[i].tags||[]).join(', ')).then(()=>showToast('Tags copiés !'));
-}
-function copyAll(){
-  if(!currentGen) return;
-  const lines=currentGen.data.products.map(p=>`=== ${p.nameFr} ===\n${p.description}\nTags: ${(p.tags||[]).join(', ')}\nPrix: €${p.price}`).join('\n\n');
-  navigator.clipboard.writeText(lines).then(()=>showToast('Tout copié !'));
-}
-function downloadPack(){
+async function downloadZip(){
   if(!currentGen){showToast('Générez d\'abord une boutique');return;}
-  const {niche,data}=currentGen;
-  const html=`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>${data.boutique} — Pack</title><style>body{font-family:system-ui,sans-serif;max-width:800px;margin:0 auto;padding:40px;color:#1d1d1f;}h1{font-size:28px;font-weight:600;margin-bottom:8px;}.meta{color:#6e6e73;font-size:14px;margin-bottom:40px;}.product{border:1px solid rgba(0,0,0,0.1);border-radius:12px;padding:28px;margin-bottom:20px;}.pt{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#6e6e73;margin-bottom:8px;}.pn{font-size:20px;font-weight:600;margin-bottom:4px;}.pp{font-size:16px;color:#1a7f4b;font-weight:600;margin-bottom:16px;}.sl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#6e6e73;margin:16px 0 6px;}.d{font-size:14px;line-height:1.65;}.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}.tag{padding:3px 9px;background:#f5f5f7;border-radius:5px;font-size:12px;color:#6e6e73;}ul{list-style:none;padding:0;}li{font-size:14px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.05);}li::before{content:"✓ ";color:#1a7f4b;font-weight:600;}</style></head><body><h1>${data.boutique}</h1><div class="meta">Niche: ${niche} · ${data.products.length} produits · ${new Date().toLocaleDateString('fr-FR')}</div>${data.products.map(p=>`<div class="product"><div class="pt">${p.type}</div><div class="pn">${p.nameFr}</div><div class="pp">€${p.price}</div><div class="sl">Description FR</div><div class="d">${p.description}</div><div class="sl">Description EN</div><div class="d">${p.descriptionEn}</div><div class="sl">Tags (${(p.tags||[]).length})</div><div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div><div class="sl">Fonctionnalités</div><ul>${(p.features||[]).map(f=>`<li>${f}</li>`).join('')}</ul></div>`).join('')}</body></html>`;
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
-  a.download=`${data.boutique.replace(/\s+/g,'-')}-StoreClone.html`;
-  a.click();
-  showToast('Pack téléchargé !');
+  const btn=document.getElementById('downloadBtn');
+  btn.disabled=true;btn.textContent='⏳ Création...';
+  try{
+    const zip=new JSZip();
+    const{niche,boutique,products}=currentGen;
+    const folder=zip.folder(boutique.replace(/[^a-zA-Z0-9-]/g,'-'));
+    products.forEach(p=>{
+      const fname=p.nameFr.replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-')+'.html';
+      folder.file(fname,p.htmlContent);
+    });
+    const readme=`═══════════════════════════════════════════
+  ${boutique}
+  Généré par StoreClone AI
+═══════════════════════════════════════════
+
+Niche: ${niche}
+Date: ${new Date().toLocaleDateString('fr-FR')}
+Produits: ${products.length}
+
+FICHIERS INCLUS
+──────────────────────────────────────────
+${products.map((p,i)=>`${i+1}. ${p.nameFr}.html → €${p.price}`).join('\n')}
+
+COMMENT UTILISER
+──────────────────────────────────────────
+1. Ouvrez chaque .html dans Chrome
+2. Prenez des screenshots → images Etsy
+3. Uploadez le .html comme fichier produit
+4. Copiez les descriptions ci-dessous
+
+DESCRIPTIONS ET TAGS ETSY
+──────────────────────────────────────────
+${products.map(p=>`
+=== ${p.nameFr} / ${p.nameEn} ===
+Prix: €${p.price}
+
+Description FR:
+${p.descFr}
+
+Description EN:
+${p.descEn}
+
+Tags FR (${p.tags.length}):
+${p.tags.join(', ')}
+
+Tags EN:
+${p.tagsEn.join(', ')}
+`).join('\n')}
+═══════════════════════════════════════════
+  Budget Bloom Studio — StoreClone AI
+═══════════════════════════════════════════`;
+    folder.file('README.txt',readme);
+    const blob=await zip.generateAsync({type:'blob'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=boutique.replace(/[^a-zA-Z0-9]/g,'-')+'-StoreClone.zip';
+    a.click();URL.revokeObjectURL(a.href);
+    const z=parseInt(localStorage.getItem('sc_zips')||'0')+1;
+    localStorage.setItem('sc_zips',z);
+    document.getElementById('statZips').textContent=z;
+    showToast('ZIP téléchargé ! 3 vrais fichiers HTML + README 🎉');
+  }catch(err){console.error(err);showToast('Erreur ZIP: '+err.message);}
+  btn.disabled=false;btn.textContent='↓ Télécharger ZIP';
 }
 
-// ── HISTORY ──
+function preview(i){if(!currentGen)return;const p=currentGen.products[i];const w=window.open('','_blank');w.document.write(p.htmlContent);w.document.close();}
+function copyProd(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText(`${p.nameFr}\n\n${p.descFr}\n\nTags: ${p.tags.join(', ')}\nPrix: €${p.price}`).then(()=>showToast('Copié !'));}
+function copyAllText(){if(!currentGen)return;navigator.clipboard.writeText(currentGen.products.map(p=>`=== ${p.nameFr} ===\n${p.descFr}\nTags: ${p.tags.join(', ')}\nPrix: €${p.price}`).join('\n\n')).then(()=>showToast('Tout copié !'));}
+
 function renderHistory(){
   const el=document.getElementById('historyContent');
-  if(!history.length){el.innerHTML='<div class="history-empty"><div class="history-empty-icon">↺</div><div class="history-empty-text">Aucune génération pour le moment.</div></div>';return;}
-  el.innerHTML=history.map((h,i)=>`<div class="history-item" onclick="reloadGen(${i})"><div><div class="h-niche">${h.data.boutique}</div><div class="h-meta">${h.niche} · ${h.data.products.length} produits · ${new Date(h.date).toLocaleDateString('fr-FR')}</div></div><div style="display:flex;align-items:center;gap:8px"><span class="h-count">${h.data.products.length} produits</span><button class="btn-sm" onclick="event.stopPropagation();redownload(${i})">↓ Pack</button></div></div>`).join('');
+  if(!history.length){el.innerHTML='<div class="he"><div class="hei">↺</div><div class="het">Aucune génération.</div></div>';return;}
+  el.innerHTML=history.map(h=>`<div class="hi"><div><div class="hn">${h.boutique||h.niche}</div><div class="hm">${h.niche} · ${h.products?.length||0} produits · ${new Date(h.date).toLocaleDateString('fr-FR')}</div></div><span style="padding:3px 9px;background:var(--off);border-radius:100px;font-size:12px;color:var(--gray)">${h.products?.length||0} produits</span></div>`).join('');
 }
-function reloadGen(i){currentGen=history[i];showPage('generator');showResults(history[i].niche,history[i].data);}
-function redownload(i){currentGen=history[i];downloadPack();}
 function renderDashRecent(){
   const el=document.getElementById('dashRecent');
-  if(!history.length) return;
-  el.innerHTML=history.slice(0,3).map(h=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:500;color:var(--dark)">${h.data.boutique}</div><div style="font-size:12px;color:var(--gray);font-weight:300">${h.niche} · ${h.data.products.length} produits</div></div><span style="font-size:12px;color:var(--gray)">${new Date(h.date).toLocaleDateString('fr-FR')}</span></div>`).join('');
+  if(!history.length)return;
+  el.innerHTML=history.slice(0,3).map(h=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:500;color:var(--dark)">${h.boutique||h.niche}</div><div style="font-size:12px;color:var(--gray);font-weight:300">${h.niche} · ${h.products?.length||0} produits</div></div><span style="font-size:12px;color:var(--gray)">${new Date(h.date).toLocaleDateString('fr-FR')}</span></div>`).join('');
 }
 function updateStats(){
   document.getElementById('statStores').textContent=history.length;
-  document.getElementById('statProducts').textContent=history.reduce((s,h)=>s+h.data.products.length,0);
+  document.getElementById('statProducts').textContent=history.reduce((s,h)=>s+(h.products?.length||0),0);
+  document.getElementById('statZips').textContent=localStorage.getItem('sc_zips')||'0';
 }
-
-// ── SETTINGS ──
 function saveSettings(){
-  if(!user) return;
+  if(!user)return;
   user.name=document.getElementById('settingName').value;
   user.email=document.getElementById('settingEmail').value;
   localStorage.setItem('sc_user',JSON.stringify(user));
@@ -638,15 +525,8 @@ function saveSettings(){
   document.getElementById('dashWelcome').textContent=`Bonjour, ${user.name} 👋`;
   showToast('Paramètres enregistrés');
 }
-
-// ── TOAST ──
 let toastTimer;
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
-}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3500);}
 </script>
 </body>
 </html>
