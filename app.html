@@ -6,6 +6,7 @@
 <title>StoreClone AI — Générateur</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--white:#fff;--off:#f5f5f7;--black:#000;--dark:#1d1d1f;--gray:#6e6e73;--light:#e8e8ed;--border:rgba(0,0,0,0.08);--bmd:rgba(0,0,0,0.12);--green:#1a7f4b;--gp:#e8f5ee;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -154,6 +155,11 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       <div class="ua" id="userAvatar">T</div>
       <div><div class="un" id="userName">Thomas</div><div class="up">Plan Starter</div></div>
     </div>
+    <div style="padding:10px 10px 4px;display:flex;flex-wrap:wrap;gap:6px 12px;border-top:1px solid var(--border)">
+      <a href="/mentions-legales.html" target="_blank" style="font-size:10px;color:var(--gray);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--gray)'">Mentions légales</a>
+      <a href="/cgv.html" target="_blank" style="font-size:10px;color:var(--gray);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--gray)'">CGV</a>
+      <a href="/politique-confidentialite.html" target="_blank" style="font-size:10px;color:var(--gray);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--gray)'">Confidentialité</a>
+    </div>
   </nav>
 
   <main class="am">
@@ -226,11 +232,11 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
             <div class="ir"><span class="il">Produits</span><span class="iv" id="infoProducts">—</span></div>
             <div class="ir"><span class="il">Statut</span><span class="iv" id="infoStatus">En attente</span></div>
           </div>
-          <div class="plc">
-            <div class="pln">Plan Starter</div>
-            <div class="plt">Passez en Pro</div>
-            <div class="pld">Publication automatique sur Etsy, Gumroad et Payhip. Boutiques illimitées.</div>
-            <button class="plb" onclick="showPage('settings')">Voir le Plan Pro →</button>
+          <div class="plc" id="upsellWidget">
+            <div class="pln" id="upsellPlan">Plan Starter</div>
+            <div class="plt" id="upsellTitle">Passez en Pro</div>
+            <div class="pld" id="upsellDesc">30 générations par mois au lieu de 3. Débloquez tout le potentiel de StoreClone AI.</div>
+            <button class="plb" id="upsellBtn" onclick="showPage('settings')">Voir les plans →</button>
           </div>
         </div>
       </div>
@@ -242,18 +248,17 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
     </div>
 
     <div class="page" id="page-settings">
-      <div class="ph"><div class="pt">Paramètres</div><div class="ps">Gérez votre compte.</div></div>
-      <div style="max-width:500px;display:flex;flex-direction:column;gap:12px">
+      <div class="ph"><div class="pt">Paramètres</div><div class="ps">Gérez votre compte et votre abonnement.</div></div>
+      <div style="max-width:620px;display:flex;flex-direction:column;gap:12px">
         <div class="card"><div class="ct">Mon compte</div>
           <div class="fg"><label style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">Prénom</label><input type="text" class="fi" id="settingName"></div>
-          <div class="fg" style="margin-bottom:0"><label style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">E-mail</label><input type="email" class="fi" id="settingEmail"></div>
+          <div class="fg" style="margin-bottom:0"><label style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">E-mail</label><input type="email" class="fi" id="settingEmail" disabled style="opacity:0.5;cursor:not-allowed"></div>
           <button class="bs primary" style="margin-top:14px" onclick="saveSettings()">Enregistrer</button>
         </div>
-        <div class="card"><div class="ct">Abonnement</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div style="border:1px solid var(--border);border-radius:10px;padding:16px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px">Starter</div><div style="font-size:24px;font-weight:600;letter-spacing:-1px;margin-bottom:12px">0€</div><div style="padding:8px;background:var(--off);border-radius:6px;text-align:center;font-size:12px;font-weight:500;color:var(--green)">✓ Plan actuel</div></div>
-            <div style="border:2px solid var(--black);border-radius:10px;padding:16px;position:relative"><div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--black);color:var(--white);font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap">Populaire</div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px">Pro</div><div style="font-size:24px;font-weight:600;letter-spacing:-1px;margin-bottom:12px">29€<span style="font-size:12px;font-weight:300;color:var(--gray)">/mois</span></div><button class="bs primary" style="width:100%" onclick="showToast('Paiement Stripe — bientôt disponible !')">Passer en Pro</button></div>
-          </div>
+        <div class="card">
+          <div class="ct">Abonnement</div>
+          <div id="quotaBar" style="margin-bottom:16px"></div>
+          <div id="planCards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
         </div>
       </div>
     </div>
@@ -264,39 +269,192 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 <div class="toast" id="toast"></div>
 
 <script>
-let user=null,history=[],currentGen=null;
+// ─── Supabase ────────────────────────────────────────────────────────────────
+const SUPABASE_URL='https://hbaaqukxtoqxaxcbqmkj.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYWFxdWt4dG9xeGF4Y2JxbWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTUzMDAsImV4cCI6MjA4OTUzMTMwMH0.xGjjmNPzDcYMj-Y4FcOqArNXagxHdj1RXYAEA11LVhQ';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+// ─── Stripe ───────────────────────────────────────────────────────────────────
+const STRIPE_PRICES={pro:'price_1TCpL1FYDfyCcjvz2Wbc8ph7',business:'price_1TCpL2FYDfyCcjvzL7AZoZl1'};
+const PLAN_LIMITS={starter:3,pro:30,business:Infinity};
+const PLAN_LABELS={starter:'Starter — Gratuit',pro:'Pro — 19€/mois',business:'Business — 49€/mois'};
+
+// ─── État global ─────────────────────────────────────────────────────────────
+let authUser=null,profile=null,subscription=null,generations=[],currentGen=null;
 const STEPS=['Analyse de la niche…','Identification des 3 meilleurs produits…','Génération Produit 1 (HTML interactif)…','Génération Produit 2 (HTML interactif)…','Génération Produit 3 (HTML interactif)…','Optimisation SEO et tags…','Préparation du ZIP…'];
 
-window.addEventListener('load',()=>{
-  const s=localStorage.getItem('sc_user');
-  if(s){user=JSON.parse(s);history=JSON.parse(localStorage.getItem('sc_history')||'[]');history=history.map(h=>({...h,date:new Date(h.date)}));startApp();}
-  else showView('auth');
+// ─── Init ────────────────────────────────────────────────────────────────────
+sb.auth.onAuthStateChange(async(event,session)=>{
+  if(session?.user){
+    authUser=session.user;
+    await loadUserData();
+    startApp();
+  }else{
+    authUser=null;profile=null;subscription=null;generations=[];
+    showView('auth');
+  }
 });
 
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+async function login(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){showToast('Remplissez tous les champs');return;}
+  const btn=document.querySelector('#auth-login .bf');
+  btn.disabled=true;btn.textContent='Connexion…';
+  const{error}=await sb.auth.signInWithPassword({email,password:pass});
+  btn.disabled=false;btn.textContent='Se connecter';
+  if(error){showToast('Erreur : '+error.message);return;}
+}
+
+async function register(){
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  if(!name||!email||!pass){showToast('Remplissez tous les champs');return;}
+  if(pass.length<8){showToast('Mot de passe minimum 8 caractères');return;}
+  const btn=document.querySelector('#auth-reg .bf');
+  btn.disabled=true;btn.textContent='Création…';
+  const{error}=await sb.auth.signUp({email,password:pass,options:{data:{name}}});
+  btn.disabled=false;btn.textContent='Créer mon compte';
+  if(error){showToast('Erreur : '+error.message);return;}
+  showToast('Compte créé ! Vérifiez votre email pour confirmer.');
+}
+
+async function logout(){
+  if(!confirm('Se déconnecter ?'))return;
+  await sb.auth.signOut();
+}
+
+// ─── Données utilisateur ──────────────────────────────────────────────────────
+async function loadUserData(){
+  const[profRes,subRes,genRes]=await Promise.all([
+    sb.from('profiles').select('*').eq('id',authUser.id).single(),
+    sb.from('subscriptions').select('*').eq('user_id',authUser.id).single(),
+    sb.from('generations').select('id,niche,boutique,products,zip_downloaded,created_at').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(20)
+  ]);
+  profile=profRes.data||{name:authUser.email.split('@')[0],email:authUser.email};
+  subscription=subRes.data||{plan:'starter',status:'active'};
+  generations=genRes.data||[];
+}
+
+function startApp(){
+  const name=profile.name||authUser.email.split('@')[0];
+  document.getElementById('userAvatar').textContent=name[0].toUpperCase();
+  document.getElementById('userName').textContent=name;
+  document.getElementById('dashWelcome').textContent=`Bonjour, ${name} 👋`;
+  document.getElementById('settingName').value=name;
+  document.getElementById('settingEmail').value=authUser.email;
+  document.querySelector('.up').textContent=`Plan ${cap(subscription?.plan||'starter')}`;
+  renderPlanCards();
+  updateStats();renderDashRecent();
+  showView('app');
+  // Gérer le retour depuis Stripe Checkout
+  const params=new URLSearchParams(window.location.search);
+  if(params.get('checkout')==='success'){
+    showToast('Paiement réussi ! Votre plan a été mis à jour.');
+    history.replaceState({},'',window.location.pathname);
+    // Recharger les données pour refléter le nouveau plan
+    loadUserData().then(()=>{
+      document.querySelector('.up').textContent=`Plan ${cap(subscription?.plan||'starter')}`;
+      renderPlanCards();
+      updateQuotaBar();
+    });
+  }else if(params.get('checkout')==='cancelled'){
+    showToast('Paiement annulé.');
+    history.replaceState({},'',window.location.pathname);
+  }else{
+    showToast(`Bienvenue, ${name} !`);
+  }
+  updateQuotaBar();
+}
+
+async function saveSettings(){
+  if(!authUser)return;
+  const name=document.getElementById('settingName').value.trim();
+  if(!name){showToast('Le prénom ne peut pas être vide');return;}
+  const{error}=await sb.from('profiles').update({name,updated_at:new Date().toISOString()}).eq('id',authUser.id);
+  if(error){showToast('Erreur : '+error.message);return;}
+  profile.name=name;
+  document.getElementById('userAvatar').textContent=name[0].toUpperCase();
+  document.getElementById('userName').textContent=name;
+  document.getElementById('dashWelcome').textContent=`Bonjour, ${name} 👋`;
+  showToast('Paramètres enregistrés');
+}
+
+// ─── Stripe Checkout ─────────────────────────────────────────────────────────
+async function startCheckout(plan){
+  const priceId=STRIPE_PRICES[plan];
+  if(!priceId){showToast('Plan introuvable');return;}
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){showToast('Reconnectez-vous');return;}
+  showToast('Redirection vers le paiement…');
+  try{
+    const res=await fetch('/api/stripe/checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+      body:JSON.stringify({priceId})
+    });
+    const data=await res.json();
+    if(data.error){showToast('Erreur : '+data.error);return;}
+    window.location.href=data.url;
+  }catch(err){showToast('Erreur : '+err.message);}
+}
+
+// ─── Quota mensuel ────────────────────────────────────────────────────────────
+function getMonthlyCount(){
+  const startOfMonth=new Date();startOfMonth.setDate(1);startOfMonth.setHours(0,0,0,0);
+  return generations.filter(g=>new Date(g.created_at)>=startOfMonth).length;
+}
+function getPlanLimit(){return PLAN_LIMITS[subscription?.plan||'starter'];}
+function checkQuota(){
+  const used=getMonthlyCount(),limit=getPlanLimit();
+  if(used>=limit){
+    const plan=subscription?.plan||'starter';
+    if(plan==='starter')showToast('Limite atteinte (3/mois). Passez en Pro pour 30 générations !');
+    else if(plan==='pro')showToast('Limite atteinte (30/mois). Passez en Business pour illimité !');
+    return false;
+  }
+  return true;
+}
+function updateQuotaBar(){
+  const el=document.getElementById('quotaBar');if(!el)return;
+  const used=getMonthlyCount(),limit=getPlanLimit();
+  const pct=limit===Infinity?0:Math.min(100,Math.round((used/limit)*100));
+  const plan=subscription?.plan||'starter';
+  const limitLabel=limit===Infinity?'∞':limit;
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:5px"><span>Générations ce mois</span><span>${used}/${limitLabel}</span></div><div style="height:4px;background:var(--light);border-radius:2px;overflow:hidden"><div style="height:100%;background:${pct>=90?'#c0392b':pct>=70?'#e67e22':'var(--black)'};width:${pct}%;transition:width 0.3s;border-radius:2px"></div></div>${pct>=90&&limit!==Infinity?`<div style="font-size:11px;color:#c0392b;margin-top:5px">Quota presque atteint. <span style="cursor:pointer;font-weight:500;text-decoration:underline" onclick="showPage('settings')">Passer à l'offre supérieure</span></div>`:''}`;
+}
+
+// ─── Plans UI ─────────────────────────────────────────────────────────────────
+function renderPlanCards(){
+  const el=document.getElementById('planCards');if(!el)return;
+  const current=subscription?.plan||'starter';
+  const plans=[
+    {id:'starter',name:'Starter',price:'0€',desc:'3 générations par mois',limit:'3 générations/mois'},
+    {id:'pro',name:'Pro',price:'19€<span style="font-size:12px;font-weight:300;color:var(--gray)">/mois</span>',desc:'30 générations par mois',limit:'30 générations/mois'},
+    {id:'business',name:'Business',price:'49€<span style="font-size:12px;font-weight:300;color:var(--gray)">/mois</span>',desc:'Générations illimitées',limit:'Illimité'},
+  ];
+  el.innerHTML=plans.map(p=>{
+    const isCurrent=p.id===current;
+    const isDowngrade=(current==='business'&&p.id!=='business')||(current==='pro'&&p.id==='starter');
+    const border=isCurrent?'border:2px solid var(--black)':'border:1px solid var(--border)';
+    let btn='';
+    if(isCurrent)btn=`<div style="padding:8px;background:var(--off);border-radius:6px;text-align:center;font-size:12px;font-weight:500;color:var(--green)">✓ Plan actuel</div>`;
+    else if(p.id==='starter')btn=`<button class="bs" style="width:100%;opacity:0.5;cursor:not-allowed" disabled>Rétrograder</button>`;
+    else btn=`<button class="bs primary" style="width:100%" onclick="startCheckout('${p.id}')">Passer en ${cap(p.id)}</button>`;
+    return`<div style="${border};border-radius:10px;padding:16px;position:relative">${p.id==='pro'?`<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--black);color:var(--white);font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap">Populaire</div>`:''}
+<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px">${p.name}</div>
+<div style="font-size:24px;font-weight:600;letter-spacing:-1px;margin-bottom:4px">${p.price}</div>
+<div style="font-size:12px;color:var(--gray);font-weight:300;margin-bottom:12px">${p.limit}</div>
+${btn}</div>`;
+  }).join('');
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');}
 function showReg(){document.getElementById('auth-login').style.display='none';document.getElementById('auth-reg').style.display='block';}
 function showLogin(){document.getElementById('auth-reg').style.display='none';document.getElementById('auth-login').style.display='block';}
-function login(){
-  const email=document.getElementById('loginEmail').value.trim(),pass=document.getElementById('loginPass').value;
-  if(!email||!pass){showToast('Remplissez tous les champs');return;}
-  saveUser({name:cap(email.split('@')[0]),email});
-}
-function register(){
-  const name=document.getElementById('regName').value.trim(),email=document.getElementById('regEmail').value.trim(),pass=document.getElementById('regPass').value;
-  if(!name||!email||!pass){showToast('Remplissez tous les champs');return;}
-  if(pass.length<8){showToast('Mot de passe trop court');return;}
-  saveUser({name,email});
-}
-function saveUser(u){user=u;localStorage.setItem('sc_user',JSON.stringify(u));startApp();}
-function startApp(){
-  document.getElementById('userAvatar').textContent=user.name[0].toUpperCase();
-  document.getElementById('userName').textContent=user.name;
-  document.getElementById('dashWelcome').textContent=`Bonjour, ${user.name} 👋`;
-  document.getElementById('settingName').value=user.name;
-  document.getElementById('settingEmail').value=user.email;
-  updateStats();renderDashRecent();showView('app');showToast(`Bienvenue, ${user.name} !`);
-}
-function logout(){if(!confirm('Se déconnecter ?'))return;user=null;localStorage.removeItem('sc_user');showView('auth');}
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
 function showPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
@@ -304,9 +462,32 @@ function showPage(p){
   document.getElementById('page-'+p)?.classList.add('active');
   document.getElementById('nav-'+p)?.classList.add('active');
   if(p==='history')renderHistory();
+  if(p==='settings'){renderPlanCards();updateQuotaBar();}
+  if(p==='generator')updateUpsellWidget();
+}
+
+function updateUpsellWidget(){
+  const plan=subscription?.plan||'starter';
+  const w=document.getElementById('upsellWidget');if(!w)return;
+  if(plan==='business'){w.style.display='none';return;}
+  w.style.display='block';
+  if(plan==='starter'){
+    document.getElementById('upsellPlan').textContent='Plan Starter';
+    document.getElementById('upsellTitle').textContent='Passez en Pro';
+    document.getElementById('upsellDesc').textContent='30 générations/mois au lieu de 3. Débloquez tout le potentiel.';
+    document.getElementById('upsellBtn').textContent='Passer en Pro — 19€/mois';
+    document.getElementById('upsellBtn').onclick=()=>startCheckout('pro');
+  }else if(plan==='pro'){
+    document.getElementById('upsellPlan').textContent='Plan Pro';
+    document.getElementById('upsellTitle').textContent='Passez en Business';
+    document.getElementById('upsellDesc').textContent='Générations illimitées. Aucune restriction.';
+    document.getElementById('upsellBtn').textContent='Passer en Business — 49€/mois';
+    document.getElementById('upsellBtn').onclick=()=>startCheckout('business');
+  }
 }
 function setNiche(v){document.getElementById('nicheInput').value=v;document.getElementById('nicheInput').focus();}
 
+// ─── API ──────────────────────────────────────────────────────────────────────
 async function callAPI(prompt,type='metadata'){
   const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,type})});
   const data=await res.json();
@@ -316,6 +497,7 @@ async function callAPI(prompt,type='metadata'){
 
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
+// ─── Progression ──────────────────────────────────────────────────────────────
 function initProgress(){
   const prog=document.getElementById('genProgress'),fill=document.getElementById('progFill'),stepsEl=document.getElementById('progSteps');
   prog.classList.add('visible');
@@ -334,9 +516,11 @@ function initProgress(){
   };
 }
 
+// ─── Génération ───────────────────────────────────────────────────────────────
 async function generate(){
   const niche=document.getElementById('nicheInput').value.trim();
   if(!niche){showToast('Entrez une niche');return;}
+  if(!checkQuota())return;
   const btn=document.getElementById('genBtn');
   btn.disabled=true;
   document.getElementById('genResults').classList.remove('visible');
@@ -365,9 +549,8 @@ Prix entre 9.99 et 24.99. Vraiment adapté à "${niche}".`,'metadata');
     }
     prog.set(5);await sleep(200);prog.set(6);await sleep(200);prog.done();
     currentGen={niche,boutique:meta.boutique,products,date:new Date()};
-    history.unshift(currentGen);
-    try{localStorage.setItem('sc_history',JSON.stringify(history.slice(0,10).map(h=>({...h,products:h.products.map(p=>({...p,htmlContent:''}))}))));} catch(e){}
-    updateStats();renderDashRecent();
+    await saveGeneration(currentGen);
+    updateQuotaBar();
     showResults();
   }catch(err){
     console.error(err);prog.done();
@@ -375,6 +558,20 @@ Prix entre 9.99 et 24.99. Vraiment adapté à "${niche}".`,'metadata');
     document.getElementById('infoStatus').textContent='Erreur';
   }
   btn.disabled=false;
+}
+
+async function saveGeneration(gen){
+  const{data,error}=await sb.from('generations').insert({
+    user_id:authUser.id,
+    niche:gen.niche,
+    boutique:gen.boutique,
+    products:gen.products.map(p=>({...p,htmlContent:''}))
+  }).select().single();
+  if(!error&&data){
+    gen.id=data.id;
+    generations.unshift({...data,products:gen.products});
+  }
+  updateStats();renderDashRecent();
 }
 
 async function genHTML(p,niche){
@@ -412,6 +609,7 @@ function fallbackHTML(p,niche){
   return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${p.nameFr}</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"><style>:root{--c:${p.color}}*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',sans-serif;background:#f8f8f8;color:#1d1d1f}.hd{background:var(--c);padding:40px;color:white;text-align:center}.hd h1{font-size:28px;font-weight:700;margin-bottom:8px}.mn{max-width:700px;margin:24px auto;padding:0 20px}.cd{background:white;border-radius:12px;padding:24px;margin-bottom:16px;border:1px solid rgba(0,0,0,0.08)}.cd h2{font-size:16px;font-weight:600;color:var(--c);margin-bottom:14px}.row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.row label{font-size:12px;font-weight:500;color:#666;text-transform:uppercase}.row input,.row textarea{padding:10px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:14px;font-family:inherit;outline:none}.row input:focus,.row textarea:focus{border-color:var(--c)}.btn{background:var(--c);color:white;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.cell{background:${p.color}22;border:2px solid var(--c);border-radius:6px;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.2s}.cell.on{background:var(--c);color:white}.ft{text-align:center;padding:20px;font-size:11px;color:#999;border-top:1px solid rgba(0,0,0,0.06);margin-top:20px}</style></head><body><div class="hd"><div style="font-size:48px;margin-bottom:12px">${p.emoji}</div><h1>${p.nameFr}</h1><p style="opacity:0.8;font-size:14px">${niche} — Premium Template</p></div><div class="mn"><div class="cd"><h2>📋 Mes entrées ${niche}</h2>${[1,2,3].map(i=>`<div class="row"><label>Entrée ${i}</label><input type="text" placeholder="Saisissez ici..." oninput="save()"></div>`).join('')}<button class="btn" onclick="save();showT('Sauvegardé ✓')">Sauvegarder</button></div><div class="cd"><h2>✅ Suivi de la semaine</h2><div class="grid">${['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(d=>`<div class="cell" onclick="this.classList.toggle('on');save()">${d}</div>`).join('')}</div></div><div class="cd"><h2>📊 Notes et réflexions</h2><div class="row"><textarea rows="4" placeholder="Vos notes..." oninput="save()"></textarea></div></div></div><div class="ft">Budget Bloom Studio — StoreClone AI</div><script>function save(){const d={};document.querySelectorAll('input,textarea').forEach((el,i)=>d['f'+i]=el.value);document.querySelectorAll('.cell').forEach((el,i)=>d['c'+i]=el.classList.contains('on'));try{localStorage.setItem('sc_${niche.replace(/\s/g,'')}',JSON.stringify(d))}catch(e){}}function load(){try{const d=JSON.parse(localStorage.getItem('sc_${niche.replace(/\s/g,'')}'));if(d){document.querySelectorAll('input,textarea').forEach((el,i)=>{if(d['f'+i])el.value=d['f'+i]});document.querySelectorAll('.cell').forEach((el,i)=>{if(d['c'+i])el.classList.add('on')})}}catch(e){}}function showT(m){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:white;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;font-family:Inter,sans-serif';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000)}load();<\/script></body></html>`;
 }
 
+// ─── Résultats ────────────────────────────────────────────────────────────────
 function showResults(){
   const{niche,boutique,products}=currentGen;
   document.getElementById('resultsTitle').textContent=`${products.length} produits — ${boutique}`;
@@ -429,6 +627,7 @@ function showResults(){
   showToast(`${products.length} vrais fichiers HTML générés ! Téléchargez le ZIP 🎉`);
 }
 
+// ─── ZIP ──────────────────────────────────────────────────────────────────────
 async function downloadZip(){
   if(!currentGen){showToast('Générez d\'abord une boutique');return;}
   const btn=document.getElementById('downloadBtn');
@@ -488,9 +687,13 @@ ${p.tagsEn.join(', ')}
     a.href=URL.createObjectURL(blob);
     a.download=boutique.replace(/[^a-zA-Z0-9]/g,'-')+'-StoreClone.zip';
     a.click();URL.revokeObjectURL(a.href);
-    const z=parseInt(localStorage.getItem('sc_zips')||'0')+1;
-    localStorage.setItem('sc_zips',z);
-    document.getElementById('statZips').textContent=z;
+    // Marquer le ZIP comme téléchargé dans Supabase
+    if(currentGen.id){
+      await sb.from('generations').update({zip_downloaded:true}).eq('id',currentGen.id);
+      const g=generations.find(x=>x.id===currentGen.id);
+      if(g)g.zip_downloaded=true;
+    }
+    updateStats();
     showToast('ZIP téléchargé ! 3 vrais fichiers HTML + README 🎉');
   }catch(err){console.error(err);showToast('Erreur ZIP: '+err.message);}
   btn.disabled=false;btn.textContent='↓ Télécharger ZIP';
@@ -500,31 +703,26 @@ function preview(i){if(!currentGen)return;const p=currentGen.products[i];const w
 function copyProd(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText(`${p.nameFr}\n\n${p.descFr}\n\nTags: ${p.tags.join(', ')}\nPrix: €${p.price}`).then(()=>showToast('Copié !'));}
 function copyAllText(){if(!currentGen)return;navigator.clipboard.writeText(currentGen.products.map(p=>`=== ${p.nameFr} ===\n${p.descFr}\nTags: ${p.tags.join(', ')}\nPrix: €${p.price}`).join('\n\n')).then(()=>showToast('Tout copié !'));}
 
+// ─── Historique & Stats ───────────────────────────────────────────────────────
 function renderHistory(){
   const el=document.getElementById('historyContent');
-  if(!history.length){el.innerHTML='<div class="he"><div class="hei">↺</div><div class="het">Aucune génération.</div></div>';return;}
-  el.innerHTML=history.map(h=>`<div class="hi"><div><div class="hn">${h.boutique||h.niche}</div><div class="hm">${h.niche} · ${h.products?.length||0} produits · ${new Date(h.date).toLocaleDateString('fr-FR')}</div></div><span style="padding:3px 9px;background:var(--off);border-radius:100px;font-size:12px;color:var(--gray)">${h.products?.length||0} produits</span></div>`).join('');
+  if(!generations.length){el.innerHTML='<div class="he"><div class="hei">↺</div><div class="het">Aucune génération pour le moment.</div></div>';return;}
+  el.innerHTML=generations.map(h=>`<div class="hi"><div><div class="hn">${h.boutique||h.niche}</div><div class="hm">${h.niche} · ${h.products?.length||0} produits · ${new Date(h.created_at).toLocaleDateString('fr-FR')}</div></div><span style="padding:3px 9px;background:var(--off);border-radius:100px;font-size:12px;color:var(--gray)">${h.products?.length||0} produits</span></div>`).join('');
 }
+
 function renderDashRecent(){
   const el=document.getElementById('dashRecent');
-  if(!history.length)return;
-  el.innerHTML=history.slice(0,3).map(h=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:500;color:var(--dark)">${h.boutique||h.niche}</div><div style="font-size:12px;color:var(--gray);font-weight:300">${h.niche} · ${h.products?.length||0} produits</div></div><span style="font-size:12px;color:var(--gray)">${new Date(h.date).toLocaleDateString('fr-FR')}</span></div>`).join('');
+  if(!generations.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage(\'generator\')">Créer votre première boutique →</span></div>';return;}
+  el.innerHTML=generations.slice(0,3).map(h=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:500;color:var(--dark)">${h.boutique||h.niche}</div><div style="font-size:12px;color:var(--gray);font-weight:300">${h.niche} · ${h.products?.length||0} produits</div></div><span style="font-size:12px;color:var(--gray)">${new Date(h.created_at).toLocaleDateString('fr-FR')}</span></div>`).join('');
 }
+
 function updateStats(){
-  document.getElementById('statStores').textContent=history.length;
-  document.getElementById('statProducts').textContent=history.reduce((s,h)=>s+(h.products?.length||0),0);
-  document.getElementById('statZips').textContent=localStorage.getItem('sc_zips')||'0';
+  document.getElementById('statStores').textContent=generations.length;
+  document.getElementById('statProducts').textContent=generations.reduce((s,h)=>s+(h.products?.length||0),0);
+  document.getElementById('statZips').textContent=generations.filter(g=>g.zip_downloaded).length;
 }
-function saveSettings(){
-  if(!user)return;
-  user.name=document.getElementById('settingName').value;
-  user.email=document.getElementById('settingEmail').value;
-  localStorage.setItem('sc_user',JSON.stringify(user));
-  document.getElementById('userAvatar').textContent=user.name[0].toUpperCase();
-  document.getElementById('userName').textContent=user.name;
-  document.getElementById('dashWelcome').textContent=`Bonjour, ${user.name} 👋`;
-  showToast('Paramètres enregistrés');
-}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3500);}
 </script>
