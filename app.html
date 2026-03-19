@@ -182,27 +182,10 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 </head>
 <body>
 
-<!-- ══ SETUP VIEW — API KEY ══ -->
-<div class="view active" id="view-setup">
-  <div class="setup-card">
-    <div class="setup-logo">StoreClone <span>AI</span></div>
-    <div class="setup-icon">🔑</div>
-    <div class="setup-title">Configurer l'IA</div>
-    <div class="setup-sub">Pour que le générateur fonctionne, entrez votre clé API Anthropic. Elle est stockée localement dans votre navigateur — jamais partagée.</div>
-    <div class="setup-info">
-      <strong>Où trouver votre clé ?</strong><br>
-      Allez sur <strong>console.anthropic.com</strong> → API Keys → Create Key.<br>
-      La clé commence par <strong>sk-ant-...</strong>
-    </div>
-    <label class="form-label">Clé API Anthropic</label>
-    <input type="password" class="form-input" id="apiKeyInput" placeholder="sk-ant-api03-...">
-    <button class="btn-full" onclick="saveApiKey()">Continuer →</button>
-    <div class="setup-link">Pas de clé ? <a href="https://console.anthropic.com" target="_blank">En créer une gratuitement</a></div>
-  </div>
-</div>
+<!-- auth follows -->
 
 <!-- ══ AUTH VIEW ══ -->
-<div class="view" id="view-auth">
+<div class="view active" id="view-auth">
   <div class="auth-card">
     <div class="auth-logo">StoreClone <span>AI</span></div>
     <div id="auth-login">
@@ -399,7 +382,6 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 
 <script>
 // ── STATE ──
-let apiKey = '';
 let user = null;
 let history = [];
 let currentGen = null;
@@ -408,36 +390,20 @@ const STEPS = ['Analyse de la niche…','Identification des produits porteurs…
 
 // ── INIT ──
 window.addEventListener('load', () => {
-  apiKey = localStorage.getItem('sc_apikey') || '';
   const savedUser = localStorage.getItem('sc_user');
   if (savedUser) {
     user = JSON.parse(savedUser);
     history = JSON.parse(localStorage.getItem('sc_history') || '[]');
     history = history.map(h => ({...h, date: new Date(h.date)}));
+    startApp();
+  } else {
+    showView('auth');
   }
-  if (!apiKey) { showView('setup'); return; }
-  if (!user) { showView('auth'); return; }
-  startApp();
 });
 
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + id).classList.add('active');
-}
-
-// ── SETUP ──
-function saveApiKey() {
-  const key = document.getElementById('apiKeyInput').value.trim();
-  if (!key || !key.startsWith('sk-ant')) { showToast('Clé invalide — doit commencer par sk-ant'); return; }
-  apiKey = key;
-  localStorage.setItem('sc_apikey', key);
-  if (user) startApp(); else showView('auth');
-}
-
-function resetApiKey() {
-  localStorage.removeItem('sc_apikey');
-  apiKey = '';
-  showView('setup');
 }
 
 // ── AUTH ──
@@ -469,7 +435,6 @@ function startApp() {
   document.getElementById('dashWelcome').textContent = `Bonjour, ${user.name} 👋`;
   document.getElementById('settingName').value = user.name;
   document.getElementById('settingEmail').value = user.email;
-  document.getElementById('apiKeyDisplay').textContent = apiKey.slice(0,12) + '••••••••••••' + apiKey.slice(-4);
   updateStats();
   renderDashRecent();
   showView('app');
@@ -540,14 +505,10 @@ Réponds UNIQUEMENT en JSON valide sans markdown ni backticks:
 Langue: ${langStr}. Prix entre 9.99 et 24.99. Noms distinctifs et premium.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/generate', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{role:'user',content:prompt}] })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
