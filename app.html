@@ -483,14 +483,14 @@ function bootApp(){
 
     // ── Retour Stripe Checkout ──
     const params=new URLSearchParams(window.location.search);
-    if(params.get('checkout')==='success'){
-      showToast('Paiement réussi ! Votre plan a été mis à jour.');
+    if(params.get('payment')==='success'){
+      showToast('🎉 Paiement réussi ! Votre plan a été mis à jour.');
       history.replaceState({},'',window.location.pathname);
       loadUserData().then(()=>{
         if(planEl)planEl.textContent=`Plan ${cap(subscription?.plan||'starter')}`;
         renderPlanCards();updateQuotaBar();
-      }).catch(e=>console.error('[App] reload after checkout failed:',e));
-    }else if(params.get('checkout')==='cancelled'){
+      }).catch(e=>console.error('[App] reload after payment failed:',e));
+    }else if(params.get('payment')==='cancelled'){
       showToast('Paiement annulé.');
       history.replaceState({},'',window.location.pathname);
     }else{
@@ -521,19 +521,73 @@ async function saveSettings(){
 async function startCheckout(plan){
   const priceId=STRIPE_PRICES[plan];
   if(!priceId){showToast('Plan introuvable');return;}
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){showToast('Reconnectez-vous');return;}
-  showToast('Redirection vers le paiement…');
+
+  // Récupérer le token Supabase de façon robuste
+  let token;
+  try{
+    const{data,error}=await sb.auth.getSession();
+    if(error||!data?.session?.access_token){
+      // Fallback : tenter un refresh de session
+      console.warn('[Checkout] getSession failed, trying refreshSession…',error?.message);
+      const refreshed=await sb.auth.refreshSession();
+      if(refreshed.error||!refreshed.data?.session?.access_token){
+        showToast('Session expirée — veuillez vous reconnecter.');
+        return;
+      }
+      token=refreshed.data.session.access_token;
+    }else{
+      token=data.session.access_token;
+    }
+  }catch(err){
+    console.error('[Checkout] getSession threw:',err);
+    showToast('Impossible de récupérer votre session. Rechargez la page.');
+    return;
+  }
+
+  console.log('[Checkout] token OK — calling /api/stripe/checkout for plan:', plan);
+
+  // Désactiver le bouton pendant le traitement
+  const btn=document.getElementById('upsellBtn');
+  const origText=btn?.textContent;
+  if(btn){btn.disabled=true;btn.textContent='Chargement…';}
+
   try{
     const res=await fetch('/api/stripe/checkout',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+token   // ← token explicitement formaté
+      },
       body:JSON.stringify({priceId})
     });
-    const data=await res.json();
-    if(data.error){showToast('Erreur : '+data.error);return;}
+
+    let data;
+    try{data=await res.json();}
+    catch{throw new Error('Réponse serveur invalide (status '+res.status+')');}
+
+    if(!res.ok||data.error){
+      const msg=data?.error||'Erreur inconnue';
+      console.error('[Checkout] API error',res.status,':',msg);
+      // Messages d'erreur lisibles selon le cas
+      if(res.status===401){
+        showToast('Session expirée — veuillez vous reconnecter.');
+      }else if(msg.toLowerCase().includes('stripe')){
+        showToast('Erreur Stripe : '+msg);
+      }else{
+        showToast('Erreur : '+msg);
+      }
+      return;
+    }
+
+    if(!data.url){throw new Error('URL de paiement manquante dans la réponse');}
+    console.log('[Checkout] redirecting to Stripe:', data.url);
     window.location.href=data.url;
-  }catch(err){showToast('Erreur : '+err.message);}
+  }catch(err){
+    console.error('[Checkout] fetch threw:',err);
+    showToast('Erreur réseau : '+err.message);
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=origText;}
+  }
 }
 
 // ─── Quota mensuel ────────────────────────────────────────────────────────────
