@@ -279,8 +279,8 @@ const SUPABASE_URL='https://hbaaqukxtoqxaxcbqmkj.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYWFxdWt4dG9xeGF4Y2JxbWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTUzMDAsImV4cCI6MjA4OTUzMTMwMH0.xGjjmNPzDcYMj-Y4FcOqArNXagxHdj1RXYAEA11LVhQ';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-// ─── Stripe ───────────────────────────────────────────────────────────────────
-const STRIPE_PRICES={pro:'price_1TDCSQFYDfyCcjvzGJVEYOQB',business:'price_1TDCSaFYDfyCcjvz4u27klDM'};
+// ─── Stripe Payment Links (pas d'API serveur) ─────────────────────────────────
+const STRIPE_LINKS={pro:'https://buy.stripe.com/test_00w9AT5TAa3E82t4mUg3602',business:'https://buy.stripe.com/test_dRm14na9Q8ZA4QhdXug3603'};
 const PLAN_LIMITS={starter:3,pro:30,business:Infinity};
 const PLAN_LABELS={starter:'Starter — Gratuit',pro:'Pro — 19€/mois',business:'Business — 49€/mois'};
 
@@ -517,79 +517,11 @@ async function saveSettings(){
   showToast('Paramètres enregistrés');
 }
 
-// ─── Stripe Checkout ─────────────────────────────────────────────────────────
-async function startCheckout(plan){
-  // Nettoyer le priceId — évite les guillemets parasites qui font planter Stripe
-  const priceId=String(STRIPE_PRICES[plan]||'').trim().replace(/['"]/g,'');
-  if(!priceId){showToast('Plan introuvable');return;}
-  console.log('[Checkout] priceId envoyé:', priceId);
-
-  // Récupérer le token Supabase de façon robuste
-  let token;
-  try{
-    const{data,error}=await sb.auth.getSession();
-    if(error||!data?.session?.access_token){
-      // Fallback : tenter un refresh de session
-      console.warn('[Checkout] getSession failed, trying refreshSession…',error?.message);
-      const refreshed=await sb.auth.refreshSession();
-      if(refreshed.error||!refreshed.data?.session?.access_token){
-        showToast('Session expirée — veuillez vous reconnecter.');
-        return;
-      }
-      token=refreshed.data.session.access_token;
-    }else{
-      token=data.session.access_token;
-    }
-  }catch(err){
-    console.error('[Checkout] getSession threw:',err);
-    showToast('Impossible de récupérer votre session. Rechargez la page.');
-    return;
-  }
-
-  console.log('[Checkout] token OK — calling /api/stripe/checkout for plan:', plan);
-
-  // Désactiver le bouton pendant le traitement
-  const btn=document.getElementById('upsellBtn');
-  const origText=btn?.textContent;
-  if(btn){btn.disabled=true;btn.textContent='Chargement…';}
-
-  try{
-    const res=await fetch('/api/stripe/checkout',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+token   // ← token explicitement formaté
-      },
-      body:JSON.stringify({priceId})
-    });
-
-    let data;
-    try{data=await res.json();}
-    catch{throw new Error('Réponse serveur invalide (status '+res.status+')');}
-
-    if(!res.ok||data.error){
-      const msg=data?.error||'Erreur inconnue';
-      console.error('[Checkout] API error',res.status,':',msg);
-      // Messages d'erreur lisibles selon le cas
-      if(res.status===401){
-        showToast('Session expirée — veuillez vous reconnecter.');
-      }else if(msg.toLowerCase().includes('stripe')){
-        showToast('Erreur Stripe : '+msg);
-      }else{
-        showToast('Erreur : '+msg);
-      }
-      return;
-    }
-
-    if(!data.url){throw new Error('URL de paiement manquante dans la réponse');}
-    console.log('[Checkout] redirecting to Stripe:', data.url);
-    window.location.href=data.url;
-  }catch(err){
-    console.error('[Checkout] fetch threw:',err);
-    showToast('Erreur réseau : '+err.message);
-  }finally{
-    if(btn){btn.disabled=false;btn.textContent=origText;}
-  }
+// ─── Stripe Payment Links ─────────────────────────────────────────────────────
+function startCheckout(plan){
+  const url=STRIPE_LINKS[plan];
+  if(!url){showToast('Plan introuvable');return;}
+  window.location.href=url;
 }
 
 // ─── Quota mensuel ────────────────────────────────────────────────────────────
