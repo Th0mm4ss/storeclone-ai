@@ -64,13 +64,31 @@ export default async function handler(req, res) {
   console.log('[Checkout] Auth OK —', authUser.email);
 
   // ── 3. Lire et nettoyer le priceId ────────────────────────────────────────
-  const rawPriceId = req.body?.priceId;
+  // req.body peut être undefined si Vercel n'a pas parsé le JSON automatiquement
+  // → fallback : lire le raw body et parser manuellement
+  let parsedBody = req.body;
+  if (!parsedBody || typeof parsedBody === 'string') {
+    try {
+      const raw = typeof parsedBody === 'string' ? parsedBody : await new Promise((resolve, reject) => {
+        let data = '';
+        req.on('data', chunk => { data += chunk; });
+        req.on('end', () => resolve(data));
+        req.on('error', reject);
+      });
+      parsedBody = JSON.parse(raw);
+    } catch (err) {
+      console.error('[Checkout] Impossible de parser le body:', err.message);
+      return res.status(400).json({ error: 'Corps de requête invalide' });
+    }
+  }
+
+  const rawPriceId = parsedBody?.priceId;
   const priceId = String(rawPriceId ?? '').trim().replace(/['"]/g, '');
 
-  console.log('[Checkout] priceId brut:', JSON.stringify(rawPriceId), '→ nettoyé:', priceId);
+  console.log('[Checkout] req.body type:', typeof req.body, '| priceId brut:', JSON.stringify(rawPriceId), '→ nettoyé:', priceId);
 
   if (!priceId || !VALID_PRICES.includes(priceId)) {
-    console.error('[Checkout] priceId invalide:', priceId);
+    console.error('[Checkout] priceId invalide — reçu:', JSON.stringify(rawPriceId), '| nettoyé:', priceId, '| whitelist:', VALID_PRICES);
     return res.status(400).json({ error: 'Plan inconnu' });
   }
 
