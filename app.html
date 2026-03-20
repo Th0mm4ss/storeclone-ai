@@ -289,33 +289,35 @@ let authUser=null,profile=null,subscription=null,generations=[],currentGen=null;
 const STEPS=['Analyse de la niche…','Identification des 3 meilleurs produits…','Génération Produit 1 (HTML interactif)…','Génération Produit 2 (HTML interactif)…','Génération Produit 3 (HTML interactif)…','Optimisation SEO et tags…','Préparation du ZIP…'];
 
 // ─── Init ────────────────────────────────────────────────────────────────────
-let _appBooting=false; // garde contre les appels concurrents
+// _appStarted : verrou définitif — une fois true, rien ne peut revenir sur view-auth
+// sauf un signOut explicite de l'utilisateur
+let _appStarted=false;
+
 sb.auth.onAuthStateChange(async(event,session)=>{
   console.log('[Auth] onAuthStateChange →', event, session?.user?.email||'(no user)');
-  if(session?.user){
-    if(_appBooting){console.log('[Auth] already booting, skip');return;}
-    _appBooting=true;
-    authUser=session.user;
-    try{
-      await loadUserData();
-      console.log('[Auth] loadUserData OK → calling startApp');
-      startApp();
-    }catch(err){
-      console.error('[Auth] loadUserData FAILED:', err);
-      // On lance quand même l'app avec des données par défaut
-      if(!profile)profile={name:authUser.email.split('@')[0],email:authUser.email};
-      if(!subscription)subscription={plan:'starter',status:'active'};
-      if(!generations)generations=[];
-      startApp();
-    }finally{
-      _appBooting=false;
-    }
-  }else{
-    _appBooting=false;
+
+  if(event==='SIGNED_OUT'){
+    // Seul cas où on revient sur la vue auth
+    _appStarted=false;
     authUser=null;profile=null;subscription=null;generations=[];
-    console.log('[Auth] signed out → showing auth view');
+    console.log('[Auth] SIGNED_OUT → view-auth');
     showView('auth');
+    return;
   }
+
+  if(event==='INITIAL_SESSION' && session?.user && !_appStarted){
+    // Page rechargée avec une session existante (ex : refresh navigateur)
+    // La session est déjà stabilisée — on peut charger les données normalement
+    console.log('[Auth] INITIAL_SESSION with existing session → booting');
+    authUser=session.user;
+    await loadUserData();
+    bootApp();
+    return;
+  }
+
+  // SIGNED_IN déclenché par login() → déjà géré dans login(), on ignore
+  // TOKEN_REFRESHED / USER_UPDATED → session toujours active, on ignore
+  console.log('[Auth]', event, '→ ignored (app state unchanged)');
 });
 
 // ─── Auth helpers ─────────────────────────────────────────────────────────────
@@ -351,6 +353,7 @@ async function login(){
   const btn=document.getElementById('loginBtn');
   btn.disabled=true;btn.textContent='Connexion…';
   console.log('[Auth] signInWithPassword →', email);
+
   let authResult;
   try{
     authResult=await sb.auth.signInWithPassword({email,password:pass});
@@ -360,10 +363,12 @@ async function login(){
     showAuthMsg('login','Erreur réseau : '+err.message);
     return;
   }
-  btn.disabled=false;btn.textContent='Se connecter';
+
   const{error,data}=authResult;
-  console.log('[Auth] signInWithPassword result — error:', error, '| session:', data?.session?.access_token?'present':'null');
+  console.log('[Auth] result — error:', error?.message||'none', '| session:', data?.session?'present':'null');
+
   if(error){
+    btn.disabled=false;btn.textContent='Se connecter';
     const msg=error.message||'';
     if(msg.toLowerCase().includes('email not confirmed')){
       _resendEmail=email;
@@ -376,8 +381,17 @@ async function login(){
     }
     return;
   }
-  // Succès — onAuthStateChange va prendre le relais
-  console.log('[Auth] login success, waiting for onAuthStateChange…');
+
+  // ── Succès : la session est garantie disponible ici ──
+  // On prend en charge directement le boot plutôt que d'attendre onAuthStateChange
+  authUser=data.session.user;
+  console.log('[Auth] session OK — loading user data…');
+  btn.textContent='Chargement…';
+
+  await loadUserData();
+
+  btn.disabled=false;btn.textContent='Se connecter';
+  bootApp();
 }
 
 async function register(){
@@ -407,65 +421,35 @@ async function logout(){
 }
 
 // ─── Données utilisateur ──────────────────────────────────────────────────────
-function withTimeout(promise, ms, label){
-  return Promise.race([
-    promise,
-    new Promise((_,reject)=>setTimeout(()=>reject(new Error(`Timeout (${ms}ms) on ${label}`)),ms))
-  ]);
-}
-
 async function loadUserData(){
-  console.log('[Data] Loading user data for', authUser.id);
+  console.log('[Data] loadUserData — uid:', authUser.id);
 
-  // ── profil ──
-  try{
-    const{data,error}=await withTimeout(
-      sb.from('profiles').select('*').eq('id',authUser.id).maybeSingle(),
-      8000,'profiles'
-    );
-    if(error)console.warn('[Data] profiles error:', error.code, error.message);
-    profile=data||{name:authUser.user_metadata?.name||authUser.email.split('@')[0],email:authUser.email};
-    console.log('[Data] profile →', profile.name);
-  }catch(err){
-    console.error('[Data] profiles fetch failed:', err.message);
-    profile={name:authUser.user_metadata?.name||authUser.email.split('@')[0],email:authUser.email};
-  }
+  // Requêtes en parallèle, sans timeout artificiel (Supabase cold start OK)
+  const[profRes,subRes,genRes]=await Promise.all([
+    sb.from('profiles').select('*').eq('id',authUser.id).maybeSingle(),
+    sb.from('subscriptions').select('*').eq('user_id',authUser.id).maybeSingle(),
+    sb.from('generations')
+      .select('id,niche,boutique,products,zip_downloaded,created_at')
+      .eq('user_id',authUser.id)
+      .order('created_at',{ascending:false})
+      .limit(20)
+  ]);
 
-  // ── abonnement ──
-  try{
-    const{data,error}=await withTimeout(
-      sb.from('subscriptions').select('*').eq('user_id',authUser.id).maybeSingle(),
-      8000,'subscriptions'
-    );
-    if(error)console.warn('[Data] subscriptions error:', error.code, error.message);
-    subscription=data||{plan:'starter',status:'active'};
-    console.log('[Data] subscription →', subscription.plan);
-  }catch(err){
-    console.error('[Data] subscriptions fetch failed:', err.message);
-    subscription={plan:'starter',status:'active'};
-  }
+  if(profRes.error) console.warn('[Data] profiles:', profRes.error.code, profRes.error.message);
+  if(subRes.error)  console.warn('[Data] subscriptions:', subRes.error.code, subRes.error.message);
+  if(genRes.error)  console.warn('[Data] generations:', genRes.error.code, genRes.error.message);
 
-  // ── historique ──
-  try{
-    const{data,error}=await withTimeout(
-      sb.from('generations')
-        .select('id,niche,boutique,products,zip_downloaded,created_at')
-        .eq('user_id',authUser.id)
-        .order('created_at',{ascending:false})
-        .limit(20),
-      8000,'generations'
-    );
-    if(error)console.warn('[Data] generations error:', error.code, error.message);
-    generations=data||[];
-    console.log('[Data] generations →', generations.length, 'entries');
-  }catch(err){
-    console.error('[Data] generations fetch failed:', err.message);
-    generations=[];
-  }
+  profile     = profRes.data || {name:authUser.user_metadata?.name||authUser.email.split('@')[0], email:authUser.email};
+  subscription= subRes.data  || {plan:'starter', status:'active'};
+  generations = genRes.data  || [];
+
+  console.log('[Data] profile →', profile.name, '| plan →', subscription.plan, '| gens →', generations.length);
 }
 
-function startApp(){
-  console.log('[App] startApp() called — profile:', profile?.name, '| plan:', subscription?.plan);
+function bootApp(){
+  if(_appStarted){console.log('[App] bootApp() skipped — already started');return;}
+  _appStarted=true;
+  console.log('[App] bootApp() — profile:', profile?.name, '| plan:', subscription?.plan);
   try{
     const name=profile?.name||authUser.email.split('@')[0];
 
@@ -513,7 +497,7 @@ function startApp(){
       showToast(`Bienvenue, ${name} !`);
     }
   }catch(err){
-    console.error('[App] startApp() threw:', err);
+    console.error('[App] bootApp() threw:', err);
     // Forcer la bascule de vue même si quelque chose a planté
     showView('app');
     showToast('Connexion réussie (erreur d\'affichage mineure)');
