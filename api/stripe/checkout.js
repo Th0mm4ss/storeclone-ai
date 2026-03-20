@@ -1,4 +1,5 @@
-// Runtime Node.js (pas Edge) — process.env garanti disponible
+export const config = { runtime: 'edge' };
+
 const SUPABASE_URL = 'https://hbaaqukxtoqxaxcbqmkj.supabase.co';
 
 const CORS = {
