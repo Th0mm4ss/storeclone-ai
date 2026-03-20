@@ -57,9 +57,12 @@ export default async function handler(req) {
 
   // ── 3. Lire et valider le priceId ────────────────────────────────────────
   let priceId;
+  let rawPriceId;
   try {
     const body = await req.json();
-    priceId = body.priceId;
+    rawPriceId = body.priceId;
+    // Nettoyer les éventuels guillemets parasites avant toute comparaison ou envoi à Stripe
+    priceId = String(rawPriceId ?? '').trim().replace(/['"]/g, '');
   } catch {
     return json({ error: 'Corps de requête invalide' }, 400);
   }
@@ -69,7 +72,7 @@ export default async function handler(req) {
     'price_1TCpL2FYDfyCcjvzL7AZoZl1', // Business — 49€/mois
   ];
   if (!priceId || !VALID_PRICES.includes(priceId)) {
-    console.error('[Checkout] priceId invalide:', priceId);
+    console.error('[Checkout] priceId invalide — brut:', JSON.stringify(rawPriceId), '→ nettoyé:', priceId);
     return json({ error: 'Plan inconnu' }, 400);
   }
 

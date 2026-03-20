@@ -519,8 +519,10 @@ async function saveSettings(){
 
 // ─── Stripe Checkout ─────────────────────────────────────────────────────────
 async function startCheckout(plan){
-  const priceId=STRIPE_PRICES[plan];
+  // Nettoyer le priceId — évite les guillemets parasites qui font planter Stripe
+  const priceId=String(STRIPE_PRICES[plan]||'').trim().replace(/['"]/g,'');
   if(!priceId){showToast('Plan introuvable');return;}
+  console.log('[Checkout] priceId envoyé:', priceId);
 
   // Récupérer le token Supabase de façon robuste
   let token;
