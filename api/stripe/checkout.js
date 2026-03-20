@@ -4,8 +4,8 @@ import Stripe from 'stripe';
 const SUPABASE_URL = 'https://hbaaqukxtoqxaxcbqmkj.supabase.co';
 
 const VALID_PRICES = [
-  'price_1TCpL1FYDfyCcjvz2Wbc8ph7', // Pro — 19€/mois
-  'price_1TCpL2FYDfyCcjvzL7AZoZl1', // Business — 49€/mois
+  'price_1TDCSQFYDfyCcjvzGJVEYOQB', // Pro — 19€/mois
+  'price_1TDCSaFYDfyCcjvz4u27klDM', // Business — 49€/mois
 ];
 
 const CORS = {
