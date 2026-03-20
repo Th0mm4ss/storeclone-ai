@@ -1,6 +1,12 @@
-export const config = { runtime: 'edge' };
+// Node.js runtime — requis pour le SDK Stripe officiel
+import Stripe from 'stripe';
 
 const SUPABASE_URL = 'https://hbaaqukxtoqxaxcbqmkj.supabase.co';
+
+const VALID_PRICES = [
+  'price_1TCpL1FYDfyCcjvz2Wbc8ph7', // Pro — 19€/mois
+  'price_1TCpL2FYDfyCcjvzL7AZoZl1', // Business — 49€/mois
+];
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -8,30 +14,32 @@ const CORS = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...CORS },
-  });
-}
-
-export default async function handler(req) {
-  if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
-  if (req.method !== 'POST') return json({ error: 'Méthode non autorisée' }, 405);
-
-  // ── 1. Token dans le header Authorization ────────────────────────────────
-  const authHeader = req.headers.get('Authorization');
-  if (!authHeader?.startsWith('Bearer ')) {
-    console.error('[Checkout] Authorization header manquant ou malformé');
-    return json({ error: 'Token manquant — veuillez vous reconnecter' }, 401);
+export default async function handler(req, res) {
+  // CORS preflight
+  if (req.method === 'OPTIONS') {
+    Object.entries(CORS).forEach(([k, v]) => res.setHeader(k, v));
+    return res.status(200).end();
   }
-  const token = authHeader.slice(7);
 
-  // ── 2. Validation via SERVICE_ROLE_KEY (pas l'anon key) ──────────────────
+  Object.entries(CORS).forEach(([k, v]) => res.setHeader(k, v));
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Méthode non autorisée' });
+  }
+
+  // ── 1. Token Authorization ─────────────────────────────────────────────────
+  const authHeader = req.headers['authorization'] || '';
+  if (!authHeader.startsWith('Bearer ')) {
+    console.error('[Checkout] Authorization header manquant ou malformé');
+    return res.status(401).json({ error: 'Token manquant — veuillez vous reconnecter' });
+  }
+  const token = authHeader.slice(7).trim();
+
+  // ── 2. Validation du token avec Supabase SERVICE_ROLE_KEY ─────────────────
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceKey) {
     console.error('[Checkout] SUPABASE_SERVICE_ROLE_KEY non configurée');
-    return json({ error: 'Configuration serveur incomplète' }, 500);
+    return res.status(500).json({ error: 'Configuration serveur incomplète' });
   }
 
   let authUser;
@@ -39,52 +47,44 @@ export default async function handler(req) {
     const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        apikey: serviceKey,   // ← service_role, pas anon_key
+        apikey: serviceKey,
       },
     });
     if (!userRes.ok) {
       const body = await userRes.text();
       console.error('[Checkout] Supabase auth/v1/user →', userRes.status, body);
-      return json({ error: 'Session expirée — veuillez vous reconnecter' }, 401);
+      return res.status(401).json({ error: 'Session expirée — veuillez vous reconnecter' });
     }
     authUser = await userRes.json();
   } catch (err) {
-    console.error('[Checkout] Fetch /auth/v1/user threw:', err.message);
-    return json({ error: 'Erreur de validation du token' }, 500);
+    console.error('[Checkout] Fetch Supabase auth threw:', err.message);
+    return res.status(500).json({ error: 'Erreur de validation du token' });
   }
 
   console.log('[Checkout] Auth OK —', authUser.email);
 
-  // ── 3. Lire et valider le priceId ────────────────────────────────────────
-  let priceId;
-  let rawPriceId;
-  try {
-    const body = await req.json();
-    rawPriceId = body.priceId;
-    // Nettoyer les éventuels guillemets parasites avant toute comparaison ou envoi à Stripe
-    priceId = String(rawPriceId ?? '').trim().replace(/['"]/g, '');
-  } catch {
-    return json({ error: 'Corps de requête invalide' }, 400);
-  }
+  // ── 3. Lire et nettoyer le priceId ────────────────────────────────────────
+  const rawPriceId = req.body?.priceId;
+  const priceId = String(rawPriceId ?? '').trim().replace(/['"]/g, '');
 
-  const VALID_PRICES = [
-    'price_1TCpL1FYDfyCcjvz2Wbc8ph7', // Pro — 19€/mois
-    'price_1TCpL2FYDfyCcjvzL7AZoZl1', // Business — 49€/mois
-  ];
+  console.log('[Checkout] priceId brut:', JSON.stringify(rawPriceId), '→ nettoyé:', priceId);
+
   if (!priceId || !VALID_PRICES.includes(priceId)) {
-    console.error('[Checkout] priceId invalide — brut:', JSON.stringify(rawPriceId), '→ nettoyé:', priceId);
-    return json({ error: 'Plan inconnu' }, 400);
+    console.error('[Checkout] priceId invalide:', priceId);
+    return res.status(400).json({ error: 'Plan inconnu' });
   }
 
-  // ── 4. Env vars Stripe ───────────────────────────────────────────────────
+  // ── 4. Initialiser le SDK Stripe ──────────────────────────────────────────
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   if (!stripeKey) {
     console.error('[Checkout] STRIPE_SECRET_KEY non configurée');
-    return json({ error: 'Configuration Stripe manquante' }, 500);
+    return res.status(500).json({ error: 'Configuration Stripe manquante' });
   }
+
+  const stripe = new Stripe(stripeKey, { apiVersion: '2025-02-24.acacia' });
   const appUrl = (process.env.APP_URL || 'https://storeclone-ai.vercel.app').replace(/\/$/, '');
 
-  // ── 5. Récupérer ou créer le customer Stripe ─────────────────────────────
+  // ── 5. Récupérer ou créer le customer Stripe ──────────────────────────────
   let customerId;
   try {
     const subRes = await fetch(
@@ -100,23 +100,14 @@ export default async function handler(req) {
 
   if (!customerId) {
     try {
-      const custRes = await fetch('https://api.stripe.com/v1/customers', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${stripeKey}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          email: authUser.email,
-          'metadata[supabase_user_id]': authUser.id,
-        }),
+      const customer = await stripe.customers.create({
+        email: authUser.email,
+        metadata: { supabase_user_id: authUser.id },
       });
-      const customer = await custRes.json();
-      if (customer.error) throw new Error(customer.error.message);
       customerId = customer.id;
       console.log('[Checkout] Customer Stripe créé:', customerId);
 
-      // Sauvegarder (best-effort — n'échoue pas si ça plante)
+      // Sauvegarder dans Supabase (best-effort)
       fetch(`${SUPABASE_URL}/rest/v1/subscriptions?user_id=eq.${authUser.id}`, {
         method: 'PATCH',
         headers: {
@@ -129,38 +120,27 @@ export default async function handler(req) {
       }).catch(e => console.warn('[Checkout] Sauvegarde customer_id échouée:', e.message));
     } catch (err) {
       console.error('[Checkout] Création customer Stripe échouée:', err.message);
-      return json({ error: 'Impossible de créer le profil de paiement' }, 500);
+      return res.status(500).json({ error: 'Impossible de créer le profil de paiement' });
     }
   }
 
-  // ── 6. Créer la session Stripe Checkout ──────────────────────────────────
+  // ── 6. Créer la session Stripe Checkout avec le SDK officiel ──────────────
   try {
-    const sessionRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${stripeKey}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        customer: customerId,
-        mode: 'subscription',
-        'line_items[0][price]': priceId,
-        'line_items[0][quantity]': '1',
-        success_url: `${appUrl}/app.html?payment=success`,
-        cancel_url:  `${appUrl}/app.html?payment=cancelled`,
-        'metadata[supabase_user_id]': authUser.id,
-        'subscription_data[metadata][supabase_user_id]': authUser.id,
-      }),
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      customer: customerId,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${appUrl}/app.html?payment=success`,
+      cancel_url:  `${appUrl}/app.html?payment=cancelled`,
+      metadata: { supabase_user_id: authUser.id },
+      subscription_data: { metadata: { supabase_user_id: authUser.id } },
     });
-    const session = await sessionRes.json();
-    if (session.error) {
-      console.error('[Checkout] Stripe session error:', session.error);
-      return json({ error: 'Erreur Stripe : ' + session.error.message }, 400);
-    }
-    console.log('[Checkout] Session créée:', session.id);
-    return json({ url: session.url });
+
+    console.log('[Checkout] Session créée:', session.id, '— url:', session.url);
+    return res.status(200).json({ url: session.url });
   } catch (err) {
-    console.error('[Checkout] Stripe fetch threw:', err.message);
-    return json({ error: 'Erreur lors de la création du paiement' }, 500);
+    console.error('[Checkout] stripe.checkout.sessions.create threw:', err.message);
+    return res.status(500).json({ error: 'Erreur Stripe : ' + err.message });
   }
 }
