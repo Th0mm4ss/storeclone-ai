@@ -289,13 +289,31 @@ let authUser=null,profile=null,subscription=null,generations=[],currentGen=null;
 const STEPS=['Analyse de la niche…','Identification des 3 meilleurs produits…','Génération Produit 1 (HTML interactif)…','Génération Produit 2 (HTML interactif)…','Génération Produit 3 (HTML interactif)…','Optimisation SEO et tags…','Préparation du ZIP…'];
 
 // ─── Init ────────────────────────────────────────────────────────────────────
+let _appBooting=false; // garde contre les appels concurrents
 sb.auth.onAuthStateChange(async(event,session)=>{
+  console.log('[Auth] onAuthStateChange →', event, session?.user?.email||'(no user)');
   if(session?.user){
+    if(_appBooting){console.log('[Auth] already booting, skip');return;}
+    _appBooting=true;
     authUser=session.user;
-    await loadUserData();
-    startApp();
+    try{
+      await loadUserData();
+      console.log('[Auth] loadUserData OK → calling startApp');
+      startApp();
+    }catch(err){
+      console.error('[Auth] loadUserData FAILED:', err);
+      // On lance quand même l'app avec des données par défaut
+      if(!profile)profile={name:authUser.email.split('@')[0],email:authUser.email};
+      if(!subscription)subscription={plan:'starter',status:'active'};
+      if(!generations)generations=[];
+      startApp();
+    }finally{
+      _appBooting=false;
+    }
   }else{
+    _appBooting=false;
     authUser=null;profile=null;subscription=null;generations=[];
+    console.log('[Auth] signed out → showing auth view');
     showView('auth');
   }
 });
@@ -332,8 +350,19 @@ async function login(){
   document.getElementById('login-resend').style.display='none';
   const btn=document.getElementById('loginBtn');
   btn.disabled=true;btn.textContent='Connexion…';
-  const{error}=await sb.auth.signInWithPassword({email,password:pass});
+  console.log('[Auth] signInWithPassword →', email);
+  let authResult;
+  try{
+    authResult=await sb.auth.signInWithPassword({email,password:pass});
+  }catch(err){
+    console.error('[Auth] signInWithPassword threw:', err);
+    btn.disabled=false;btn.textContent='Se connecter';
+    showAuthMsg('login','Erreur réseau : '+err.message);
+    return;
+  }
   btn.disabled=false;btn.textContent='Se connecter';
+  const{error,data}=authResult;
+  console.log('[Auth] signInWithPassword result — error:', error, '| session:', data?.session?.access_token?'present':'null');
   if(error){
     const msg=error.message||'';
     if(msg.toLowerCase().includes('email not confirmed')){
@@ -347,6 +376,8 @@ async function login(){
     }
     return;
   }
+  // Succès — onAuthStateChange va prendre le relais
+  console.log('[Auth] login success, waiting for onAuthStateChange…');
 }
 
 async function register(){
@@ -376,46 +407,117 @@ async function logout(){
 }
 
 // ─── Données utilisateur ──────────────────────────────────────────────────────
-async function loadUserData(){
-  const[profRes,subRes,genRes]=await Promise.all([
-    sb.from('profiles').select('*').eq('id',authUser.id).single(),
-    sb.from('subscriptions').select('*').eq('user_id',authUser.id).single(),
-    sb.from('generations').select('id,niche,boutique,products,zip_downloaded,created_at').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(20)
+function withTimeout(promise, ms, label){
+  return Promise.race([
+    promise,
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error(`Timeout (${ms}ms) on ${label}`)),ms))
   ]);
-  profile=profRes.data||{name:authUser.email.split('@')[0],email:authUser.email};
-  subscription=subRes.data||{plan:'starter',status:'active'};
-  generations=genRes.data||[];
+}
+
+async function loadUserData(){
+  console.log('[Data] Loading user data for', authUser.id);
+
+  // ── profil ──
+  try{
+    const{data,error}=await withTimeout(
+      sb.from('profiles').select('*').eq('id',authUser.id).maybeSingle(),
+      8000,'profiles'
+    );
+    if(error)console.warn('[Data] profiles error:', error.code, error.message);
+    profile=data||{name:authUser.user_metadata?.name||authUser.email.split('@')[0],email:authUser.email};
+    console.log('[Data] profile →', profile.name);
+  }catch(err){
+    console.error('[Data] profiles fetch failed:', err.message);
+    profile={name:authUser.user_metadata?.name||authUser.email.split('@')[0],email:authUser.email};
+  }
+
+  // ── abonnement ──
+  try{
+    const{data,error}=await withTimeout(
+      sb.from('subscriptions').select('*').eq('user_id',authUser.id).maybeSingle(),
+      8000,'subscriptions'
+    );
+    if(error)console.warn('[Data] subscriptions error:', error.code, error.message);
+    subscription=data||{plan:'starter',status:'active'};
+    console.log('[Data] subscription →', subscription.plan);
+  }catch(err){
+    console.error('[Data] subscriptions fetch failed:', err.message);
+    subscription={plan:'starter',status:'active'};
+  }
+
+  // ── historique ──
+  try{
+    const{data,error}=await withTimeout(
+      sb.from('generations')
+        .select('id,niche,boutique,products,zip_downloaded,created_at')
+        .eq('user_id',authUser.id)
+        .order('created_at',{ascending:false})
+        .limit(20),
+      8000,'generations'
+    );
+    if(error)console.warn('[Data] generations error:', error.code, error.message);
+    generations=data||[];
+    console.log('[Data] generations →', generations.length, 'entries');
+  }catch(err){
+    console.error('[Data] generations fetch failed:', err.message);
+    generations=[];
+  }
 }
 
 function startApp(){
-  const name=profile.name||authUser.email.split('@')[0];
-  document.getElementById('userAvatar').textContent=name[0].toUpperCase();
-  document.getElementById('userName').textContent=name;
-  document.getElementById('dashWelcome').textContent=`Bonjour, ${name} 👋`;
-  document.getElementById('settingName').value=name;
-  document.getElementById('settingEmail').value=authUser.email;
-  document.querySelector('.up').textContent=`Plan ${cap(subscription?.plan||'starter')}`;
-  renderPlanCards();
-  updateStats();renderDashRecent();
-  showView('app');
-  // Gérer le retour depuis Stripe Checkout
-  const params=new URLSearchParams(window.location.search);
-  if(params.get('checkout')==='success'){
-    showToast('Paiement réussi ! Votre plan a été mis à jour.');
-    history.replaceState({},'',window.location.pathname);
-    // Recharger les données pour refléter le nouveau plan
-    loadUserData().then(()=>{
-      document.querySelector('.up').textContent=`Plan ${cap(subscription?.plan||'starter')}`;
-      renderPlanCards();
-      updateQuotaBar();
-    });
-  }else if(params.get('checkout')==='cancelled'){
-    showToast('Paiement annulé.');
-    history.replaceState({},'',window.location.pathname);
-  }else{
-    showToast(`Bienvenue, ${name} !`);
+  console.log('[App] startApp() called — profile:', profile?.name, '| plan:', subscription?.plan);
+  try{
+    const name=profile?.name||authUser.email.split('@')[0];
+
+    // ── Sidebar ──
+    const avatarEl=document.getElementById('userAvatar');
+    const nameEl=document.getElementById('userName');
+    const planEl=document.querySelector('.up');
+    if(avatarEl)avatarEl.textContent=name[0].toUpperCase();
+    if(nameEl)nameEl.textContent=name;
+    if(planEl)planEl.textContent=`Plan ${cap(subscription?.plan||'starter')}`;
+
+    // ── Dashboard ──
+    const welcomeEl=document.getElementById('dashWelcome');
+    if(welcomeEl)welcomeEl.textContent=`Bonjour, ${name} 👋`;
+
+    // ── Settings ──
+    const sName=document.getElementById('settingName');
+    const sEmail=document.getElementById('settingEmail');
+    if(sName)sName.value=name;
+    if(sEmail)sEmail.value=authUser.email;
+
+    renderPlanCards();
+    updateStats();
+    renderDashRecent();
+    updateQuotaBar();
+
+    // ── Basculer la vue — c'est l'étape critique ──
+    console.log('[App] switching to view-app…');
+    showView('app');
+    console.log('[App] view-app active ✓');
+
+    // ── Retour Stripe Checkout ──
+    const params=new URLSearchParams(window.location.search);
+    if(params.get('checkout')==='success'){
+      showToast('Paiement réussi ! Votre plan a été mis à jour.');
+      history.replaceState({},'',window.location.pathname);
+      loadUserData().then(()=>{
+        if(planEl)planEl.textContent=`Plan ${cap(subscription?.plan||'starter')}`;
+        renderPlanCards();updateQuotaBar();
+      }).catch(e=>console.error('[App] reload after checkout failed:',e));
+    }else if(params.get('checkout')==='cancelled'){
+      showToast('Paiement annulé.');
+      history.replaceState({},'',window.location.pathname);
+    }else{
+      showToast(`Bienvenue, ${name} !`);
+    }
+  }catch(err){
+    console.error('[App] startApp() threw:', err);
+    // Forcer la bascule de vue même si quelque chose a planté
+    showView('app');
+    showToast('Connexion réussie (erreur d\'affichage mineure)');
   }
-  updateQuotaBar();
 }
 
 async function saveSettings(){
@@ -501,7 +603,14 @@ ${btn}</div>`;
 }
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
-function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');}
+function showView(id){
+  console.log('[UI] showView →', id);
+  const target=document.getElementById('view-'+id);
+  if(!target){console.error('[UI] view-'+id+' NOT FOUND in DOM');return;}
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  target.classList.add('active');
+  console.log('[UI] view-'+id+' classList:', target.classList.toString());
+}
 function showReg(){document.getElementById('auth-login').style.display='none';document.getElementById('auth-reg').style.display='block';}
 function showLogin(){document.getElementById('auth-reg').style.display='none';document.getElementById('auth-login').style.display='block';}
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
