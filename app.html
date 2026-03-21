@@ -172,6 +172,72 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .hamburger{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--white);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;font-size:18px;line-height:1;}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:99;}
 
+/* ── Auth split layout ── */
+.auth-split { display: flex; min-height: 100vh; width: 100%; }
+.auth-brand {
+  flex: 1;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #fff;
+  padding: 60px;
+  position: relative;
+  overflow: hidden;
+}
+.auth-brand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+.auth-brand-logo { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; margin-bottom: 48px; position: relative; z-index: 1; }
+.auth-brand-logo span { font-weight: 300; }
+.auth-brand-title { font-size: 32px; font-weight: 700; letter-spacing: -1px; margin-bottom: 12px; line-height: 1.1; position: relative; z-index: 1; }
+.auth-brand-sub { color: #94a3b8; font-size: 15px; font-weight: 300; line-height: 1.6; max-width: 320px; position: relative; z-index: 1; margin-bottom: 48px; }
+.auth-brand-features { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 1; }
+.auth-brand-feat { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #94a3b8; font-weight: 300; }
+.auth-brand-feat::before { content: '✓'; color: #4ade80; font-weight: 700; font-size: 13px; }
+.auth-form-side { flex: 0 0 480px; display: flex; align-items: center; justify-content: center; padding: 40px; background: var(--white); }
+@media(max-width:900px) {
+  .auth-brand { display: none; }
+  .auth-form-side { flex: 1; }
+}
+
+/* ── Mini chart ── */
+.mini-chart-wrap { margin-top: 16px; }
+.mini-chart-title { font-size: 12px; font-weight: 500; color: var(--dark); margin-bottom: 10px; }
+.mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 48px; }
+.mini-chart-bar {
+  flex: 1;
+  background: var(--black);
+  border-radius: 3px 3px 0 0;
+  min-width: 20px;
+  transition: height 0.4s ease, opacity 0.2s;
+  opacity: 0.15;
+  height: 8px;
+}
+.mini-chart-bar.has-data { opacity: 1; }
+.mini-chart-bar:hover { opacity: 0.7; }
+.mini-chart-labels { display: flex; gap: 4px; margin-top: 4px; }
+.mini-chart-label { flex: 1; font-size: 9px; color: var(--gray); text-align: center; min-width: 20px; }
+
+/* ── Skeleton loader ── */
+.skeleton-wrap { display: none; }
+.skeleton-wrap.visible { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.skeleton-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.skeleton-img { height: 160px; background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skeleton-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
+.skeleton-line { height: 12px; border-radius: 6px; background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+.skeleton-line.w80 { width: 80%; }
+.skeleton-line.w60 { width: 60%; }
+.skeleton-line.w40 { width: 40%; }
+.skeleton-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.skeleton-pill { height: 20px; width: 56px; border-radius: 100px; background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+
 /* ── Mobile responsive ── */
 @media(max-width:768px){
   .hamburger{display:flex;}
@@ -198,6 +264,19 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <div class="view active" id="view-auth">
+  <div class="auth-split">
+  <div class="auth-brand">
+    <div class="auth-brand-logo">StoreClone <span>AI</span></div>
+    <div class="auth-brand-title">Créez des fiches<br>produits SEO<br><em style="font-weight:300;font-style:italic">en 60 secondes.</em></div>
+    <p class="auth-brand-sub">L'IA génère titres, descriptions, tags et prix — prêts à publier sur Etsy, Shopify et Gumroad.</p>
+    <div class="auth-brand-features">
+      <div class="auth-brand-feat">3 fiches gratuites pour démarrer</div>
+      <div class="auth-brand-feat">Export ZIP immédiat</div>
+      <div class="auth-brand-feat">SEO optimisé pour chaque marketplace</div>
+      <div class="auth-brand-feat">Bilingue français + anglais</div>
+    </div>
+  </div>
+  <div class="auth-form-side">
   <div class="auth-card">
     <div class="auth-logo">StoreClone <span>AI</span></div>
     <div id="auth-login">
@@ -238,6 +317,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       <div class="fg"><label>Nouveau mot de passe</label><input type="password" class="fi" id="newPassInput" placeholder="Minimum 8 caractères" onkeydown="if(event.key==='Enter')submitNewPass()"></div>
       <button class="bf" id="newPassBtn" onclick="submitNewPass()">Mettre à jour le mot de passe</button>
     </div>
+  </div>
+  </div>
   </div>
 </div>
 
@@ -282,7 +363,23 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
         <div class="qa" onclick="showPage('generator')"><div class="qi">⚡</div><div class="qtt">Nouvelle génération</div><div class="qd">Générez vos fiches produits SEO</div></div>
         <div class="qa" onclick="showPage('history')"><div class="qi">↺</div><div class="qtt">Historique</div><div class="qd">Retrouvez vos générations précédentes</div></div>
       </div>
-      <div class="card"><div class="ct">Activité récente</div><div id="dashRecent"><div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage('generator')">Créer vos premières fiches →</span></div></div></div>
+      <div class="card">
+        <div class="ct">Activité récente</div>
+        <div class="mini-chart-wrap">
+          <div class="mini-chart-title">Générations — 7 derniers jours</div>
+          <div class="mini-chart" id="miniChart">
+            <div class="mini-chart-bar" style="height:8px"></div>
+            <div class="mini-chart-bar" style="height:8px"></div>
+            <div class="mini-chart-bar" style="height:8px"></div>
+            <div class="mini-chart-bar" style="height:8px"></div>
+            <div class="mini-chart-bar" style="height:8px"></div>
+            <div class="mini-chart-bar" style="height:8px"></div>
+            <div class="mini-chart-bar" style="height:8px"></div>
+          </div>
+          <div class="mini-chart-labels" id="miniChartLabels"></div>
+        </div>
+        <div id="dashRecent"><div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage('generator')">Créer vos premières fiches →</span></div></div>
+      </div>
     </div>
 
     <div class="page" id="page-generator">
@@ -358,6 +455,38 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
             <div class="pb"><div class="pf" id="progFill"></div></div>
             <div class="pss" id="progSteps"></div>
             <div class="prog-sub" id="progSub"></div>
+          </div>
+          <div class="skeleton-wrap" id="skeletonWrap">
+            <div class="skeleton-card">
+              <div class="skeleton-img"></div>
+              <div class="skeleton-body">
+                <div class="skeleton-line w80"></div>
+                <div class="skeleton-line w60"></div>
+                <div class="skeleton-pills">
+                  <div class="skeleton-pill"></div><div class="skeleton-pill"></div><div class="skeleton-pill"></div>
+                </div>
+              </div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-img"></div>
+              <div class="skeleton-body">
+                <div class="skeleton-line w80"></div>
+                <div class="skeleton-line w60"></div>
+                <div class="skeleton-pills">
+                  <div class="skeleton-pill"></div><div class="skeleton-pill"></div><div class="skeleton-pill"></div>
+                </div>
+              </div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-img"></div>
+              <div class="skeleton-body">
+                <div class="skeleton-line w80"></div>
+                <div class="skeleton-line w60"></div>
+                <div class="skeleton-pills">
+                  <div class="skeleton-pill"></div><div class="skeleton-pill"></div><div class="skeleton-pill"></div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="gr" id="genResults">
             <div class="rh">
@@ -786,6 +915,7 @@ function bootApp(){
     renderPlanCards();
     updateStats();
     renderDashRecent();
+    renderMiniChart();
     updateQuotaBar();
     renderQuota();
 
@@ -1219,6 +1349,7 @@ async function generate(){
   const btn=document.getElementById('genBtn');
   btn.disabled=true;
   document.getElementById('genResults').classList.remove('visible');
+  document.getElementById('skeletonWrap')?.classList.add('visible');
   document.getElementById('infoNiche').textContent=niche;
   document.getElementById('infoStatus').textContent='En cours…';
   const prog=initProgress();
@@ -1295,10 +1426,12 @@ Le fichier doit faire minimum 300 lignes, contenir du vrai contenu spécifique �
     updateQuotaBar();
     renderQuota();
     prog.done();
+    document.getElementById('skeletonWrap')?.classList.remove('visible');
     showResults();
 
   }catch(err){
     prog.done();
+    document.getElementById('skeletonWrap')?.classList.remove('visible');
     console.error('[generate]',err);
     showToast('Erreur: '+err.message);
     document.getElementById('infoStatus').textContent='Erreur';
@@ -1697,6 +1830,44 @@ function openEditorForProduct(productIndex){
       if(prodSel){prodSel.value=productIndex;selectEditorProduct();}
     },50);
   },50);
+}
+
+// ─── Mini chart ───────────────────────────────────────────────────────────────
+function renderMiniChart() {
+  const chart = document.getElementById('miniChart');
+  const labels = document.getElementById('miniChartLabels');
+  if (!chart) return;
+  const bars = chart.querySelectorAll('.mini-chart-bar');
+
+  // Build counts per day for last 7 days
+  const counts = new Array(7).fill(0);
+  const days = [];
+  const now = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    days.push(d);
+  }
+  generations.forEach(g => {
+    const gDate = new Date(g.created_at);
+    days.forEach((d, idx) => {
+      if (gDate.toDateString() === d.toDateString()) counts[idx]++;
+    });
+  });
+
+  const maxCount = Math.max(...counts, 1);
+  const dayNames = ['D','L','M','M','J','V','S'];
+  bars.forEach((bar, i) => {
+    const pct = (counts[i] / maxCount) * 100;
+    bar.style.height = Math.max(8, pct * 0.4 + 8) + 'px';
+    bar.classList.toggle('has-data', counts[i] > 0);
+    bar.title = days[i].toLocaleDateString('fr-FR') + ': ' + counts[i] + ' génération(s)';
+  });
+
+  // Rebuild labels
+  if (labels) {
+    labels.innerHTML = days.map(d => `<span class="mini-chart-label">${dayNames[d.getDay()]}</span>`).join('');
+  }
 }
 
 // ─── Feedback widget ──────────────────────────────────────────────────────────

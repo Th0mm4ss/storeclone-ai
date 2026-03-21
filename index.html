@@ -9,8 +9,11 @@
 <meta property="og:description" content="Créez des fiches produits professionnelles en un clic. Optimisées SEO pour Etsy, Shopify, Gumroad.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://storeclone-ai.vercel.app">
+<meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='630' viewBox='0 0 1200 630'%3E%3Crect fill='%230f172a' width='1200' height='630'/%3E%3Crect fill='%23ffffff' opacity='0.05' x='0' y='0' width='1200' height='630' rx='0'/%3E%3Ctext x='600' y='280' text-anchor='middle' fill='white' font-size='80' font-family='Arial' font-weight='bold'%3EStoreClone AI%3C/text%3E%3Ctext x='600' y='360' text-anchor='middle' fill='%2394a3b8' font-size='32' font-family='Arial'%3EFiches produits SEO g%C3%A9n%C3%A9r%C3%A9es par IA en 60 secondes%3C/text%3E%3C/svg%3E">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23000' rx='20' width='100' height='100'/><text x='50' y='68' text-anchor='middle' fill='white' font-size='45' font-family='Arial' font-weight='bold'>SC</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -210,7 +213,19 @@ nav.scrolled {
   justify-content: center;
   text-align: center;
   padding: 120px 48px 80px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  position: relative;
 }
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero > * { position: relative; z-index: 1; }
 
 .hero-eyebrow {
   display: inline-flex;
@@ -893,6 +908,156 @@ footer {
 .footer-logo span { font-weight: 300; }
 .footer-right { font-size: 12px; color: var(--gray); }
 
+/* ─── TIMELINE ─── */
+.timeline-wrap {
+  position: relative;
+  margin-top: 64px;
+  padding-left: 72px;
+}
+.timeline-wrap::before {
+  content: '';
+  position: absolute;
+  left: 23px;
+  top: 24px;
+  bottom: 24px;
+  width: 2px;
+  background: linear-gradient(to bottom, #e2e8f0 0%, #000 50%, #e2e8f0 100%);
+  border-radius: 2px;
+}
+.timeline-step {
+  position: relative;
+  margin-bottom: 48px;
+  background: var(--white);
+  border: 1px solid var(--border-dark);
+  border-radius: 16px;
+  padding: 32px 36px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.timeline-step:last-child { margin-bottom: 0; }
+.timeline-step:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.16); }
+.timeline-number {
+  position: absolute;
+  left: -72px;
+  top: 28px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--black);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 0 0 4px var(--white), 0 0 0 5px var(--border-dark);
+}
+.timeline-step-inner { display: flex; gap: 20px; align-items: flex-start; }
+.timeline-step-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: var(--off);
+  border: 1px solid var(--border-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.timeline-step-content {}
+.timeline-step-label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--gray); margin-bottom: 6px;
+}
+.timeline-step-title {
+  font-size: 20px; font-weight: 600; letter-spacing: -0.5px;
+  margin-bottom: 8px; color: var(--near-black);
+}
+.timeline-step-desc {
+  font-size: 14px; color: var(--gray); line-height: 1.65; font-weight: 300;
+}
+@media (max-width: 768px) {
+  .timeline-wrap { padding-left: 52px; }
+  .timeline-wrap::before { left: 15px; }
+  .timeline-number { left: -52px; width: 32px; height: 32px; font-size: 13px; top: 32px; }
+  .timeline-step { padding: 20px 20px; }
+}
+
+/* ─── FEATURE ICON COLORS ─── */
+.feat-icon-wrap.blue { background: #eff6ff; border-color: #bfdbfe; }
+.feat-icon-wrap.green { background: #f0fdf4; border-color: #bbf7d0; }
+.feat-icon-wrap.purple { background: #faf5ff; border-color: #e9d5ff; }
+.feat-icon-wrap.orange { background: #fff7ed; border-color: #fed7aa; }
+
+/* ─── TESTIMONIALS PREMIUM ─── */
+.test-card {
+  transition: all 0.25s;
+}
+.test-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); border-color: var(--border-dark); }
+.test-stars { color: #f59e0b; font-size: 14px; letter-spacing: 3px; margin-bottom: 16px; }
+.test-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: var(--white);
+  border: none;
+  flex-shrink: 0;
+}
+.test-avatar.av-s { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+.test-avatar.av-t { background: linear-gradient(135deg, #0ea5e9, #06b6d4); }
+.test-avatar.av-m { background: linear-gradient(135deg, #ec4899, #f43f5e); }
+.test-quote {
+  font-size: 48px;
+  line-height: 0.8;
+  color: #e2e8f0;
+  font-family: Georgia, serif;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* ─── FOOTER 3-COLUMN ─── */
+.footer-grid {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding: 60px 48px;
+}
+.footer-brand-col .footer-logo { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; color: var(--near-black); margin-bottom: 10px; display: block; }
+.footer-brand-col .footer-logo span { font-weight: 300; }
+.footer-brand-tagline { font-size: 13px; color: var(--gray); font-weight: 300; line-height: 1.6; margin-bottom: 12px; }
+.footer-col-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--near-black); margin-bottom: 14px; }
+.footer-col-links { display: flex; flex-direction: column; gap: 8px; }
+.footer-col-link { font-size: 13px; color: var(--gray); text-decoration: none; font-weight: 300; transition: color 0.2s; }
+.footer-col-link:hover { color: var(--near-black); }
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding: 20px 48px;
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-bottom-text { font-size: 12px; color: var(--gray); font-weight: 300; }
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; padding: 40px 20px; gap: 32px; }
+  .footer-brand-col { grid-column: 1 / -1; }
+  .footer-bottom { padding: 16px 20px; flex-direction: column; gap: 8px; text-align: center; }
+}
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── SECTION ANIMATE ─── */
+.section-animate {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.section-animate.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── COUNTER ─── */
+.hero-num-val[data-counter] { transition: none; }
+
 /* ─── ANIMATIONS ─── */
 @keyframes rise {
   from { opacity: 0; transform: translateY(24px); }
@@ -967,19 +1132,19 @@ footer {
     <a href="/app.html" class="btn-black" data-t="hero_cta1">Essayer gratuitement — 3 fiches offertes</a>
     <a href="#how" class="btn-outline" data-t="hero_cta2">Découvrir la plateforme</a>
   </div>
-  <div class="hero-numbers">
+  <div class="hero-numbers" id="hero-numbers">
     <div class="hero-num">
-      <span class="hero-num-val">60s</span>
+      <span class="hero-num-val" id="counter-1" data-target="60" data-suffix="s">60s</span>
       <span class="hero-num-label" data-t="stat1">de génération</span>
     </div>
     <div class="hero-divider"></div>
     <div class="hero-num">
-      <span class="hero-num-val">100%</span>
+      <span class="hero-num-val" id="counter-2" data-target="100" data-suffix="%">100%</span>
       <span class="hero-num-label" data-t="stat2">automatisé</span>
     </div>
     <div class="hero-divider"></div>
     <div class="hero-num">
-      <span class="hero-num-val">0€</span>
+      <span class="hero-num-val" id="counter-3" data-target="0" data-suffix="€">0€</span>
       <span class="hero-num-label" data-t="stat3">pour démarrer</span>
     </div>
   </div>
@@ -1024,24 +1189,39 @@ footer {
     <div class="section-eyebrow reveal" data-t="how_eyebrow">Processus</div>
     <h2 class="section-title reveal reveal-delay-1" data-t-html="how_title">Trois étapes.<br>Vos fiches produits <em>en ligne.</em></h2>
     <p class="section-sub reveal reveal-delay-2" data-t="how_sub">Aucune compétence technique requise. Aucun design à maîtriser. La plateforme prend en charge l'intégralité du processus.</p>
-    <div class="steps-grid reveal reveal-delay-3">
-      <div class="step-item">
-        <div class="step-n" data-t="step_n1">Étape 01</div>
-        <div class="step-icon-wrap">🎯</div>
-        <div class="step-title" data-t="step1_title">Définissez votre niche</div>
-        <div class="step-desc" data-t="step1_desc">Entrez votre niche — fitness, mariage, productivité, cuisine. L'IA analyse instantanément le potentiel commercial de votre marché.</div>
+    <div class="timeline-wrap section-animate">
+      <div class="timeline-step">
+        <div class="timeline-number">1</div>
+        <div class="timeline-step-inner">
+          <div class="timeline-step-icon">🎯</div>
+          <div class="timeline-step-content">
+            <div class="timeline-step-label" data-t="step_n1">Étape 01</div>
+            <div class="timeline-step-title" data-t="step1_title">Définissez votre niche</div>
+            <div class="timeline-step-desc" data-t="step1_desc">Entrez votre niche — fitness, mariage, productivité, cuisine. L'IA analyse instantanément le potentiel commercial de votre marché.</div>
+          </div>
+        </div>
       </div>
-      <div class="step-item">
-        <div class="step-n" data-t="step_n2">Étape 02</div>
-        <div class="step-icon-wrap">⚡</div>
-        <div class="step-title" data-t="step2_title">L'IA génère tout</div>
-        <div class="step-desc" data-t="step2_desc">En moins de 60 secondes : produits digitaux interactifs, visuels de présentation premium, descriptions optimisées pour le référencement Etsy, prix recommandés.</div>
+      <div class="timeline-step">
+        <div class="timeline-number">2</div>
+        <div class="timeline-step-inner">
+          <div class="timeline-step-icon">⚡</div>
+          <div class="timeline-step-content">
+            <div class="timeline-step-label" data-t="step_n2">Étape 02</div>
+            <div class="timeline-step-title" data-t="step2_title">L'IA génère tout</div>
+            <div class="timeline-step-desc" data-t="step2_desc">En moins de 60 secondes : produits digitaux interactifs, descriptions SEO optimisées, 13 tags Etsy et prix recommandés.</div>
+          </div>
+        </div>
       </div>
-      <div class="step-item">
-        <div class="step-n" data-t="step_n3">Étape 03</div>
-        <div class="step-icon-wrap">🚀</div>
-        <div class="step-title" data-t="step3_title">Publication directe ou téléchargement</div>
-        <div class="step-desc" data-t="step3_desc">Téléchargez le pack ZIP complet en un clic. Chaque fichier HTML est prêt à être publié sur Etsy, Gumroad ou Payhip — avec titre, description et tags SEO inclus.</div>
+      <div class="timeline-step">
+        <div class="timeline-number">3</div>
+        <div class="timeline-step-inner">
+          <div class="timeline-step-icon">🚀</div>
+          <div class="timeline-step-content">
+            <div class="timeline-step-label" data-t="step_n3">Étape 03</div>
+            <div class="timeline-step-title" data-t="step3_title">Téléchargez et publiez</div>
+            <div class="timeline-step-desc" data-t="step3_desc">Téléchargez le pack ZIP complet en un clic. Chaque fichier HTML est prêt à être publié sur Etsy, Gumroad ou Payhip — avec titre, description et tags SEO inclus.</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="api-callout reveal">
@@ -1064,24 +1244,24 @@ footer {
   <div class="section-wrap">
     <div class="section-eyebrow reveal" data-t="feat_eyebrow">Fonctionnalités</div>
     <h2 class="section-title reveal reveal-delay-1" data-t-html="feat_title">Tout ce qu'il faut<br>pour <em>vendre dès aujourd'hui.</em></h2>
-    <div class="features-grid reveal reveal-delay-2">
+    <div class="features-grid reveal reveal-delay-2 section-animate">
       <div class="feat-item">
-        <div class="feat-icon-wrap">🎨</div>
+        <div class="feat-icon-wrap purple">🎨</div>
         <div class="feat-title" data-t="feat1_title">Produits digitaux HTML interactifs</div>
         <div class="feat-desc" data-t="feat1_desc">L'IA génère de véritables fichiers interactifs — trackers, planners, tableaux de bord — d'un niveau de qualité bien supérieur aux fichiers Excel traditionnels. Une expérience produit qui fidélise vos acheteurs.</div>
       </div>
       <div class="feat-item">
-        <div class="feat-icon-wrap">📝</div>
+        <div class="feat-icon-wrap blue">📝</div>
         <div class="feat-title" data-t="feat2_title">Descriptions SEO optimisées</div>
         <div class="feat-desc" data-t="feat2_desc">Titres, descriptions et tags calibrés pour maximiser votre visibilité sur chaque marketplace. Chaque fiche est prête à publier, sans aucune retouche nécessaire.</div>
       </div>
       <div class="feat-item">
-        <div class="feat-icon-wrap">🔍</div>
+        <div class="feat-icon-wrap green">🔍</div>
         <div class="feat-title" data-t="feat3_title">Référencement Etsy optimisé</div>
         <div class="feat-desc" data-t="feat3_desc">Titres, descriptions et treize tags calibrés pour l'algorithme de recherche Etsy. Vos produits apparaissent dans les résultats pertinents dès leur mise en ligne.</div>
       </div>
       <div class="feat-item">
-        <div class="feat-icon-wrap">🌍</div>
+        <div class="feat-icon-wrap orange">🌍</div>
         <div class="feat-title" data-t="feat4_title">Bilingue français et anglais</div>
         <div class="feat-desc" data-t="feat4_desc">Chaque fiche produit est générée simultanément en français et en anglais. Vous doublez votre audience sans effort supplémentaire, en accédant aux marchés internationaux.</div>
       </div>
@@ -1164,12 +1344,13 @@ footer {
   <div class="section-wrap">
     <div class="section-eyebrow reveal" data-t="test_eyebrow">Témoignages</div>
     <h2 class="section-title reveal reveal-delay-1" data-t-html="test_title">Ils développent<br>leur <em>activité avec nous.</em></h2>
-    <div class="testimonials-grid reveal reveal-delay-2">
+    <div class="testimonials-grid reveal reveal-delay-2 section-animate">
       <div class="test-card">
+        <span class="test-quote">«</span>
         <div class="test-stars">★★★★★</div>
         <div class="test-text" data-t="t1">"Mes premières fiches produits fitness étaient en ligne en moins d'une heure. La qualité générée m'a moi-même surprise — mes clients pensent que je les ai conçues personnellement."</div>
         <div class="test-author">
-          <div class="test-avatar">S</div>
+          <div class="test-avatar av-s">S</div>
           <div>
             <div class="test-name">Sarah M.</div>
             <div class="test-role" data-t="t1role">Créatrice de contenu, fitness</div>
@@ -1177,10 +1358,11 @@ footer {
         </div>
       </div>
       <div class="test-card">
+        <span class="test-quote">«</span>
         <div class="test-stars">★★★★★</div>
         <div class="test-text" data-t="t2">"En trois semaines, j'exploite quatre niches différentes. Ce qui m'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes."</div>
         <div class="test-author">
-          <div class="test-avatar">T</div>
+          <div class="test-avatar av-t">T</div>
           <div>
             <div class="test-name">Thomas L.</div>
             <div class="test-role" data-t="t2role">Entrepreneur, e-commerce</div>
@@ -1188,10 +1370,11 @@ footer {
         </div>
       </div>
       <div class="test-card">
+        <span class="test-quote">«</span>
         <div class="test-stars">★★★★★</div>
         <div class="test-text" data-t="t3">"Le référencement généré automatiquement est d'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication."</div>
         <div class="test-author">
-          <div class="test-avatar">M</div>
+          <div class="test-avatar av-m">M</div>
           <div>
             <div class="test-name">Marie K.</div>
             <div class="test-role" data-t="t3role">Vendeuse Etsy, templates</div>
@@ -1244,17 +1427,42 @@ footer {
 
 <!-- ─── FOOTER ─── -->
 <footer class="s">
-  <div class="footer-logo">StoreClone <span>AI</span>
-    <div style="margin-top:8px;font-size:13px;">Une question ? <a href="mailto:contact@storeclone-ai.com" style="color:var(--near-black)">contact@storeclone-ai.com</a></div>
-  </div>
-  <div class="footer-right" style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-    <div style="display:flex;gap:20px">
-      <a href="/mentions-legales.html" style="font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">Mentions légales</a>
-      <a href="/cgv.html" style="font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">CGV</a>
-      <a href="/politique-confidentialite.html" style="font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">Politique de confidentialité</a>
-      <a href="mailto:contact@storeclone-ai.com" style="font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">Contact</a>
+  <div class="footer-grid">
+    <div class="footer-brand-col">
+      <span class="footer-logo">StoreClone <span>AI</span></span>
+      <p class="footer-brand-tagline">Générateur de fiches produits SEO<br>par intelligence artificielle.</p>
+      <a href="mailto:contact@storeclone-ai.com" style="font-size:13px;color:var(--gray);text-decoration:none;font-weight:300;" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">contact@storeclone-ai.com</a>
     </div>
-    <span data-t="footer" style="font-size:12px;color:var(--gray)">© 2026 StoreClone AI. Tous droits réservés.</span>
+    <div>
+      <div class="footer-col-title">Produit</div>
+      <div class="footer-col-links">
+        <a href="#how" class="footer-col-link">Comment ça marche</a>
+        <a href="#features" class="footer-col-link">Fonctionnalités</a>
+        <a href="#pricing" class="footer-col-link">Tarifs</a>
+        <a href="#faq" class="footer-col-link">FAQ</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Légal</div>
+      <div class="footer-col-links">
+        <a href="/mentions-legales.html" class="footer-col-link">Mentions légales</a>
+        <a href="/cgv.html" class="footer-col-link">CGV</a>
+        <a href="/politique-confidentialite.html" class="footer-col-link">Confidentialité</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <div class="footer-col-links">
+        <a href="mailto:contact@storeclone-ai.com" class="footer-col-link">contact@storeclone-ai.com</a>
+        <a href="/app.html" class="footer-col-link">Accéder à l'app</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-bottom-text" data-t="footer">© 2026 StoreClone AI. Tous droits réservés.</span>
+    <div style="display:flex;gap:16px;">
+      <span style="font-size:12px;color:var(--gray);font-weight:300;">Made with ❤️ en France</span>
+    </div>
   </div>
 </footer>
 
@@ -1368,7 +1576,7 @@ const TR = {
     t3:'"The automatically generated SEO is remarkably precise. My product listings appear in Etsy search results from the very first day of publishing."',
     t3role:'Etsy seller, templates',
     cta_title:'Your next product listings<br>start <em>right now.</em>',
-    cta_sub:'Join the sellers using StoreClone AI to grow their passive income on Etsy — no technical skills, no upfront investment.',
+    cta_sub:'Join the sellers using StoreClone AI to create professional product listings — no technical skills required.',
     cta_btn:'Try for free — 3 listings included',
     footer:'© 2025 StoreClone AI. All rights reserved.',
     demo_products:[
@@ -1602,6 +1810,43 @@ function toggleFaq(btn) {
 
 // Initialiser le sélecteur au chargement
 setLPPeriod('monthly');
+
+// ─── ANIMATED COUNTERS ────────────────────────────────────────────────────────
+function animateCounter(el, target, suffix) {
+  let current = 0;
+  const increment = Math.max(1, target / 40);
+  const timer = setInterval(() => {
+    current = Math.min(current + increment, target);
+    el.textContent = Math.round(current) + suffix;
+    if (current >= target) clearInterval(timer);
+  }, 25);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('[data-target]').forEach(el => {
+        const target = parseInt(el.getAttribute('data-target'), 10);
+        const suffix = el.getAttribute('data-suffix') || '';
+        animateCounter(el, target, suffix);
+      });
+      counterObserver.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+const heroNumbers = document.getElementById('hero-numbers');
+if (heroNumbers) counterObserver.observe(heroNumbers);
+
+// ─── SECTION ANIMATE ─────────────────────────────────────────────────────────
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      sectionObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.section-animate').forEach(el => sectionObserver.observe(el));
 </script>
 </body>
 </html>
