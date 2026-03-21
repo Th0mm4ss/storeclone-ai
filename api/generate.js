@@ -4,8 +4,64 @@ export const maxDuration = 60;
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
+
+const SUPABASE_URL = 'https://hbaaqukxtoqxaxcbqmkj.supabase.co';
+const PLAN_LIMITS = { starter: 3, pro: 30, business: Infinity };
+
+// Vérifie le quota mensuel de l'utilisateur via Supabase REST API
+async function checkServerQuota(userToken) {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceKey || !userToken) return { ok: true }; // Si pas de clé service, on laisse passer
+
+  try {
+    // 1. Identifier l'utilisateur depuis son JWT
+    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { 'Authorization': `Bearer ${userToken}`, 'apikey': serviceKey }
+    });
+    if (!userRes.ok) return { ok: true }; // Token invalide → pas de blocage (frontend le gère)
+    const userData = await userRes.json();
+    const userId = userData?.id;
+    if (!userId) return { ok: true };
+
+    // 2. Récupérer le plan de l'utilisateur
+    const subRes = await fetch(`${SUPABASE_URL}/rest/v1/subscriptions?user_id=eq.${userId}&select=plan`, {
+      headers: { 'Authorization': `Bearer ${serviceKey}`, 'apikey': serviceKey }
+    });
+    const subData = await subRes.json();
+    const plan = subData?.[0]?.plan || 'starter';
+    const limit = PLAN_LIMITS[plan] ?? 3;
+
+    if (limit === Infinity) return { ok: true }; // Business → illimité
+
+    // 3. Compter les générations de ce mois
+    const now = new Date();
+    const firstOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
+    const countRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/generations?user_id=eq.${userId}&created_at=gte.${firstOfMonth}&select=id`,
+      {
+        headers: {
+          'Authorization': `Bearer ${serviceKey}`,
+          'apikey': serviceKey,
+          'Prefer': 'count=exact',
+          'Range-Unit': 'items',
+          'Range': '0-0'
+        }
+      }
+    );
+    const contentRange = countRes.headers.get('content-range') || '0-0/0';
+    const total = parseInt(contentRange.split('/')[1] || '0', 10);
+
+    if (total >= limit) {
+      return { ok: false, message: `Quota mensuel atteint (${total}/${limit}). Veuillez passer à l'offre supérieure.` };
+    }
+    return { ok: true };
+  } catch (err) {
+    console.warn('[quota] Server quota check error (non-blocking):', err.message);
+    return { ok: true }; // En cas d'erreur réseau, on laisse passer
+  }
+}
 
 const SYSTEM_DESIGN = `Tu es un designer produit expert spécialisé dans la création de produits digitaux premium vendus sur Etsy, Shopify et Gumroad. Tu crées des fichiers HTML interactifs d'une qualité exceptionnelle qui justifient un prix de 10-25€.
 
@@ -83,6 +139,16 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { prompt, type, priceRange, tone, outputLang } = req.body || {};
+
+  // Vérification du quota côté serveur pour les générations complètes
+  if (!type || (type !== 'product_html' && type !== 'metadata')) {
+    const authHeader = req.headers['authorization'] || '';
+    const token = authHeader.replace('Bearer ', '').trim();
+    const quota = await checkServerQuota(token);
+    if (!quota.ok) {
+      return res.status(429).json({ error: { message: quota.message } });
+    }
+  }
 
   let systemPrompt, userPrompt, maxTokens;
 

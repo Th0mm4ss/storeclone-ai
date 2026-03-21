@@ -399,6 +399,7 @@ const PLAN_LABELS={starter:'Starter — Gratuit',pro:'Pro — 19€/mois',busine
 
 // ─── État global ─────────────────────────────────────────────────────────────
 let authUser=null,profile=null,subscription=null,generations=[],currentGen=null;
+let monthlyCount=0; // Nombre de générations ce mois-ci (depuis DB)
 let _planPeriod='monthly'; // Période active dans le sélecteur de plans
 const STEPS=['Analyse de la niche…','Création des produits en cours…','Génération des fichiers HTML…','Optimisation SEO et tags…','Finalisation et qualité…'];
 const SUB_MSGS=[['Analyse du marché...','Recherche des tendances...','Identification des opportunités...'],['Conception des fiches produits...','Rédaction des descriptions SEO...','Calibrage des prix...'],['Design de l\'interface premium...','Intégration JavaScript...','Test des fonctionnalités...'],['Optimisation des 13 tags Etsy...','Calibrage pour l\'algorithme...','Vérification de la pertinence...'],['Contrôle qualité final...','Préparation du ZIP...','Tout est prêt !']];
@@ -582,26 +583,36 @@ async function submitNewPass(){
 async function loadUserData(){
   console.log('[Data] loadUserData — uid:', authUser.id);
 
+  // Premier jour du mois courant en UTC (pour le comptage mensuel)
+  const now=new Date();
+  const firstOfMonth=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),1)).toISOString();
+
   // Requêtes en parallèle, sans timeout artificiel (Supabase cold start OK)
-  const[profRes,subRes,genRes]=await Promise.all([
+  const[profRes,subRes,genRes,countRes]=await Promise.all([
     sb.from('profiles').select('*').eq('id',authUser.id).maybeSingle(),
     sb.from('subscriptions').select('*').eq('user_id',authUser.id).maybeSingle(),
     sb.from('generations')
       .select('id,niche,boutique,products,zip_downloaded,created_at')
       .eq('user_id',authUser.id)
       .order('created_at',{ascending:false})
-      .limit(20)
+      .limit(20),
+    sb.from('generations')
+      .select('*',{count:'exact',head:true})
+      .eq('user_id',authUser.id)
+      .gte('created_at',firstOfMonth)
   ]);
 
   if(profRes.error) console.warn('[Data] profiles:', profRes.error.code, profRes.error.message);
   if(subRes.error)  console.warn('[Data] subscriptions:', subRes.error.code, subRes.error.message);
   if(genRes.error)  console.warn('[Data] generations:', genRes.error.code, genRes.error.message);
+  if(countRes.error)console.warn('[Data] monthlyCount:', countRes.error.code, countRes.error.message);
 
   profile     = profRes.data || {name:authUser.user_metadata?.name||authUser.email.split('@')[0], email:authUser.email};
   subscription= subRes.data  || {plan:'starter', status:'active'};
   generations = genRes.data  || [];
+  monthlyCount= countRes.count ?? 0;
 
-  console.log('[Data] profile →', profile.name, '| plan →', subscription.plan, '| gens →', generations.length);
+  console.log('[Data] profile →', profile.name, '| plan →', subscription.plan, '| gens →', generations.length, '| monthlyCount →', monthlyCount);
 }
 
 function bootApp(){
@@ -617,7 +628,9 @@ function bootApp(){
     const planEl=document.querySelector('.up');
     if(avatarEl)avatarEl.textContent=name[0].toUpperCase();
     if(nameEl)nameEl.textContent=name;
-    if(planEl)planEl.textContent=`Plan ${cap(subscription?.plan||'starter')}`;
+    const planName=subscription?.plan||'starter';
+    const planEmoji=planName==='business'?'⭐':planName==='pro'?'🚀':'';
+    if(planEl)planEl.textContent=`${planEmoji} Plan ${cap(planName)}`.trim();
 
     // ── Dashboard ──
     const greetingEl=document.getElementById('dashGreeting');
@@ -662,8 +675,10 @@ function bootApp(){
       history.replaceState({},'',window.location.pathname);
       // Recharger les données pour refléter le nouveau plan, puis toast
       loadUserData().then(()=>{
-        if(planEl)planEl.textContent=`Plan ${cap(subscription?.plan||'starter')}`;
-        renderPlanCards();updateQuotaBar();
+        const pn=subscription?.plan||'starter';
+        const pe=pn==='business'?'⭐':pn==='pro'?'🚀':'';
+        if(planEl)planEl.textContent=`${pe} Plan ${cap(pn)}`.trim();
+        renderPlanCards();updateQuotaBar();renderQuota();
         const planName=cap(subscription?.plan||'Pro');
         showToast(`✅ Paiement confirmé ! Bienvenue dans le plan ${planName}.`,'success');
       }).catch(e=>{
@@ -727,17 +742,14 @@ async function openPortal(){
 }
 
 // ─── Quota mensuel ────────────────────────────────────────────────────────────
-function getMonthlyCount(){
-  const startOfMonth=new Date();startOfMonth.setDate(1);startOfMonth.setHours(0,0,0,0);
-  return generations.filter(g=>new Date(g.created_at)>=startOfMonth).length;
-}
+function getMonthlyCount(){return monthlyCount;}
 function getPlanLimit(){return PLAN_LIMITS[subscription?.plan||'starter'];}
 function checkQuota(){
-  const used=getMonthlyCount(),limit=getPlanLimit();
+  const used=monthlyCount,limit=getPlanLimit();
   if(used>=limit){
     const plan=subscription?.plan||'starter';
-    if(plan==='starter')showToast('Limite atteinte (3/mois). Passez en Pro pour 30 générations !');
-    else if(plan==='pro')showToast('Limite atteinte (30/mois). Passez en Business pour illimité !');
+    if(plan==='starter')showToast('Quota Starter atteint (3/mois). Consultez la page Plans pour passer en Pro.');
+    else if(plan==='pro')showToast('Quota Pro atteint (30/mois). Passez en Business pour des générations illimitées.');
     return false;
   }
   return true;
@@ -802,7 +814,24 @@ function renderPlanCards(){
   const portalCard=document.getElementById('portalCard');
   if(portalCard)portalCard.style.display=isPaid?'block':'none';
 
-  el.innerHTML=`
+  // Résumé plan courant
+  const limit=getPlanLimit();
+  const used=monthlyCount;
+  const renewal=subscription?.current_period_end?new Date(subscription.current_period_end).toLocaleDateString('fr-FR'):null;
+  const limitLabel=limit===Infinity?'∞':limit;
+  const planSummary=`<div style="padding:12px 16px;background:var(--off);border-radius:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <div>
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray);margin-bottom:3px">Plan actuel</div>
+      <div style="font-size:15px;font-weight:600;color:var(--dark)">${cap(current)}${current==='starter'?' — Gratuit':''}</div>
+      ${renewal?`<div style="font-size:11px;color:var(--gray);margin-top:2px">Renouvellement le ${renewal}</div>`:''}
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:16px;font-weight:700;color:${used>=limit&&limit!==Infinity?'#c0392b':'var(--dark)'}">${used}<span style="font-size:12px;font-weight:400;color:var(--gray)"> / ${limitLabel}</span></div>
+      <div style="font-size:11px;color:var(--gray)">fiches ce mois</div>
+    </div>
+  </div>`;
+
+  el.innerHTML=planSummary+`
   <!-- Sélecteur de période -->
   <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--off);border-radius:10px;padding:4px;width:fit-content">
     ${['monthly','quarterly','yearly'].map((p,i)=>`<button onclick="setPeriod('${p}')" id="period-${p}" style="padding:7px 16px;border-radius:7px;border:none;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;background:${i===0?'var(--white)':'transparent'};color:${i===0?'var(--dark)':'var(--gray)'};box-shadow:${i===0?'0 1px 4px rgba(0,0,0,0.08)':'none'}">${p==='monthly'?'Mensuel':p==='quarterly'?'3 mois (-10%)':'1 an (-20%)'}</button>`).join('')}
@@ -965,6 +994,11 @@ function setNiche(v){document.getElementById('nicheInput').value=v;document.getE
 
 var _advOpen = false;
 function toggleAdvanced() {
+  const plan=subscription?.plan||'starter';
+  if(plan==='starter'){
+    showToast('🔒 Options avancées réservées au plan Pro — 30 générations/mois à partir de 19€');
+    return;
+  }
   _advOpen = !_advOpen;
   var el = document.getElementById('advancedOptions');
   var arrow = document.getElementById('advArrow');
@@ -975,7 +1009,13 @@ function toggleAdvanced() {
 // ─── API ──────────────────────────────────────────────────────────────────────
 async function callAPI(prompt,type='metadata',opts={}){
   const body={prompt,type,...opts};
-  const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  // Passer le token pour la vérification côté serveur
+  const headers={'Content-Type':'application/json'};
+  try{
+    const{data:sd}=await sb.auth.getSession();
+    if(sd?.session?.access_token)headers['Authorization']='Bearer '+sd.session.access_token;
+  }catch(e){console.warn('[callAPI] getSession failed:',e);}
+  const res=await fetch('/api/generate',{method:'POST',headers,body:JSON.stringify(body)});
   const data=await res.json();
   if(data.error)throw new Error(data.error.message||'Erreur API');
   return data.content.map(b=>b.text||'').join('');
@@ -1050,7 +1090,9 @@ async function generate(){
     }));
     currentGen={niche,boutique:meta.boutique||niche,products,date:new Date()};
     await saveGeneration(currentGen);
+    monthlyCount++; // Incrémenter immédiatement (avant rechargement async)
     updateQuotaBar();
+    renderQuota();
     showResults();
   }catch(err){
     timers.forEach(t=>clearTimeout(t));
@@ -1186,7 +1228,9 @@ function showResults(){
   });
   document.getElementById('genResults').classList.add('visible');
   const regenBtn=document.getElementById('regenBtn');
-  if(regenBtn)regenBtn.style.display='inline-flex';
+  // Régénérer disponible uniquement à partir du plan Pro
+  const planForRegen=subscription?.plan||'starter';
+  if(regenBtn)regenBtn.style.display=(planForRegen==='pro'||planForRegen==='business')?'inline-flex':'none';
   showToast(`${products.length} fiches produits générées ! 🎉`);
 }
 
