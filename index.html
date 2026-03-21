@@ -1055,7 +1055,7 @@ footer {
         <div class="featured-label" data-t="feat_label">Le plus choisi</div>
         <div class="price-name" data-t="plan2_name">Pro</div>
         <div class="price-amount"><sup>€</sup><span id="lp-pro-price">19</span></div>
-        <div id="lp-pro-savings" class="price-savings-lp" style="visibility:hidden">—</div>
+        <div id="lp-pro-savings" class="price-savings-lp" style="display:none"></div>
         <div class="price-period" id="lp-pro-period">par mois, sans engagement</div>
         <div class="price-divider"></div>
         <div class="price-feats">
@@ -1072,7 +1072,7 @@ footer {
       <div class="price-card">
         <div class="price-name" data-t="plan3_name">Business</div>
         <div class="price-amount"><sup>€</sup><span id="lp-biz-price">49</span></div>
-        <div id="lp-biz-savings" class="price-savings-lp" style="visibility:hidden">—</div>
+        <div id="lp-biz-savings" class="price-savings-lp" style="display:none"></div>
         <div class="price-period" id="lp-biz-period">par mois, sans engagement</div>
         <div class="price-divider"></div>
         <div class="price-feats">
@@ -1097,7 +1097,7 @@ footer {
     <div class="testimonials-grid reveal reveal-delay-2">
       <div class="test-card">
         <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t1">"Ma boutique fitness était en ligne en moins d'une heure. La qualité des produits générés m'a moi-même surprise — mes clients pensent que je les ai conçus personnellement."</div>
+        <div class="test-text" data-t="t1">"Mes premières fiches produits fitness étaient en ligne en moins d'une heure. La qualité générée m'a moi-même surprise — mes clients pensent que je les ai conçues personnellement."</div>
         <div class="test-author">
           <div class="test-avatar">S</div>
           <div>
@@ -1108,7 +1108,7 @@ footer {
       </div>
       <div class="test-card">
         <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t2">"En trois semaines, j'exploite quatre boutiques sur des niches différentes. Ce qui m'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes."</div>
+        <div class="test-text" data-t="t2">"En trois semaines, j'exploite quatre niches différentes. Ce qui m'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes."</div>
         <div class="test-author">
           <div class="test-avatar">T</div>
           <div>
@@ -1200,9 +1200,9 @@ const TR = {
     p3btn:'Passer en Business',
     test_eyebrow:'Témoignages',
     test_title:'Ils développent<br>leur <em>activité avec nous.</em>',
-    t1:'"Ma boutique fitness était en ligne en moins d\'une heure. La qualité des produits générés m\'a moi-même surprise — mes clients pensent que je les ai conçus personnellement."',
+    t1:'"Mes premières fiches produits fitness étaient en ligne en moins d\'une heure. La qualité générée m\'a moi-même surprise — mes clients pensent que je les ai conçues personnellement."',
     t1role:'Créatrice de contenu, fitness',
-    t2:'"En trois semaines, j\'exploite quatre boutiques sur des niches différentes. Ce qui m\'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes."',
+    t2:'"En trois semaines, j\'exploite quatre niches différentes. Ce qui m\'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes."',
     t2role:'Entrepreneur, e-commerce',
     t3:'"Le référencement généré automatiquement est d\'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication."',
     t3role:'Vendeuse Etsy, templates',
@@ -1242,29 +1242,25 @@ const TR = {
     price_eyebrow:'Pricing',
     price_title:'A plan tailored<br>to <em>every ambition.</em>',
     price_sub:'Start with no commitment. Scale as you grow.',
+    platforms_label:'Compatible with',
     plan1_name:'Starter', plan1_period:'No time limit',
     p1f1:'3 product listings per month', p1f2:'Title, description, tags & price', p1f3:'Bilingual FR + EN', p1f4:'Instant ZIP export',
     p1btn:'Start for free',
     feat_label:'Most popular',
     plan2_name:'Pro', plan2_period:'per month, no commitment',
-    eyebrow:'Digital store generation platform',
-    hero_title:'Professional-grade SEO<br>product listings, <em>generated in one click.</em>',
-    hero_sub:'Titles, descriptions, tags and pricing — the AI creates everything for you, ready to publish on Etsy, Shopify, Gumroad and more.',
-    platforms_label:'Compatible with',
     p2f1:'30 generations per month', p2f2:'3 HTML products per generation', p2f3:'Instant ZIP export', p2f4:'Advanced SEO and full tags', p2f5:'Automatic bilingual generation', p2f6:'Priority support',
-    step3_title:'Direct publishing or download', step3_desc:'On Starter, download the full ZIP pack and publish yourself in minutes. On Pro, connect your account via API — publishing is entirely automatic, with no action required on your part.',
-    api_tag:'Pro Plan — Generate more, sell more',
-    api_title:'30 product listings per month to scale your e-commerce business.',
-    api_desc:'Via our direct API integration with Etsy, Gumroad and Payhip, your generated products are automatically published to your store — title, description, tags, images and product file included. You intervene at no stage.',
     p2btn:'Go Pro',
     plan3_name:'Business', plan3_period:'per month, no commitment',
     p3f1:'Unlimited generations', p3f2:'Everything in Pro', p3f3:'Priority access to new features', p3f4:'Dedicated support',
     p3btn:'Go Business',
+    api_tag:'Pro Plan — Generate more, sell more',
+    api_title:'30 product listings per month to scale your e-commerce business.',
+    api_desc:'With the Pro plan, generate up to 30 SEO product listings per month — titles, descriptions, 13 Etsy tags, recommended pricing and interactive HTML files included. Priority access to all new features on release.',
     test_eyebrow:'Testimonials',
     test_title:'They grow<br>their <em>business with us.</em>',
-    t1:'"My fitness store was live in under an hour. The quality of the generated products surprised even me — my customers think I designed them personally."',
+    t1:'"My first fitness product listings were live in under an hour. The quality of the generated content surprised even me — my customers think I designed them personally."',
     t1role:'Content creator, fitness',
-    t2:'"In three weeks I\'m running four stores across different niches. What would have taken months of work now happens in minutes."',
+    t2:'"In three weeks I\'m running four different niches. What would have taken months of work now happens in minutes."',
     t2role:'Entrepreneur, e-commerce',
     t3:'"The automatically generated SEO is remarkably precise. My product listings appear in Etsy search results from the very first day of publishing."',
     t3role:'Etsy seller, templates',
@@ -1384,7 +1380,7 @@ async function runDemo() {
   let pct = 0;
   const iv = setInterval(() => { pct = Math.min(pct + 1.5, 88); fill.style.width = pct + '%'; }, 80);
 
-  const prompt = `Expert Etsy et e-commerce. Génère 3 produits digitaux premium pour une boutique Etsy sur la niche: "${val}".
+  const prompt = `Expert Etsy et e-commerce. Génère 3 produits digitaux premium pour la niche: "${val}".
 Réponds UNIQUEMENT en JSON valide sans backticks:
 {"products":[{"type":"Type (Tracker/Planner/Template/Guide)","name":"Nom premium","tags":["tag1","tag2","tag3"],"price":"X,XX €"},{"type":"...","name":"...","tags":[...],"price":"..."},{"type":"...","name":"...","tags":[...],"price":"..."}]}
 Langue: ${lang === 'fr' ? 'français' : 'anglais'}. Noms distinctifs et premium.`;
@@ -1464,7 +1460,7 @@ function setLPPeriod(newPeriod) {
   if (proPrice) proPrice.textContent = proData.amount;
   if (proSavings) {
     proSavings.textContent = proData.label;
-    proSavings.style.visibility = proData.label ? 'visible' : 'hidden';
+    proSavings.style.display = proData.label ? 'inline-block' : 'none';
   }
   if (proPeriod) proPeriod.textContent = proData.period;
 
@@ -1476,7 +1472,7 @@ function setLPPeriod(newPeriod) {
   if (bizPrice) bizPrice.textContent = bizData.amount;
   if (bizSavings) {
     bizSavings.textContent = bizData.label;
-    bizSavings.style.visibility = bizData.label ? 'visible' : 'hidden';
+    bizSavings.style.display = bizData.label ? 'inline-block' : 'none';
   }
   if (bizPeriod) bizPeriod.textContent = bizData.period;
 }
