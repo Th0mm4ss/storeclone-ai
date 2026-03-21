@@ -1520,7 +1520,7 @@ const TR = {
     cta_title:'Vos prochaines fiches produits<br>commencent <em>maintenant.</em>',
     cta_sub:'Rejoignez les vendeurs qui utilisent StoreClone AI pour créer des fiches produits professionnelles — sans compétences techniques.',
     cta_btn:'Essayer gratuitement — 3 fiches offertes',
-    footer:'© 2025 StoreClone AI. Tous droits réservés.',
+    footer:'© 2026 StoreClone AI. Tous droits réservés.',
     demo_products:[
       {type:'Tracker',name:'Budget Planner Premium FR',tags:['budget','finance','planner'],price:'14,99 €'},
       {type:'Template',name:'Habit Tracker Annuel',tags:['habitudes','productivité'],price:'12,99 €'},
@@ -1578,7 +1578,7 @@ const TR = {
     cta_title:'Your next product listings<br>start <em>right now.</em>',
     cta_sub:'Join the sellers using StoreClone AI to create professional product listings — no technical skills required.',
     cta_btn:'Try for free — 3 listings included',
-    footer:'© 2025 StoreClone AI. All rights reserved.',
+    footer:'© 2026 StoreClone AI. All rights reserved.',
     demo_products:[
       {type:'Tracker',name:'Premium Budget Planner EN',tags:['budget','finance','planner'],price:'€14.99'},
       {type:'Template',name:'Annual Habit Tracker',tags:['habits','productivity'],price:'€12.99'},
@@ -1620,7 +1620,17 @@ function setLang(l) {
   window.addEventListener('resize', resize);
 
   let t = 0;
+  let animating = true;
+  const heroEl = document.querySelector('.hero');
+  if (heroEl) {
+    const canvasObserver = new IntersectionObserver(entries => {
+      animating = entries[0].isIntersecting;
+    }, { threshold: 0 });
+    canvasObserver.observe(heroEl);
+  }
+
   function draw() {
+    if (!animating) { requestAnimationFrame(draw); return; }
     ctx.clearRect(0, 0, W, H);
     const size = 60;
     ctx.strokeStyle = 'rgba(0,0,0,0.07)';
@@ -1689,31 +1699,36 @@ async function runDemo() {
   status.classList.add('visible');
 
   let pct = 0;
-  const iv = setInterval(() => { pct = Math.min(pct + 1.5, 88); fill.style.width = pct + '%'; }, 80);
+  const iv = setInterval(() => { pct = Math.min(pct + 2.2, 92); fill.style.width = pct + '%'; }, 50);
 
-  const prompt = `Expert Etsy et e-commerce. Génère 3 produits digitaux premium pour la niche: "${val}".
-Réponds UNIQUEMENT en JSON valide sans backticks:
-{"products":[{"type":"Type (Tracker/Planner/Template/Guide)","name":"Nom premium","tags":["tag1","tag2","tag3"],"price":"X,XX €"},{"type":"...","name":"...","tags":[...],"price":"..."},{"type":"...","name":"...","tags":[...],"price":"..."}]}
-Langue: ${lang === 'fr' ? 'français' : 'anglais'}. Noms distinctifs et premium.`;
+  // Simuler un délai de génération réaliste (2 secondes)
+  await new Promise(r => setTimeout(r, 2000));
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await res.json();
-    const raw = data.content.map(b => b.text || '').join('');
-    const s = raw.indexOf('{'), e = raw.lastIndexOf('}');
-    const parsed = JSON.parse(raw.slice(s, e + 1));
-    showCards(parsed.products);
-  } catch {
-    showCards(TR[lang].demo_products);
-  }
+  // Générer des noms de produits dynamiques basés sur la niche saisie
+  const nicheLabel = val.charAt(0).toUpperCase() + val.slice(1);
+  const isFr = lang === 'fr';
+  const products = [
+    {
+      type: 'Tracker',
+      name: isFr ? `${nicheLabel} — Tracker Premium` : `${nicheLabel} — Premium Tracker`,
+      tags: [val.toLowerCase(), isFr ? 'tracker' : 'tracker', isFr ? 'suivi' : 'planner'],
+      price: isFr ? '14,99 €' : '€14.99'
+    },
+    {
+      type: 'Planner',
+      name: isFr ? `${nicheLabel} — Planner Mensuel` : `${nicheLabel} — Monthly Planner`,
+      tags: [val.toLowerCase(), isFr ? 'planner' : 'planner', isFr ? 'organisation' : 'organizer'],
+      price: isFr ? '12,99 €' : '€12.99'
+    },
+    {
+      type: 'Dashboard',
+      name: isFr ? `${nicheLabel} — Dashboard Interactif` : `${nicheLabel} — Interactive Dashboard`,
+      tags: [val.toLowerCase(), 'dashboard', isFr ? 'interactif' : 'interactive'],
+      price: isFr ? '9,99 €' : '€9.99'
+    }
+  ];
+
+  showCards(products);
 
   function showCards(products) {
     clearInterval(iv);
