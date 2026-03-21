@@ -65,93 +65,83 @@ RÈGLES ABSOLUES :
 Réponds UNIQUEMENT en JSON valide sans markdown ni backticks :
 {"boutique":"Nom de marque accrocheur","products":[{"name":"Nom FR premium","nameEn":"English name","type":"TRACKER|WORKBOOK|DASHBOARD|TEMPLATE","description":"Description FR 80-100 mots orientée bénéfices","descriptionEn":"English description 80-100 words","tags":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13"],"tagsEn":["tag1","tag2","tag3","tag4","tag5"],"price":"14.99","color":"#hexcolor","emoji":"emoji","features":["feature1","feature2","feature3","feature4"]},{"name":"...","nameEn":"...","type":"...","description":"...","descriptionEn":"...","tags":[],"tagsEn":[],"price":"","color":"","emoji":"","features":[]},{"name":"...","nameEn":"...","type":"...","description":"...","descriptionEn":"...","tags":[],"tagsEn":[],"price":"","color":"","emoji":"","features":[]}]}`;
 
-// ─── System prompt — HTML (avec template de référence) ────────────────────────
-const SYSTEM_HTML = `Tu es un designer UI/UX expert. Tu crées des fichiers HTML autonomes d'une qualité visuelle exceptionnelle. Chaque fichier doit ressembler à une mini-application web premium, pas à un document.
+// ─── System prompt — HTML (v2 — exigences maximales) ─────────────────────────
+const SYSTEM_HTML = `Tu es un designer produit UI/UX de classe mondiale. Tu crées des fichiers HTML autonomes qui ressemblent à des applications web professionnelles, PAS à des documents.
 
-TEMPLATE DE RÉFÉRENCE — Utilise ce style comme base et adapte-le au produit :
+RÈGLES ABSOLUES — si tu ne respectes pas ces règles, le produit est invendable :
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{TITRE}}</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --primary: #6366f1;
-  --primary-light: #818cf8;
-  --primary-bg: #eef2ff;
-  --success: #22c55e;
-  --success-bg: #f0fdf4;
-  --warning: #f59e0b;
-  --warning-bg: #fffbeb;
-  --danger: #ef4444;
-  --bg: #fafafa;
-  --card: #ffffff;
-  --text: #1e293b;
-  --text-light: #64748b;
-  --border: #e2e8f0;
-  --radius: 16px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
-  --shadow-lg: 0 4px 6px rgba(0,0,0,0.04), 0 10px 24px rgba(0,0,0,0.08);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-.container { max-width: 900px; margin: 0 auto; padding: 24px; }
-.header { text-align: center; padding: 48px 0 32px; }
-.header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
-.header p { color: var(--text-light); font-size: 15px; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow); transition: box-shadow 0.2s; }
-.card:hover { box-shadow: var(--shadow-lg); }
-.card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-.badge { display: inline-flex; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; }
-.badge-primary { background: var(--primary-bg); color: var(--primary); }
-.badge-success { background: var(--success-bg); color: var(--success); }
-.progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin: 12px 0; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px; transition: width 0.5s ease; }
-.checkbox-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; cursor: pointer; transition: background 0.15s; }
-.checkbox-item:hover { background: var(--bg); }
-.checkbox-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
-.checkbox-item.done label { text-decoration: line-through; color: var(--text-light); }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.stat-card { text-align: center; padding: 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
-.stat-value { font-size: 32px; font-weight: 700; color: var(--primary); }
-.stat-label { font-size: 13px; color: var(--text-light); margin-top: 4px; }
-.input-field { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
-.input-field:focus { border-color: var(--primary); }
-.btn { padding: 12px 24px; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.2s; }
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); }
-.tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 12px; margin-bottom: 20px; }
-.tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--text-light); }
-.tab.active { background: var(--card); color: var(--text); box-shadow: var(--shadow); }
-@media print { body { background: white; } .card { box-shadow: none; break-inside: avoid; } }
-@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .container { padding: 16px; } }
-</style>
-</head>
+1. MINIMUM 350 LIGNES DE CODE — Un fichier plus court est un fichier bâclé. Chaque section doit avoir du VRAI contenu, pas du remplissage.
 
-CHAQUE PRODUIT DOIT :
-- Utiliser ce système de design comme BASE mais adapter les couleurs au thème (fitness=vert/énergie, budget=bleu/confiance, cuisine=orange/chaleur, mariage=rose/élégance, etc.)
-- Avoir au minimum 300 lignes de HTML
-- Contenir au moins 6 sections avec du VRAI contenu utile (pas de placeholders)
-- Inclure de l'interactivité JavaScript : checkboxes qui sauvegardent en localStorage, barres de progression automatiques, calculs dynamiques, onglets fonctionnels
-- Avoir des animations CSS douces (transitions, hover effects)
-- Être visuellement DIFFÉRENT des autres produits de la même génération (couleurs différentes, layout différent, type d'interactivité différent)
+2. DESIGN SYSTEM OBLIGATOIRE :
+- Définir des CSS custom properties dans :root (--primary, --primary-light, --primary-bg, --success, --bg, --card, --text, --text-light, --border, --radius, --shadow, --shadow-lg)
+- Adapter TOUTES les couleurs à la niche :
+  budget/finance → bleu foncé #1e40af + tons bleus
+  fitness/sport → vert émeraude #059669 + tons verts
+  cuisine/food → orange chaud #ea580c + tons orangés
+  mariage/wedding → rose élégant #be185d + tons roses
+  voyage/travel → bleu ciel #0284c7 + tons bleu clair
+  bien-être/wellness → violet lavande #7c3aed + tons violets
+  productivité → gris anthracite #374151 + tons neutres
+  éducation → indigo #4338ca + tons indigo
+- NE JAMAIS utiliser la palette violet/indigo par défaut pour toutes les niches
+- Google Fonts : Inter pour le texte + une font d'accent selon le ton (Playfair Display pour luxe/élégance, Sora pour moderne/tech, DM Serif Display pour éditorial)
 
-TYPES DE PRODUITS ET CONTENU ATTENDU :
+3. COMPOSANTS UI RICHES obligatoires (utiliser au moins 5 parmi) :
+- Cards avec ombre et hover effect (transform: translateY(-2px) + shadow augmentée)
+- Checkboxes stylisées qui se barrent quand cochées + sauvegarde localStorage
+- Barres de progression animées (width transition 0.5s) calculées automatiquement
+- Onglets (tabs) fonctionnels qui switchent le contenu sans recharger
+- Champs de saisie stylisés (input, textarea) avec focus effect coloré
+- Boutons avec hover/active states et transitions douces
+- Badges colorés (statut, catégorie, priorité)
+- Grille responsive (CSS Grid ou Flexbox) qui passe en 1 colonne sur mobile
+- Compteurs automatiques (tâches complétées, totaux, moyennes)
+- Accordéons (sections repliables au clic)
 
-TRACKER/PLANNER : Cards avec checkboxes par catégorie, barre de progression globale, stats en haut (% complété, jours restants), section notes éditable, onglets par période (semaine/mois), sauvegarde localStorage
+4. JAVASCRIPT INTERACTIF OBLIGATOIRE — CHAQUE ÉLÉMENT DOIT FONCTIONNER :
+- TOUTES les données utilisateur se sauvegardent en localStorage
+- Clé localStorage unique : 'storeclone_' + slug du nom produit (ex: 'storeclone_budget-mensuel')
+- Au chargement (DOMContentLoaded), restaurer TOUTES les données sauvegardées
+- Les checkboxes : addEventListener('change') → toggle classe 'done' sur le parent → save() → updateProgress()
+- Les champs input/textarea : addEventListener('blur') → save()
+- Les calculs : addEventListener('input') sur les champs numériques → recalculer en temps réel
+- Les onglets : addEventListener('click') → toggle classe 'active' sur tab + show/hide sections
+- Fonction updateProgress() qui calcule % = (cochés / total) * 100 et met à jour les barres et compteurs
+- Bouton "Réinitialiser" : vide localStorage + reload()
+- TESTER chaque interaction mentalement — pas de code mort, pas de function déclarée mais jamais appelée
 
-WORKBOOK/GUIDE : Sections numérotées avec contenu éducatif réel, exercices interactifs avec champs de saisie, quiz avec auto-correction, barre de progression par chapitre, design livre/magazine
+5. CONTENU RÉEL ET UTILE — JAMAIS de placeholders :
+- JAMAIS "Tâche 1", "Item A", "Catégorie X", "Lorem ipsum"
+- Chaque item = vrai contenu pertinent pour la niche
+  budget → "Loyer", "Courses alimentaires", "Transport", "Électricité", "Internet", "Assurance auto", "Épargne", "Loisirs", "Vêtements", "Santé/Pharma", "Abonnements", "Restaurant", "Sport", "Cadeau", "Imprévus"
+  fitness → "Squats 3×12", "Pompes 3×15", "Planche 60s", "Fentes 3×10", "Burpees 3×8", "Tractions 3×6", "Crunches 3×20", "Mountain climbers 3×30s"
+  cuisine → vraies recettes avec ingrédients réels et temps de cuisson
+  mariage → vraies tâches (traiteur, photographe, DJ, fleuriste, invitations, robe, alliances...)
+- Au moins 15-20 items de contenu réel par produit
 
-DASHBOARD/TRACKER CHIFFRÉ : Champs de saisie numériques, calculs automatiques (totaux, moyennes, %), graphiques CSS (barres horizontales colorées), comparaisons objectif vs réel, tableau récapitulatif stylisé
+6. ANIMATIONS ET MICRO-INTERACTIONS :
+- @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+- animation: fadeIn 0.4s ease sur les sections au chargement
+- transition: all 0.2s ease sur TOUS les éléments interactifs
+- Hover sur cards : transform: translateY(-2px) + box-shadow augmentée
+- Checkboxes : transition sur text-decoration et color
+- Barres de progression : transition: width 0.5s ease
+- Boutons actifs : transform: scale(0.98)
 
-TEMPLATE IMPRIMABLE : Design soigné orienté impression, @media print optimisé, sections clairement délimitées, espaces pour écrire, design épuré mais élégant
+7. RESPONSIVE + PRINT :
+- @media (max-width: 768px) : grille en 1 colonne, padding réduit (16px), font-size ajusté
+- @media print : pas de shadows, pas de backgrounds colorés, break-inside: avoid sur les cards
 
-IMPORTANT : Chaque produit d'une génération doit être un TYPE DIFFÉRENT. Si la niche est "budget", génère par exemple : 1) un dashboard de suivi des dépenses avec calculs, 2) un planner budgétaire mensuel avec objectifs, 3) un workbook d'éducation financière avec exercices. PAS 3 variations du même tracker.
+8. STRUCTURE OBLIGATOIRE DU FICHIER :
+- <head> : meta charset, viewport, title, Google Fonts link, <style> complet
+- Header : emoji grand format (48px) + titre H1 + sous-titre + date auto (new Date().toLocaleDateString('fr-FR'))
+- Section stats : 3-4 .stat-card avec compteurs dynamiques (tâches cochées, %, total)
+- 4-6 sections de contenu principal avec vrai contenu
+- Section notes/commentaires avec textarea sauvegardé
+- Footer : bouton Réinitialiser + crédit discret
+- <script> : DOMContentLoaded, save(), load(), updateProgress(), et handlers d'events
 
-Réponds UNIQUEMENT avec le code HTML complet, sans markdown, sans backticks, sans explication. Juste le HTML de <!DOCTYPE html> à </html>.`;
+RAPPEL FINAL : Tu réponds UNIQUEMENT avec le code HTML complet, de <!DOCTYPE html> à </html>. Aucun markdown, aucun backtick, aucune explication avant ou après.`;
 
 // ─── Appel Anthropic ──────────────────────────────────────────────────────────
 async function callAnthropic(system, userMsg, maxTokens) {
@@ -210,7 +200,7 @@ IMPÉRATIF : Les 3 produits doivent être de TYPES RADICALEMENT DIFFÉRENTS (TRA
   } else if (type === 'product_html') {
     systemPrompt = SYSTEM_HTML;
     userPrompt = prompt; // Prompt complet construit côté frontend
-    maxTokens = 8000;
+    maxTokens = 12000;
 
   // ── Legacy : tout en un seul appel (fallback) ─────────────────────────────────
   } else {

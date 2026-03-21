@@ -1106,7 +1106,8 @@ Le fichier doit faire minimum 300 lignes, contenir du vrai contenu spécifique �
       return callAPI(htmlPrompt,'product_html').then(html=>{
         const start=html.indexOf('<!DOCTYPE');
         const htmlContent=start>=0?html.slice(start):html;
-        console.log('[generate] HTML',i+1,'terminé —',htmlContent.length,'chars');
+        const v=validateHTML(htmlContent,p.name);
+        console.log('[generate] HTML',i+1,'terminé —',htmlContent.length,'chars |',v.lineCount,'lignes');
         prog.complete(i+1);
         return htmlContent;
       }).catch(err=>{
@@ -1291,7 +1292,28 @@ ${p.tagsEn.join(', ')}
   btn.disabled=false;btn.textContent='↓ Télécharger ZIP';
 }
 
-function preview(i){if(!currentGen)return;const p=currentGen.products[i];const w=window.open('','_blank');w.document.write(p.htmlContent||'');w.document.close();}
+function preview(i){
+  if(!currentGen)return;
+  const p=currentGen.products[i];
+  // Blob URL : seul moyen fiable d'exécuter du JS (document.write peut bloquer les scripts)
+  const blob=new Blob([p.htmlContent||''],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  window.open(url,'_blank');
+  setTimeout(()=>URL.revokeObjectURL(url),10000);
+}
+// ─── Validation qualité HTML ──────────────────────────────────────────────────
+function validateHTML(html,productName){
+  const hasScript=html.includes('<script>')&&html.includes('localStorage');
+  const hasCheckbox=html.includes('type="checkbox"')||html.includes("type='checkbox'");
+  const hasStyle=html.includes('<style>')&&html.includes(':root');
+  const lineCount=html.split('\n').length;
+  console.log(`[Validate] "${productName}" — Lignes: ${lineCount} | Script+localStorage: ${hasScript} | Checkbox: ${hasCheckbox} | Style+:root: ${hasStyle}`);
+  if(!hasStyle||lineCount<=100){
+    console.warn(`[Validate] ⚠️ QUALITÉ INSUFFISANTE — "${productName}" (${lineCount} lignes, style:${hasStyle}) → le fallback était préférable`);
+  }
+  return{valid:hasStyle&&lineCount>100,lineCount,hasScript,hasCheckbox};
+}
+
 function copyProd(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText(`${p.nameFr||p.name||''}\n\n${p.descFr||p.desc||''}\n\nTags: ${(p.tags||[]).join(', ')}\nPrix: €${p.price}`).then(()=>showToast('Copié !'));}
 function copyDesc(i){if(!currentGen)return;const p=currentGen.products[i];const txt=`${p.nameFr||''}\n\n${p.descFr||''}\n\n---\n\n${p.nameEn||''}\n\n${p.descEn||''}`;navigator.clipboard.writeText(txt).then(()=>showToast('Description copiée !'));}
 function copyTags(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText((p.tags||[]).join(', ')).then(()=>showToast('Tags copiés !'));}
