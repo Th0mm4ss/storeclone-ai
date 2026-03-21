@@ -173,6 +173,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
     <div class="ni" id="nav-generator" onclick="showPage('generator')"><span class="nii">⚡</span> Générateur</div>
     <div class="ni" id="nav-history" onclick="showPage('history')"><span class="nii">↺</span> Historique</div>
     <div class="sbs">Compte</div>
+    <div class="ni" id="nav-plans" onclick="showPage('plans')"><span class="nii">💎</span> Plans</div>
     <div class="ni" id="nav-settings" onclick="showPage('settings')"><span class="nii">◎</span> Paramètres</div>
     <div class="su" onclick="logout()">
       <div class="ua" id="userAvatar">T</div>
@@ -188,37 +189,91 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
   <main class="am">
 
     <div class="page active" id="page-dashboard">
-      <div class="ph"><div class="pt" id="dashWelcome">Bonjour 👋</div><div class="ps">Bienvenue sur StoreClone AI.</div></div>
-      <div class="sr">
+      <div class="ph"><div class="pt" id="dashGreeting">Bonjour 👋</div><div class="ps">Bienvenue sur StoreClone AI.</div></div>
+      <div id="dashWelcomeBlock" style="display:none;text-align:center;padding:48px 24px;background:var(--white);border:1px solid var(--border);border-radius:16px;margin-bottom:24px;">
+        <div style="font-size:32px;margin-bottom:16px;">🎉</div>
+        <div style="font-size:20px;font-weight:600;letter-spacing:-0.5px;margin-bottom:8px;">Bienvenue sur StoreClone AI !</div>
+        <div style="font-size:14px;color:var(--gray);font-weight:300;margin-bottom:24px;">Créez votre première fiche produit en 60 secondes.</div>
+        <button class="bf" onclick="showPage('generator')" style="display:inline-flex;gap:8px;align-items:center;">Générer ma première fiche →</button>
+      </div>
+      <div class="sr dash-stats">
         <div class="sc"><div class="sl2">Fiches générées</div><div class="sv" id="statStores">0</div><div class="ss">depuis le début</div></div>
         <div class="sc"><div class="sl2">Produits créés</div><div class="sv" id="statProducts">0</div><div class="ss">fichiers HTML interactifs</div></div>
         <div class="sc"><div class="sl2">ZIPs téléchargés</div><div class="sv" id="statZips">0</div><div class="ss">prêts à publier</div></div>
       </div>
       <div class="qa2">
-        <div class="qa" onclick="showPage('generator')"><div class="qi">⚡</div><div class="qtt">Nouvelle génération</div><div class="qd">Générez vos fiches produits avec vrais fichiers HTML</div></div>
+        <div class="qa" onclick="showPage('generator')"><div class="qi">⚡</div><div class="qtt">Nouvelle génération</div><div class="qd">Générez vos fiches produits SEO</div></div>
         <div class="qa" onclick="showPage('history')"><div class="qi">↺</div><div class="qtt">Historique</div><div class="qd">Retrouvez vos générations précédentes</div></div>
       </div>
       <div class="card"><div class="ct">Activité récente</div><div id="dashRecent"><div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage('generator')">Créer vos premières fiches →</span></div></div></div>
     </div>
 
     <div class="page" id="page-generator">
-      <div class="ph"><div class="pt">Générateur</div><div class="ps">Entrez une niche — l'IA génère 3 vrais produits HTML interactifs + un ZIP prêt à uploader sur Etsy.</div></div>
+      <div class="ph"><div class="pt">Générateur</div><div class="ps">Générez vos fiches produits SEO — titres, descriptions, tags et prix, prêts à publier sur Etsy, Shopify, Gumroad.</div></div>
       <div class="gl">
         <div>
           <div class="gic">
             <div class="git">Quelle est votre niche ?</div>
-            <div class="gis">L'IA va créer de vrais fichiers HTML interactifs adaptés à votre niche.</div>
+            <div class="gis">L'IA va créer 3 fiches produits SEO optimisées adaptées à votre niche.</div>
             <div class="gnw"><input class="gni" id="nicheInput" placeholder="Ex: yoga, mariage, budget, cuisine, productivité..." onkeydown="if(event.key==='Enter')generate()"><button class="gb" id="genBtn" onclick="generate()">Générer ↗</button></div>
+            <div id="quotaDisplay" style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-size:12px;color:var(--gray);font-weight:400;" id="quotaLabel">0 / 3 fiches ce mois</span>
+                <span style="font-size:12px;color:var(--gray);font-weight:300;" id="quotaRemaining">3 restantes</span>
+              </div>
+              <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+                <div id="quotaBarGen" style="height:100%;background:var(--black);border-radius:2px;transition:width 0.3s;width:0%"></div>
+              </div>
+            </div>
             <div class="nl">Niches populaires</div>
-            <div class="np">
+            <div class="np" style="flex-wrap:wrap;">
               <span onclick="setNiche('Yoga et méditation')">🧘 Yoga</span>
-              <span onclick="setNiche('Planification de mariage')">💍 Mariage</span>
-              <span onclick="setNiche('Fitness et musculation')">💪 Fitness</span>
-              <span onclick="setNiche('Gestion du budget')">💰 Budget</span>
               <span onclick="setNiche('Recettes de cuisine')">🍳 Cuisine</span>
-              <span onclick="setNiche('Productivité')">📋 Productivité</span>
+              <span onclick="setNiche('Planification de mariage')">💑 Mariage</span>
+              <span onclick="setNiche('Fitness et musculation')">💪 Fitness</span>
+              <span onclick="setNiche('Gestion du budget')">💰 Finance</span>
+              <span onclick="setNiche('Musique et composition')">🎧 Musique</span>
+              <span onclick="setNiche('Photographie')">📸 Photo</span>
               <span onclick="setNiche('Voyage')">✈️ Voyage</span>
-              <span onclick="setNiche('Jardinage')">🌱 Jardinage</span>
+              <span onclick="setNiche('Éducation et formation')">🎓 Éducation</span>
+              <span onclick="setNiche('Business et entrepreneuriat')">💼 Business</span>
+              <span onclick="setNiche('Animaux de compagnie')">🐾 Animaux</span>
+              <span onclick="setNiche('Art et créativité')">🎨 Art</span>
+              <span onclick="setNiche('Réseaux sociaux et marketing')">📱 Réseaux sociaux</span>
+              <span onclick="setNiche('Décoration intérieure')">🏠 Décoration</span>
+              <span onclick="setNiche('Enfants et parentalité')">🧒 Enfants</span>
+              <span onclick="setNiche('Bien-être et santé mentale')">💆 Bien-être</span>
+            </div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <button type="button" onclick="toggleAdvanced()" style="background:none;border:none;font-size:13px;color:var(--gray);cursor:pointer;font-family:'Inter',sans-serif;padding:0;display:flex;align-items:center;gap:4px;">
+              <span id="advArrow">▸</span> Options avancées
+            </button>
+            <div id="advancedOptions" style="display:none;margin-top:12px;gap:12px;flex-direction:column;">
+              <div class="fg">
+                <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Fourchette de prix</label>
+                <select class="fi" id="optPrice" style="cursor:pointer;">
+                  <option value="economique">Économique (5–10 €)</option>
+                  <option value="standard" selected>Standard (10–20 €)</option>
+                  <option value="premium">Premium (20–35 €)</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Ton</label>
+                <select class="fi" id="optTone" style="cursor:pointer;">
+                  <option value="professionnel" selected>Professionnel</option>
+                  <option value="decontracte">Décontracté</option>
+                  <option value="luxe">Luxe</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Langue principale</label>
+                <select class="fi" id="optLang" style="cursor:pointer;">
+                  <option value="both" selected>Français + Anglais</option>
+                  <option value="fr">Français uniquement</option>
+                  <option value="en">Anglais uniquement</option>
+                </select>
+              </div>
             </div>
           </div>
           <div class="gp" id="genProgress">
@@ -230,7 +285,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
             <div class="rh">
               <div class="rt" id="resultsTitle">Fiches générées</div>
               <div class="ras">
-                <button class="bs" onclick="copyAllText()">📋 Copier</button>
+                <button class="bs" onclick="copyAllText()">📋 Copier tout</button>
+                <button class="bs" id="regenBtn" onclick="regenerate()" style="display:none;">🔄 Régénérer</button>
                 <button class="bs green" id="downloadBtn" onclick="downloadZip()">↓ Télécharger ZIP</button>
               </div>
             </div>
@@ -268,6 +324,16 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
     <div class="page" id="page-history">
       <div class="ph"><div class="pt">Historique</div><div class="ps">Vos générations précédentes.</div></div>
       <div id="historyContent"><div class="he"><div class="hei">↺</div><div class="het">Aucune génération pour le moment.</div></div></div>
+    </div>
+
+    <div class="page" id="page-plans">
+      <div class="ph"><div class="pt">Choisir un plan</div><div class="ps cd">Sélectionnez la durée et le plan adapté à votre activité.</div></div>
+      <div style="display:flex;gap:8px;margin:0 0 24px;flex-wrap:wrap;">
+        <button class="bs active" id="appTabMonthly" onclick="setAppPeriod('monthly')">Mensuel</button>
+        <button class="bs" id="appTabQuarterly" onclick="setAppPeriod('quarterly')">3 mois (-10%)</button>
+        <button class="bs" id="appTabYearly" onclick="setAppPeriod('yearly')">1 an (-20%)</button>
+      </div>
+      <div id="appPlanCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;"></div>
     </div>
 
     <div class="page" id="page-settings">
@@ -545,8 +611,8 @@ function bootApp(){
     if(planEl)planEl.textContent=`Plan ${cap(subscription?.plan||'starter')}`;
 
     // ── Dashboard ──
-    const welcomeEl=document.getElementById('dashWelcome');
-    if(welcomeEl)welcomeEl.textContent=`Bonjour, ${name} 👋`;
+    const greetingEl=document.getElementById('dashGreeting');
+    if(greetingEl)greetingEl.textContent=`Bonjour, ${name} 👋`;
 
     // ── Settings ──
     const sName=document.getElementById('settingName');
@@ -560,6 +626,21 @@ function bootApp(){
     updateStats();
     renderDashRecent();
     updateQuotaBar();
+    renderQuota();
+
+    // ── Welcome block (onboarding) ──
+    const welcomeBlock=document.getElementById('dashWelcomeBlock');
+    if(welcomeBlock){
+      if(generations.length===0){
+        welcomeBlock.style.display='block';
+        const statsEl=document.querySelector('.dash-stats');
+        if(statsEl)statsEl.style.display='none';
+      }else{
+        welcomeBlock.style.display='none';
+        const statsEl=document.querySelector('.dash-stats');
+        if(statsEl)statsEl.style.display='';
+      }
+    }
 
     // ── Basculer la vue — c'est l'étape critique ──
     console.log('[App] switching to view-app…');
@@ -603,7 +684,7 @@ async function saveSettings(){
   profile.name=name;
   document.getElementById('userAvatar').textContent=name[0].toUpperCase();
   document.getElementById('userName').textContent=name;
-  document.getElementById('dashWelcome').textContent=`Bonjour, ${name} 👋`;
+  document.getElementById('dashGreeting').textContent=`Bonjour, ${name} 👋`;
   showToast('Paramètres enregistrés');
 }
 
@@ -659,6 +740,42 @@ function updateQuotaBar(){
   const plan=subscription?.plan||'starter';
   const limitLabel=limit===Infinity?'∞':limit;
   el.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:5px"><span>Générations ce mois</span><span>${used}/${limitLabel}</span></div><div style="height:4px;background:var(--light);border-radius:2px;overflow:hidden"><div style="height:100%;background:${pct>=90?'#c0392b':pct>=70?'#e67e22':'var(--black)'};width:${pct}%;transition:width 0.3s;border-radius:2px"></div></div>${pct>=90&&limit!==Infinity?`<div style="font-size:11px;color:#c0392b;margin-top:5px">Quota presque atteint. <span style="cursor:pointer;font-weight:500;text-decoration:underline" onclick="showPage('settings')">Passer à l'offre supérieure</span></div>`:''}`;
+}
+
+function renderQuota() {
+  const plan = subscription?.plan || 'starter';
+  const limits = { starter: 3, pro: 30, business: Infinity };
+  const limit = limits[plan] || 3;
+  const used = getMonthlyCount();
+
+  const label = document.getElementById('quotaLabel');
+  const remaining = document.getElementById('quotaRemaining');
+  const bar = document.getElementById('quotaBarGen');
+  const generateBtn = document.getElementById('genBtn');
+
+  if (!label) return;
+
+  if (limit === Infinity) {
+    label.textContent = used + ' fiches ce mois';
+    if (remaining) remaining.textContent = '∞ restantes';
+    if (bar) bar.style.width = '0%';
+    if (generateBtn) { generateBtn.disabled = false; generateBtn.textContent = 'Générer ↗'; }
+  } else {
+    const pct = Math.min((used / limit) * 100, 100);
+    label.textContent = used + ' / ' + limit + ' fiches ce mois';
+    if (remaining) remaining.textContent = Math.max(limit - used, 0) + ' restante' + (Math.max(limit - used, 0) > 1 ? 's' : '');
+    if (bar) bar.style.width = pct + '%';
+    if (used >= limit) {
+      if (bar) bar.style.background = '#c0392b';
+      if (generateBtn) {
+        generateBtn.disabled = true;
+        generateBtn.textContent = 'Quota atteint';
+      }
+    } else {
+      if (bar) bar.style.background = 'var(--black)';
+      if (generateBtn) { generateBtn.disabled = false; generateBtn.textContent = 'Générer ↗'; }
+    }
+  }
 }
 
 // ─── Plans UI ─────────────────────────────────────────────────────────────────
@@ -732,6 +849,67 @@ function setPeriod(p){
   }
 }
 
+// ─── Plans Page ───────────────────────────────────────────────────────────────
+let _appPeriod = 'monthly';
+
+const APP_PERIOD_PRICES = {
+  pro:      { monthly: { amount: '19', label: 'par mois, sans engagement', period: 'monthly' }, quarterly: { amount: '17', label: 'Économisez 10%', period: 'quarterly' }, yearly: { amount: '15', label: 'Économisez 20%', period: 'yearly' } },
+  business: { monthly: { amount: '49', label: 'par mois, sans engagement', period: 'monthly' }, quarterly: { amount: '44', label: 'Économisez 10%', period: 'quarterly' }, yearly: { amount: '39', label: 'Économisez 20%', period: 'yearly' } }
+};
+
+function setAppPeriod(p) {
+  _appPeriod = p;
+  ['monthly','quarterly','yearly'].forEach(function(id) {
+    var btn = document.getElementById('appTab' + id.charAt(0).toUpperCase() + id.slice(1));
+    if (btn) btn.classList.toggle('active', id === p);
+  });
+  renderAppPlanCards();
+}
+
+function renderAppPlanCards() {
+  var container = document.getElementById('appPlanCards');
+  if (!container) return;
+  var currentPlan = subscription?.plan || 'starter';
+
+  var cards = [
+    {
+      id: 'starter',
+      name: 'Starter',
+      amount: '0',
+      label: 'Gratuit pour toujours',
+      features: ['3 fiches par mois', 'Titres, descriptions, tags', 'Bilingue FR + EN', 'Export ZIP']
+    },
+    {
+      id: 'pro',
+      name: 'Pro',
+      amount: APP_PERIOD_PRICES.pro[_appPeriod].amount,
+      label: APP_PERIOD_PRICES.pro[_appPeriod].label,
+      features: ['30 générations par mois', '3 produits par génération', 'Export ZIP immédiat', 'SEO avancé et tags complets', 'Génération bilingue', 'Assistance prioritaire']
+    },
+    {
+      id: 'business',
+      name: 'Business',
+      amount: APP_PERIOD_PRICES.business[_appPeriod].amount,
+      label: APP_PERIOD_PRICES.business[_appPeriod].label,
+      features: ['Générations illimitées', 'Tout le plan Pro', 'Accès prioritaire aux nouveautés', 'Support dédié']
+    }
+  ];
+
+  container.innerHTML = cards.map(function(c) {
+    var isCurrent = c.id === currentPlan;
+    var btnHtml = isCurrent
+      ? '<div style="padding:10px;text-align:center;font-size:13px;color:var(--gray);font-weight:500;">✓ Plan actuel</div>'
+      : (c.id === 'starter' ? '<button class="bf" onclick="showPage(\'generator\')" style="width:100%">Commencer gratuitement</button>' : '<button class="bf" onclick="startCheckout(\'' + c.id + '\',\'' + _appPeriod + '\')" style="width:100%">Choisir ' + c.name + '</button>');
+    return '<div style="background:var(--white);border:1px solid ' + (isCurrent ? 'var(--black)' : 'var(--border)') + ';border-radius:16px;padding:24px;">' +
+      '<div style="font-size:16px;font-weight:600;margin-bottom:4px;">' + c.name + '</div>' +
+      '<div style="font-size:28px;font-weight:600;letter-spacing:-1px;margin:12px 0 4px;"><sup style="font-size:14px;">€</sup>' + c.amount + '</div>' +
+      '<div style="font-size:12px;color:var(--gray);margin-bottom:16px;">' + c.label + '</div>' +
+      '<div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:16px;">' +
+      c.features.map(function(f) { return '<div style="font-size:13px;color:var(--dark);padding:4px 0;font-weight:300;">✓ ' + f + '</div>'; }).join('') +
+      '</div>' + btnHtml + '</div>';
+  }).join('');
+}
+
 // ─── Navigation ───────────────────────────────────────────────────────────────
 function showView(id){
   console.log('[UI] showView →', id);
@@ -751,7 +929,8 @@ function showPage(p){
   document.getElementById('nav-'+p)?.classList.add('active');
   if(p==='history')renderHistory();
   if(p==='settings'){renderPlanCards();updateQuotaBar();}
-  if(p==='generator')updateUpsellWidget();
+  if(p==='generator'){updateUpsellWidget();renderQuota();}
+  if(p==='plans')renderAppPlanCards();
 }
 
 function updateUpsellWidget(){
@@ -775,9 +954,19 @@ function updateUpsellWidget(){
 }
 function setNiche(v){document.getElementById('nicheInput').value=v;document.getElementById('nicheInput').focus();}
 
+var _advOpen = false;
+function toggleAdvanced() {
+  _advOpen = !_advOpen;
+  var el = document.getElementById('advancedOptions');
+  var arrow = document.getElementById('advArrow');
+  if (el) el.style.display = _advOpen ? 'flex' : 'none';
+  if (arrow) arrow.textContent = _advOpen ? '▾' : '▸';
+}
+
 // ─── API ──────────────────────────────────────────────────────────────────────
-async function callAPI(prompt,type='metadata'){
-  const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,type})});
+async function callAPI(prompt,type='metadata',opts={}){
+  const body={prompt,type,...opts};
+  const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const data=await res.json();
   if(data.error)throw new Error(data.error.message||'Erreur API');
   return data.content.map(b=>b.text||'').join('');
@@ -809,6 +998,10 @@ async function generate(){
   const niche=document.getElementById('nicheInput').value.trim();
   if(!niche){showToast('Entrez une niche');return;}
   if(!checkQuota())return;
+  const optPrice=document.getElementById('optPrice')?.value||'standard';
+  const optTone=document.getElementById('optTone')?.value||'professionnel';
+  const optLang=document.getElementById('optLang')?.value||'both';
+  const genOpts={priceRange:optPrice,tone:optTone,outputLang:optLang};
   const btn=document.getElementById('genBtn');
   btn.disabled=true;
   document.getElementById('genResults').classList.remove('visible');
@@ -825,7 +1018,7 @@ Réponds UNIQUEMENT en JSON sans backticks:
 {"type":"...","nameFr":"...","nameEn":"...","descFr":"...","descEn":"...","tags":[13 tags],"tagsEn":[5 tags],"price":"...","color":"#hex","emoji":"..."},
 {"type":"...","nameFr":"...","nameEn":"...","descFr":"...","descEn":"...","tags":[13 tags],"tagsEn":[5 tags],"price":"...","color":"#hex","emoji":"..."}
 ]}
-Prix entre 9.99 et 24.99. Vraiment adapté à "${niche}".`,'metadata');
+Prix entre 9.99 et 24.99. Vraiment adapté à "${niche}".`,'metadata',genOpts);
     const s=metaRaw.indexOf('{'),e=metaRaw.lastIndexOf('}');
     const meta=JSON.parse(metaRaw.slice(s,e+1));
     const products=[];
@@ -912,7 +1105,9 @@ function showResults(){
     grid.appendChild(card);
   });
   document.getElementById('genResults').classList.add('visible');
-  showToast(`${products.length} vrais fichiers HTML générés ! Téléchargez le ZIP 🎉`);
+  const regenBtn=document.getElementById('regenBtn');
+  if(regenBtn)regenBtn.style.display='inline-flex';
+  showToast(`${products.length} fiches produits générées ! Téléchargez le ZIP 🎉`);
 }
 
 // ─── ZIP ──────────────────────────────────────────────────────────────────────
@@ -989,12 +1184,25 @@ ${p.tagsEn.join(', ')}
 
 function preview(i){if(!currentGen)return;const p=currentGen.products[i];const w=window.open('','_blank');w.document.write(p.htmlContent);w.document.close();}
 function copyProd(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText(`${p.nameFr}\n\n${p.descFr}\n\nTags: ${p.tags.join(', ')}\nPrix: €${p.price}`).then(()=>showToast('Copié !'));}
-function copyAllText(){if(!currentGen)return;navigator.clipboard.writeText(currentGen.products.map(p=>`=== ${p.nameFr} ===\n${p.descFr}\nTags: ${p.tags.join(', ')}\nPrix: €${p.price}`).join('\n\n')).then(()=>showToast('Tout copié !'));}
+function copyAllText(){
+  if(!currentGen)return;
+  const text=currentGen.products.map((p,i)=>{
+    return `--- Produit ${i+1}: ${p.nameFr||p.name||''} ---\nType: ${p.type}\nPrix suggéré: ${p.price}\nTags: ${p.tags?.join(', ')}\nDescription: ${p.descFr||p.desc||''}\n`;
+  }).join('\n');
+  navigator.clipboard.writeText(text).then(()=>showToast('Tout copié dans le presse-papier !'));
+}
+
+async function regenerate(){
+  if(!currentGen?.niche)return;
+  const inp=document.getElementById('nicheInput');
+  if(inp)inp.value=currentGen.niche;
+  await generate();
+}
 
 // ─── Historique & Stats ───────────────────────────────────────────────────────
 function renderHistory(){
   const el=document.getElementById('historyContent');
-  if(!generations.length){el.innerHTML='<div class="he"><div class="hei">↺</div><div class="het">Aucune génération pour le moment.</div></div>';return;}
+  if(!generations.length){el.innerHTML='<div style="text-align:center;padding:40px 24px;"><div style="font-size:14px;color:var(--gray);margin-bottom:16px;">Vous n\'avez pas encore généré de fiches.</div><button class="bf" onclick="showPage(\'generator\')" style="display:inline-flex;align-items:center;width:auto;padding:10px 22px;">Créer ma première fiche →</button></div>';return;}
   el.innerHTML=generations.map(h=>`<div class="hi"><div><div class="hn">${h.boutique||h.niche}</div><div class="hm">${h.niche} · ${h.products?.length||0} produits · ${new Date(h.created_at).toLocaleDateString('fr-FR')}</div></div><span style="padding:3px 9px;background:var(--off);border-radius:100px;font-size:12px;color:var(--gray)">${h.products?.length||0} produits</span></div>`).join('');
 }
 

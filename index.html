@@ -61,6 +61,18 @@ body {
   letter-spacing: -0.2px;
 }
 .platform-badge.featured { background: var(--near-black); color: var(--white); border-color: transparent; }
+.plat-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  background: var(--off);
+  border: 1px solid var(--border-dark);
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--near-black);
+  letter-spacing: -0.1px;
+}
 
 /* ─── API CALLOUT ─── */
 .api-callout {
@@ -664,7 +676,9 @@ nav.scrolled {
 .price-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.06); transform: translateY(-2px); }
 .price-card.featured {
   background: var(--black);
-  border-color: var(--black);
+  border: 2px solid var(--black);
+  transform: scale(1.03);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
 }
 .price-card.featured * { color: rgba(255,255,255,0.9) !important; }
 .price-card.featured .price-amount { color: var(--white) !important; }
@@ -833,6 +847,38 @@ nav.scrolled {
 }
 .cta-btn:hover { background: #e8e8e8; transform: scale(1.02); }
 
+/* ─── FAQ ─── */
+.faq-list { border-top: 1px solid var(--border); }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 20px 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--near-black);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.faq-q:hover { color: var(--black); }
+.faq-arrow { font-size: 12px; color: var(--gray); transition: transform 0.2s; flex-shrink: 0; }
+.faq-q.open .faq-arrow { transform: rotate(90deg); }
+.faq-a {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--gray);
+  font-weight: 300;
+  padding-bottom: 20px;
+  display: none;
+}
+.faq-a.open { display: block; }
+
 /* ─── FOOTER ─── */
 footer {
   border-top: 1px solid var(--border);
@@ -913,12 +959,10 @@ footer {
   </div>
   <div class="platforms-row">
     <span class="platforms-label" data-t="platforms_label">Compatible avec</span>
-    <div class="platform-badge featured">⬡ Etsy</div>
-    <div class="platform-badge">◈ Gumroad</div>
-    <div class="platform-badge">▣ Payhip</div>
-    <div class="platform-badge">◉ Creative Market</div>
-    <div class="platform-badge">▲ TikTok Shop</div>
-    <div class="platform-badge">⬡ Shopify</div>
+    <span class="plat-badge">Etsy</span>
+    <span class="plat-badge">Shopify</span>
+    <span class="plat-badge">Gumroad</span>
+    <span class="plat-badge">Payhip</span>
   </div>
 </section>
 
@@ -929,7 +973,7 @@ footer {
       <div class="demo-dot" style="background:#ff5f57"></div>
       <div class="demo-dot" style="background:#febc2e"></div>
       <div class="demo-dot" style="background:#28c840"></div>
-      <div class="demo-addr-bar">app.storeclone.ai</div>
+      <div class="demo-addr-bar">storeclone-ai.vercel.app</div>
     </div>
     <div class="demo-body">
       <div class="demo-label" data-t="demo_title">Générez vos produits maintenant</div>
@@ -1055,7 +1099,7 @@ footer {
         <div class="featured-label" data-t="feat_label">Le plus choisi</div>
         <div class="price-name" data-t="plan2_name">Pro</div>
         <div class="price-amount"><sup>€</sup><span id="lp-pro-price">19</span></div>
-        <div id="lp-pro-savings" class="price-savings-lp" style="display:none"></div>
+        <div id="lp-pro-savings" class="price-savings-lp"></div>
         <div class="price-period" id="lp-pro-period">par mois, sans engagement</div>
         <div class="price-divider"></div>
         <div class="price-feats">
@@ -1072,7 +1116,7 @@ footer {
       <div class="price-card">
         <div class="price-name" data-t="plan3_name">Business</div>
         <div class="price-amount"><sup>€</sup><span id="lp-biz-price">49</span></div>
-        <div id="lp-biz-savings" class="price-savings-lp" style="display:none"></div>
+        <div id="lp-biz-savings" class="price-savings-lp"></div>
         <div class="price-period" id="lp-biz-period">par mois, sans engagement</div>
         <div class="price-divider"></div>
         <div class="price-feats">
@@ -1133,18 +1177,50 @@ footer {
   </div>
 </section>
 
+<!-- ─── FAQ ─── -->
+<section class="s" id="faq">
+  <div class="section-wrap">
+    <div class="section-eyebrow reveal">FAQ</div>
+    <h2 class="section-title reveal reveal-delay-1">Questions <em>fréquentes.</em></h2>
+    <div class="faq-list" style="max-width:720px;margin:48px auto 0;">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Comment fonctionne StoreClone AI ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Entrez simplement votre niche (yoga, cuisine, mariage...) et notre IA génère en 60 secondes des fiches produits complètes : titres, descriptions, tags SEO et prix recommandés. Vous pouvez ensuite les copier ou les télécharger en ZIP.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">C'est vraiment gratuit ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Le plan Starter est 100% gratuit et le reste à vie. Vous pouvez générer 3 fiches par mois sans carte bancaire. Les plans Pro et Business débloquent plus de générations et des fonctionnalités avancées.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Les fiches sont-elles optimisées pour le SEO ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Oui. Chaque fiche est générée avec 13 tags Etsy, un titre optimisé pour la recherche, et des descriptions rédigées pour convertir. Le tout en français et en anglais.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Puis-je annuler mon abonnement à tout moment ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Oui, tous les plans sont sans engagement mensuel. Vous pouvez annuler depuis votre espace client, votre accès reste actif jusqu'à la fin de la période payée.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Quelles plateformes sont supportées ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Les fiches générées sont optimisées pour Etsy, Shopify, Gumroad et Payhip. Vous pouvez les copier-coller ou télécharger le ZIP pour les uploader sur la plateforme de votre choix.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ─── CTA ─── -->
 <section class="cta-section s reveal">
   <div class="cta-inner">
     <h2 class="cta-title" data-t-html="cta_title">Vos prochaines fiches produits<br>commencent <em>maintenant.</em></h2>
-    <p class="cta-sub" data-t="cta_sub">Rejoignez les vendeurs qui utilisent StoreClone AI pour développer leurs revenus passifs sur Etsy — sans compétences techniques, sans investissement initial.</p>
+    <p class="cta-sub" data-t="cta_sub">Rejoignez les vendeurs qui utilisent StoreClone AI pour créer des fiches produits professionnelles — sans compétences techniques, sans investissement initial.</p>
     <a href="/app.html" class="cta-btn" data-t="cta_btn">Essayer gratuitement — 3 fiches offertes</a>
   </div>
 </section>
 
 <!-- ─── FOOTER ─── -->
 <footer class="s">
-  <div class="footer-logo">StoreClone <span>AI</span></div>
+  <div class="footer-logo">StoreClone <span>AI</span>
+    <div style="margin-top:8px;font-size:13px;">Une question ? <a href="mailto:contact@storeclone-ai.com" style="color:var(--near-black)">contact@storeclone-ai.com</a></div>
+  </div>
   <div class="footer-right" style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div style="display:flex;gap:20px">
       <a href="/mentions-legales.html" style="font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">Mentions légales</a>
@@ -1207,7 +1283,7 @@ const TR = {
     t3:'"Le référencement généré automatiquement est d\'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication."',
     t3role:'Vendeuse Etsy, templates',
     cta_title:'Vos prochaines fiches produits<br>commencent <em>maintenant.</em>',
-    cta_sub:'Rejoignez les vendeurs qui utilisent StoreClone AI pour développer leurs revenus passifs sur Etsy — sans compétences techniques, sans investissement initial.',
+    cta_sub:'Rejoignez les vendeurs qui utilisent StoreClone AI pour créer des fiches produits professionnelles — sans compétences techniques, sans investissement initial.',
     cta_btn:'Essayer gratuitement — 3 fiches offertes',
     footer:'© 2025 StoreClone AI. Tous droits réservés.',
     demo_products:[
@@ -1431,8 +1507,8 @@ var LP_LINKS = {
   business: { monthly: 'https://buy.stripe.com/test_14A4gzdm28ZAeqR7z6g360b', quarterly: 'https://buy.stripe.com/test_8x29AT4Pw8ZAbeF2eMg360c', yearly: 'https://buy.stripe.com/test_8x2dR981I6RsaaB8Dag360d' }
 };
 var LP_PRICES = {
-  pro:      { monthly: { amount: '19', label: '', period: 'par mois, sans engagement' }, quarterly: { amount: '17', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '15', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } },
-  business: { monthly: { amount: '49', label: '', period: 'par mois, sans engagement' }, quarterly: { amount: '44', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '39', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } }
+  pro:      { monthly: { amount: '19', label: 'par mois, sans engagement', period: 'par mois, sans engagement' }, quarterly: { amount: '17', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '15', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } },
+  business: { monthly: { amount: '49', label: 'par mois, sans engagement', period: 'par mois, sans engagement' }, quarterly: { amount: '44', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '39', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } }
 };
 var lpPeriod = 'monthly';
 
@@ -1460,7 +1536,7 @@ function setLPPeriod(newPeriod) {
   if (proPrice) proPrice.textContent = proData.amount;
   if (proSavings) {
     proSavings.textContent = proData.label;
-    proSavings.style.display = proData.label ? 'inline-block' : 'none';
+    proSavings.style.display = 'inline-block';
   }
   if (proPeriod) proPeriod.textContent = proData.period;
 
@@ -1472,13 +1548,29 @@ function setLPPeriod(newPeriod) {
   if (bizPrice) bizPrice.textContent = bizData.amount;
   if (bizSavings) {
     bizSavings.textContent = bizData.label;
-    bizSavings.style.display = bizData.label ? 'inline-block' : 'none';
+    bizSavings.style.display = 'inline-block';
   }
   if (bizPeriod) bizPeriod.textContent = bizData.period;
 }
 
 function goLPCheckout(plan) {
   window.location.href = LP_LINKS[plan][lpPeriod];
+}
+
+function toggleFaq(btn) {
+  var item = btn.parentElement;
+  var answer = item.querySelector('.faq-a');
+  var isOpen = btn.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-q.open').forEach(function(b) {
+    b.classList.remove('open');
+    b.parentElement.querySelector('.faq-a').classList.remove('open');
+  });
+  // Open clicked if it was closed
+  if (!isOpen) {
+    btn.classList.add('open');
+    answer.classList.add('open');
+  }
 }
 
 // Initialiser le sélecteur au chargement
