@@ -74,7 +74,14 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .bs.green{background:var(--green);color:var(--white);border-color:var(--green);}
 .bs:disabled{opacity:0.5;cursor:not-allowed;}
 .pg{display:flex;flex-direction:column;gap:10px;}
-.pc{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.pc{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow 0.2s;}.pc:hover{box-shadow:0 4px 24px rgba(0,0,0,0.08);}
+.pc-preview{position:relative;overflow:hidden;border-radius:12px 12px 0 0;background:#f5f5f7;height:300px;}
+.pc-preview iframe{width:100%;height:300px;border:none;pointer-events:none;border-radius:12px 12px 0 0;}
+.pc-preview-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s;}
+.pc-preview-ov:hover{background:rgba(0,0,0,0.35);}
+.pc-preview-ov span{color:white;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.2s;background:rgba(0,0,0,0.65);padding:8px 18px;border-radius:8px;}
+.pc-preview-ov:hover span{opacity:1;}
+.prog-sub{font-size:11px;color:var(--gray);font-weight:300;margin-top:4px;min-height:16px;transition:all 0.3s;}
 .pch{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;}
 .pcl{display:flex;align-items:center;gap:10px;}
 .pcb{padding:3px 9px;background:var(--off);border-radius:6px;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;}
@@ -84,7 +91,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .pcs{font-size:11px;padding:3px 8px;border-radius:100px;font-weight:500;}
 .pcs.done{background:var(--gp);color:var(--green);}
 .pct{cursor:pointer;font-size:11px;color:var(--gray);background:none;border:none;font-family:'Inter',sans-serif;padding:0;}
-.pcb2{padding:0 20px 16px;display:none;}.pcb2.open{display:block;}
+.pcb2{padding:0 20px 16px;}.pcb2{display:block;}
 .pcsec{margin-bottom:12px;}
 .pcsl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:5px;}
 .pcd{font-size:13px;color:var(--dark);line-height:1.65;font-weight:300;}
@@ -280,6 +287,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
             <div class="gpt" id="progTitle">Génération en cours...</div>
             <div class="pb"><div class="pf" id="progFill"></div></div>
             <div class="pss" id="progSteps"></div>
+            <div class="prog-sub" id="progSub"></div>
           </div>
           <div class="gr" id="genResults">
             <div class="rh">
@@ -392,7 +400,8 @@ const PLAN_LABELS={starter:'Starter — Gratuit',pro:'Pro — 19€/mois',busine
 // ─── État global ─────────────────────────────────────────────────────────────
 let authUser=null,profile=null,subscription=null,generations=[],currentGen=null;
 let _planPeriod='monthly'; // Période active dans le sélecteur de plans
-const STEPS=['Analyse de la niche…','Identification des 3 meilleurs produits…','Génération Produit 1 (HTML interactif)…','Génération Produit 2 (HTML interactif)…','Génération Produit 3 (HTML interactif)…','Optimisation SEO et tags…','Préparation du ZIP…'];
+const STEPS=['Analyse de la niche…','Création des produits en cours…','Génération des fichiers HTML…','Optimisation SEO et tags…','Finalisation et qualité…'];
+const SUB_MSGS=[['Analyse du marché...','Recherche des tendances...','Identification des opportunités...'],['Conception des fiches produits...','Rédaction des descriptions SEO...','Calibrage des prix...'],['Design de l\'interface premium...','Intégration JavaScript...','Test des fonctionnalités...'],['Optimisation des 13 tags Etsy...','Calibrage pour l\'algorithme...','Vérification de la pertinence...'],['Contrôle qualité final...','Préparation du ZIP...','Tout est prêt !']];
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 // _appStarted : verrou définitif — une fois true, rien ne peut revenir sur view-auth
@@ -1001,7 +1010,6 @@ async function generate(){
   const optPrice=document.getElementById('optPrice')?.value||'standard';
   const optTone=document.getElementById('optTone')?.value||'professionnel';
   const optLang=document.getElementById('optLang')?.value||'both';
-  const genOpts={priceRange:optPrice,tone:optTone,outputLang:optLang};
   const btn=document.getElementById('genBtn');
   btn.disabled=true;
   document.getElementById('genResults').classList.remove('visible');
@@ -1009,36 +1017,82 @@ async function generate(){
   document.getElementById('infoStatus').textContent='En cours…';
   const prog=initProgress();
   prog.set(0);
+  // Cosmetic progress animation (single API call takes 20-40s)
+  const STEP_DELAYS=[0,5000,12000,20000,27000];
+  const timers=[];
+  for(let i=1;i<STEPS.length;i++){
+    timers.push(setTimeout(()=>{
+      prog.set(i);
+      const msgs=SUB_MSGS[i]||[];
+      const sub=document.getElementById('progSub');
+      if(sub&&msgs.length)sub.textContent=msgs[Math.floor(Math.random()*msgs.length)];
+    },STEP_DELAYS[i]));
+  }
   try{
-    prog.set(1);
-    const metaRaw=await callAPI(`Tu es expert Etsy. Pour la niche "${niche}", génère 3 produits digitaux premium.
-Réponds UNIQUEMENT en JSON sans backticks:
-{"boutique":"Nom boutique créatif","products":[
-{"type":"Tracker|Planner|Journal|Guide|Workbook","nameFr":"Nom FR premium","nameEn":"Name EN premium","descFr":"Description 80 mots FR très convaincante","descEn":"English description 80 words","tags":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13"],"tagsEn":["tag1","tag2","tag3","tag4","tag5"],"price":"X.XX","color":"#hexcouleur","emoji":"emoji"},
-{"type":"...","nameFr":"...","nameEn":"...","descFr":"...","descEn":"...","tags":[13 tags],"tagsEn":[5 tags],"price":"...","color":"#hex","emoji":"..."},
-{"type":"...","nameFr":"...","nameEn":"...","descFr":"...","descEn":"...","tags":[13 tags],"tagsEn":[5 tags],"price":"...","color":"#hex","emoji":"..."}
-]}
-Prix entre 9.99 et 24.99. Vraiment adapté à "${niche}".`,'metadata',genOpts);
-    const s=metaRaw.indexOf('{'),e=metaRaw.lastIndexOf('}');
-    const meta=JSON.parse(metaRaw.slice(s,e+1));
-    const products=[];
-    for(let i=0;i<meta.products.length;i++){
-      prog.set(2+i);
-      const p=meta.products[i];
-      const html=await genHTML(p,niche);
-      products.push({...p,htmlContent:html});
+    const raw=await callAPI(niche,'all',{priceRange:optPrice,tone:optTone,outputLang:optLang});
+    timers.forEach(t=>clearTimeout(t));
+    prog.done();
+    // Parse JSON — robust approach
+    let meta;
+    const s=raw.indexOf('{'),e=raw.lastIndexOf('}');
+    if(s<0||e<0)throw new Error('Réponse invalide de l\'IA');
+    const jsonStr=raw.slice(s,e+1);
+    try{
+      meta=JSON.parse(jsonStr);
+    }catch(parseErr){
+      console.warn('[generate] JSON parse failed, trying repair:',parseErr.message);
+      meta=repairAndParse(jsonStr,niche);
     }
-    prog.set(5);await sleep(200);prog.set(6);await sleep(200);prog.done();
-    currentGen={niche,boutique:meta.boutique,products,date:new Date()};
+    if(!meta?.products?.length)throw new Error('Aucun produit généré — réessayez');
+    const products=meta.products.map(p=>({
+      ...p,
+      htmlContent:p.html||p.htmlContent||fallbackHTML(p,niche)
+    }));
+    currentGen={niche,boutique:meta.boutique||niche,products,date:new Date()};
     await saveGeneration(currentGen);
     updateQuotaBar();
     showResults();
   }catch(err){
-    console.error(err);prog.done();
+    timers.forEach(t=>clearTimeout(t));
+    prog.done();
+    console.error('[generate]',err);
     showToast('Erreur: '+err.message);
     document.getElementById('infoStatus').textContent='Erreur';
   }
   btn.disabled=false;
+}
+
+function repairAndParse(jsonStr,niche){
+  // Attempt to salvage partial JSON when HTML escaping broke it
+  // Strategy: extract boutique + product metadata fields, use fallback HTML
+  try{
+    const boutique=(jsonStr.match(/"boutique"\s*:\s*"([^"]+)"/) ||[])[1]||niche;
+    const products=[];
+    // Find all nameFr fields to identify product boundaries
+    const nameMatches=[...jsonStr.matchAll(/"nameFr"\s*:\s*"([^"]+)"/g)];
+    nameMatches.slice(0,3).forEach((m,i)=>{
+      const seg=jsonStr.slice(m.index,m.index+2000);
+      const get=(re)=>(seg.match(re)||[])[1]||'';
+      const tags=[];
+      const tagsMatch=seg.match(/"tags"\s*:\s*\[([^\]]+)\]/);
+      if(tagsMatch)tagsMatch[1].replace(/"([^"]+)"/g,(_,t)=>tags.push(t));
+      products.push({
+        nameFr:m[1],nameEn:get(/"nameEn"\s*:\s*"([^"]+)"/)||m[1],
+        type:get(/"type"\s*:\s*"([^"]+)"/)||'Template',
+        price:get(/"price"\s*:\s*"([^"]+)"/)||'14.99',
+        color:get(/"color"\s*:\s*"([^"]+)"/)||['#6366f1','#0ea5e9','#10b981'][i],
+        emoji:get(/"emoji"\s*:\s*"([^"]+)"/)||'📋',
+        tags:tags.length?tags:[niche,'digital','template','download','etsy','printable','instant download','pdf','planner','tracker','worksheet','guide','journal'],
+        tagsEn:[niche,'digital template','printable','instant download','planner'],
+        descFr:get(/"descFr"\s*:\s*"([^"]+)"/)|| `Outil premium pour la niche ${niche}. Fichier HTML interactif.`,
+        descEn:get(/"descEn"\s*:\s*"([^"]+)"/)|| `Premium tool for ${niche}.`,
+        features:['Interactif','Design premium','Sauvegarde localStorage','Bilingue FR+EN'],
+        html:null
+      });
+    });
+    if(!products.length)return null;
+    return{boutique,products};
+  }catch(e){console.error('repair failed',e);return null;}
 }
 
 async function saveGeneration(gen){
@@ -1093,7 +1147,7 @@ function fallbackHTML(p,niche){
 // ─── Résultats ────────────────────────────────────────────────────────────────
 function showResults(){
   const{niche,boutique,products}=currentGen;
-  document.getElementById('resultsTitle').textContent=`${products.length} produits — ${boutique}`;
+  document.getElementById('resultsTitle').textContent=`${products.length} fiches — ${boutique}`;
   document.getElementById('infoProducts').textContent=products.length;
   document.getElementById('infoStatus').textContent='✅ Terminé';
   const grid=document.getElementById('productsGrid');
@@ -1101,13 +1155,39 @@ function showResults(){
   products.forEach((p,i)=>{
     const card=document.createElement('div');
     card.className='pc';
-    card.innerHTML=`<div class="pch"><div class="pcl"><span class="pcb">${p.type}</span><span class="pcn">${p.emoji} ${p.nameFr}</span></div><div class="pcr"><span class="pcp">€${p.price}</span><span class="pcs done">✓ HTML prêt</span><button class="pct" onclick="document.getElementById('pb${i}').classList.toggle('open')">Détails ↓</button></div></div><div class="pcb2" id="pb${i}"><div class="pcsec"><div class="pcsl">Titre FR</div><div class="pcd" style="font-weight:500">${p.nameFr}</div></div><div class="pcsec"><div class="pcsl">Title EN</div><div class="pcd" style="font-weight:500">${p.nameEn}</div></div><div class="pcsec"><div class="pcsl">Description FR</div><div class="pcd">${p.descFr}</div></div><div class="pcsec"><div class="pcsl">Description EN</div><div class="pcd">${p.descEn}</div></div><div class="pcsec"><div class="pcsl">Tags Etsy (${p.tags.length})</div><div class="tw">${p.tags.map(t=>`<span class="tg">${t}</span>`).join('')}</div></div><div style="margin-top:10px;display:flex;gap:6px"><button class="bs" onclick="copyProd(${i})">📋 Copier</button><button class="bs" onclick="preview(${i})">👁 Prévisualiser</button></div></div>`;
+    const tagsHtml=(p.tags||[]).map(t=>`<span class='tg'>${t}</span>`).join('');
+    const featHtml=(p.features||[]).map(f=>`<div style='font-size:12px;color:var(--gray);padding:2px 0;font-weight:300'>✓ ${f}</div>`).join('');
+    card.innerHTML=`<div class='pc-preview'>
+        <iframe id='pif-${i}' sandbox='allow-scripts allow-same-origin' style='width:100%;height:300px;border:none;border-radius:12px 12px 0 0;pointer-events:none;'></iframe>
+        <div class='pc-preview-ov' onclick='preview(${i})'><span>👁 Aperçu plein écran</span></div>
+      </div>
+      <div class='pch'>
+        <div class='pcl' style='flex-direction:column;align-items:flex-start;gap:4px'>
+          <div style='display:flex;align-items:center;gap:8px'><span class='pcb'>${p.type}</span><span style='font-size:11px;color:var(--gray)'>€${p.price}</span></div>
+          <span class='pcn'>${p.emoji||''} ${p.nameFr}</span>
+          <span style='font-size:11px;color:var(--gray);font-weight:300'>${p.nameEn||''}</span>
+        </div>
+      </div>
+      <div class='pcb2' id='pb${i}'>
+        <div class='pcsec'><div class='pcsl'>Description</div><div class='pcd' style='font-size:13px;line-height:1.7;color:#444'>${p.descFr||''}</div></div>
+        ${featHtml?`<div class='pcsec'><div class='pcsl'>Contenu</div>${featHtml}</div>`:''}
+        <div class='pcsec'><div class='pcsl'>Tags Etsy (${(p.tags||[]).length})</div><div class='tw'>${tagsHtml}</div></div>
+        <div style='margin-top:14px;display:flex;gap:6px;flex-wrap:wrap'>
+          <button class='bs' onclick='copyDesc(${i})'>📋 Description</button>
+          <button class='bs' onclick='copyTags(${i})'>🏷 Tags</button>
+          <button class='bs' onclick='downloadSingle(${i})'>↓ Fichier HTML</button>
+          <button class='bs' onclick='preview(${i})'>👁 Plein écran</button>
+        </div>
+      </div>`;
     grid.appendChild(card);
+    // Set srcdoc AFTER DOM insertion (avoids HTML-encoding issues with innerHTML)
+    const iframe=document.getElementById('pif-'+i);
+    if(iframe&&p.htmlContent)iframe.srcdoc=p.htmlContent;
   });
   document.getElementById('genResults').classList.add('visible');
   const regenBtn=document.getElementById('regenBtn');
   if(regenBtn)regenBtn.style.display='inline-flex';
-  showToast(`${products.length} fiches produits générées ! Téléchargez le ZIP 🎉`);
+  showToast(`${products.length} fiches produits générées ! 🎉`);
 }
 
 // ─── ZIP ──────────────────────────────────────────────────────────────────────
@@ -1119,8 +1199,8 @@ async function downloadZip(){
     const zip=new JSZip();
     const{niche,boutique,products}=currentGen;
     const folder=zip.folder(boutique.replace(/[^a-zA-Z0-9-]/g,'-'));
-    products.forEach(p=>{
-      const fname=p.nameFr.replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-')+'.html';
+    products.forEach((p,i)=>{
+      const fname=`0${i+1}-${(p.nameFr||'produit').replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-')}.html`;
       folder.file(fname,p.htmlContent);
     });
     const readme=`═══════════════════════════════════════════
@@ -1182,8 +1262,11 @@ ${p.tagsEn.join(', ')}
   btn.disabled=false;btn.textContent='↓ Télécharger ZIP';
 }
 
-function preview(i){if(!currentGen)return;const p=currentGen.products[i];const w=window.open('','_blank');w.document.write(p.htmlContent);w.document.close();}
-function copyProd(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText(`${p.nameFr}\n\n${p.descFr}\n\nTags: ${p.tags.join(', ')}\nPrix: €${p.price}`).then(()=>showToast('Copié !'));}
+function preview(i){if(!currentGen)return;const p=currentGen.products[i];const w=window.open('','_blank');w.document.write(p.htmlContent||'');w.document.close();}
+function copyProd(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText(`${p.nameFr||p.name||''}\n\n${p.descFr||p.desc||''}\n\nTags: ${(p.tags||[]).join(', ')}\nPrix: €${p.price}`).then(()=>showToast('Copié !'));}
+function copyDesc(i){if(!currentGen)return;const p=currentGen.products[i];const txt=`${p.nameFr||''}\n\n${p.descFr||''}\n\n---\n\n${p.nameEn||''}\n\n${p.descEn||''}`;navigator.clipboard.writeText(txt).then(()=>showToast('Description copiée !'));}
+function copyTags(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText((p.tags||[]).join(', ')).then(()=>showToast('Tags copiés !'));}
+function downloadSingle(i){if(!currentGen)return;const p=currentGen.products[i];const blob=new Blob([p.htmlContent||''],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);const name=`0${i+1}-${(p.nameFr||'produit').replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-')}.html`;a.download=name;a.click();URL.revokeObjectURL(a.href);}
 function copyAllText(){
   if(!currentGen)return;
   const text=currentGen.products.map((p,i)=>{
