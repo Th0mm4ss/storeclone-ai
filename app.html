@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoreClone AI — Générateur</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23000' rx='20' width='100' height='100'/><text x='50' y='68' text-anchor='middle' fill='white' font-size='45' font-family='Arial' font-weight='bold'>SC</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -132,6 +133,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       </div>
       <div class="fg"><label>E-mail</label><input type="email" class="fi" id="loginEmail" placeholder="vous@exemple.com" onkeydown="if(event.key==='Enter')login()"></div>
       <div class="fg"><label>Mot de passe</label><input type="password" class="fi" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+      <div style="text-align:right;margin:-6px 0 14px"><a onclick="showForgot()" style="font-size:12px;color:var(--gray);cursor:pointer;text-decoration:none" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--gray)'">Mot de passe oublié ?</a></div>
       <button class="bf" id="loginBtn" onclick="login()">Se connecter</button>
       <div class="asw">Pas de compte ? <a onclick="showReg()">Créer un compte</a></div>
     </div>
@@ -144,6 +146,21 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       <div class="fg"><label>Mot de passe</label><input type="password" class="fi" id="regPass" placeholder="Minimum 8 caractères"></div>
       <button class="bf" id="regBtn" onclick="register()">Créer mon compte</button>
       <div class="asw">Déjà un compte ? <a onclick="showLogin()">Se connecter</a></div>
+    </div>
+    <div id="auth-forgot" style="display:none">
+      <div class="auth-title">Mot de passe oublié</div>
+      <div class="auth-sub">Entrez votre email pour recevoir un lien de réinitialisation.</div>
+      <div id="forgot-msg" style="display:none;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin-bottom:14px"></div>
+      <div class="fg"><label>E-mail</label><input type="email" class="fi" id="forgotEmail" placeholder="vous@exemple.com" onkeydown="if(event.key==='Enter')sendReset()"></div>
+      <button class="bf" id="forgotBtn" onclick="sendReset()">Envoyer le lien de réinitialisation</button>
+      <div class="asw"><a onclick="showLogin()">← Retour à la connexion</a></div>
+    </div>
+    <div id="auth-newpass" style="display:none">
+      <div class="auth-title">Nouveau mot de passe</div>
+      <div class="auth-sub">Choisissez un nouveau mot de passe sécurisé (8 caractères min.).</div>
+      <div id="newpass-msg" style="display:none;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin-bottom:14px"></div>
+      <div class="fg"><label>Nouveau mot de passe</label><input type="password" class="fi" id="newPassInput" placeholder="Minimum 8 caractères" onkeydown="if(event.key==='Enter')submitNewPass()"></div>
+      <button class="bf" id="newPassBtn" onclick="submitNewPass()">Mettre à jour le mot de passe</button>
     </div>
   </div>
 </div>
@@ -173,15 +190,15 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
     <div class="page active" id="page-dashboard">
       <div class="ph"><div class="pt" id="dashWelcome">Bonjour 👋</div><div class="ps">Bienvenue sur StoreClone AI.</div></div>
       <div class="sr">
-        <div class="sc"><div class="sl2">Boutiques générées</div><div class="sv" id="statStores">0</div><div class="ss">depuis le début</div></div>
+        <div class="sc"><div class="sl2">Fiches générées</div><div class="sv" id="statStores">0</div><div class="ss">depuis le début</div></div>
         <div class="sc"><div class="sl2">Produits créés</div><div class="sv" id="statProducts">0</div><div class="ss">fichiers HTML interactifs</div></div>
         <div class="sc"><div class="sl2">ZIPs téléchargés</div><div class="sv" id="statZips">0</div><div class="ss">prêts à publier</div></div>
       </div>
       <div class="qa2">
-        <div class="qa" onclick="showPage('generator')"><div class="qi">⚡</div><div class="qtt">Nouvelle boutique</div><div class="qd">Générez une boutique avec vrais fichiers HTML</div></div>
+        <div class="qa" onclick="showPage('generator')"><div class="qi">⚡</div><div class="qtt">Nouvelle génération</div><div class="qd">Générez vos fiches produits avec vrais fichiers HTML</div></div>
         <div class="qa" onclick="showPage('history')"><div class="qi">↺</div><div class="qtt">Historique</div><div class="qd">Retrouvez vos générations précédentes</div></div>
       </div>
-      <div class="card"><div class="ct">Activité récente</div><div id="dashRecent"><div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage('generator')">Créer votre première boutique →</span></div></div></div>
+      <div class="card"><div class="ct">Activité récente</div><div id="dashRecent"><div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage('generator')">Créer vos premières fiches →</span></div></div></div>
     </div>
 
     <div class="page" id="page-generator">
@@ -271,6 +288,11 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
           <p style="font-size:13px;color:var(--gray);font-weight:300;margin-bottom:14px">Gérez vos factures, votre carte et votre abonnement.</p>
           <button class="bs primary" onclick="openPortal()">Gérer mon abonnement →</button>
         </div>
+        <div class="card">
+          <div class="ct">Session</div>
+          <p style="font-size:13px;color:var(--gray);font-weight:300;margin-bottom:14px">Connecté en tant que <strong id="settingEmailDisplay"></strong></p>
+          <button class="bs" style="color:#c0392b;border-color:rgba(192,57,43,0.3)" onclick="logout()">Se déconnecter</button>
+        </div>
       </div>
     </div>
 
@@ -303,6 +325,7 @@ const PLAN_LABELS={starter:'Starter — Gratuit',pro:'Pro — 19€/mois',busine
 
 // ─── État global ─────────────────────────────────────────────────────────────
 let authUser=null,profile=null,subscription=null,generations=[],currentGen=null;
+let _planPeriod='monthly'; // Période active dans le sélecteur de plans
 const STEPS=['Analyse de la niche…','Identification des 3 meilleurs produits…','Génération Produit 1 (HTML interactif)…','Génération Produit 2 (HTML interactif)…','Génération Produit 3 (HTML interactif)…','Optimisation SEO et tags…','Préparation du ZIP…'];
 
 // ─── Init ────────────────────────────────────────────────────────────────────
@@ -319,6 +342,16 @@ sb.auth.onAuthStateChange(async(event,session)=>{
     authUser=null;profile=null;subscription=null;generations=[];
     console.log('[Auth] SIGNED_OUT → view-auth');
     showView('auth');
+    return;
+  }
+
+  if(event==='PASSWORD_RECOVERY'){
+    console.log('[Auth] PASSWORD_RECOVERY → formulaire nouveau mot de passe');
+    ['auth-login','auth-reg','auth-forgot'].forEach(id=>{
+      const el=document.getElementById(id);if(el)el.style.display='none';
+    });
+    const npEl=document.getElementById('auth-newpass');
+    if(npEl)npEl.style.display='block';
     return;
   }
 
@@ -437,6 +470,39 @@ async function logout(){
   await sb.auth.signOut();
 }
 
+function showForgot(){
+  ['auth-login','auth-reg','auth-newpass'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  const el=document.getElementById('auth-forgot');if(el)el.style.display='block';
+}
+
+async function sendReset(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  if(!email){showAuthMsg('forgot','Veuillez entrer votre email.');return;}
+  const btn=document.getElementById('forgotBtn');
+  btn.disabled=true;btn.textContent='Envoi…';
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://storeclone-ai.vercel.app/app.html'});
+  btn.disabled=false;btn.textContent='Envoyer le lien de réinitialisation';
+  if(error){showAuthMsg('forgot','Erreur : '+error.message);return;}
+  showAuthMsg('forgot','Email envoyé ! Vérifiez votre boîte de réception et vos spams.','success');
+}
+
+async function submitNewPass(){
+  const pass=document.getElementById('newPassInput').value;
+  if(!pass||pass.length<8){showAuthMsg('newpass','Le mot de passe doit contenir au moins 8 caractères.');return;}
+  const btn=document.getElementById('newPassBtn');
+  btn.disabled=true;btn.textContent='Mise à jour…';
+  const{error}=await sb.auth.updateUser({password:pass});
+  btn.disabled=false;btn.textContent='Mettre à jour le mot de passe';
+  if(error){showAuthMsg('newpass','Erreur : '+error.message);return;}
+  showAuthMsg('newpass','Mot de passe mis à jour ! Redirection…','success');
+  setTimeout(()=>{
+    history.replaceState({},'',window.location.pathname);
+    document.getElementById('auth-newpass').style.display='none';
+    document.getElementById('auth-login').style.display='block';
+    showAuthMsg('login','Mot de passe mis à jour. Connectez-vous avec votre nouveau mot de passe.','success');
+  },2000);
+}
+
 // ─── Données utilisateur ──────────────────────────────────────────────────────
 async function loadUserData(){
   console.log('[Data] loadUserData — uid:', authUser.id);
@@ -485,8 +551,10 @@ function bootApp(){
     // ── Settings ──
     const sName=document.getElementById('settingName');
     const sEmail=document.getElementById('settingEmail');
+    const sEmailDisp=document.getElementById('settingEmailDisplay');
     if(sName)sName.value=name;
     if(sEmail)sEmail.value=authUser.email;
+    if(sEmailDisp)sEmailDisp.textContent=authUser.email;
 
     renderPlanCards();
     updateStats();
@@ -621,7 +689,7 @@ function renderPlanCards(){
 }
 
 function renderPlanCard(planId,current){
-  const period=document.getElementById('periodSelect2')?.value||'monthly';
+  const period=_planPeriod||'monthly';
   const data=PERIOD_PRICES[planId][period]||PERIOD_PRICES[planId].monthly;
   const isCurrent=planId===current;
   const border=isCurrent?'border:2px solid var(--black)':'border:1px solid var(--border)';
@@ -632,7 +700,7 @@ function renderPlanCard(planId,current){
     :['Générations illimitées','Tout le plan Pro','Accès prioritaire','Support dédié'];
   let btn=isCurrent
     ?`<div style="padding:8px;background:var(--off);border-radius:6px;text-align:center;font-size:12px;font-weight:500;color:var(--green)">✓ Plan actuel</div>`
-    :`<button class="bs primary" style="width:100%" onclick="startCheckout('${planId}')">Choisir ${cap(planId)}</button>`;
+    :`<button class="bs primary" style="width:100%" onclick="startCheckout('${planId}','${period}')">Choisir ${cap(planId)}</button>`;
   return`<div style="${border};border-radius:10px;padding:18px;position:relative">
 ${badge}
 <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:8px">${cap(planId)}</div>
@@ -647,6 +715,7 @@ ${btn}
 }
 
 function setPeriod(p){
+  _planPeriod=p;
   ['monthly','quarterly','yearly'].forEach(id=>{
     const btn=document.getElementById('period-'+id);
     if(!btn)return;
@@ -659,14 +728,7 @@ function setPeriod(p){
   const inner=document.getElementById('planCardsInner');
   if(inner){
     const current=subscription?.plan||'starter';
-    // Stocker la période dans un attribut data pour startCheckout
-    inner.dataset.period=p;
     inner.innerHTML=renderPlanCard('pro',current)+renderPlanCard('business',current);
-    // Patch startCheckout pour lire la période active
-    inner.querySelectorAll('button.bs.primary').forEach(btn=>{
-      const orig=btn.getAttribute('onclick');
-      if(orig)btn.setAttribute('onclick',orig.replace('startCheckout(','startCheckout(').replace("')",`','${p}')`));
-    });
   }
 }
 
@@ -855,7 +917,7 @@ function showResults(){
 
 // ─── ZIP ──────────────────────────────────────────────────────────────────────
 async function downloadZip(){
-  if(!currentGen){showToast('Générez d\'abord une boutique');return;}
+  if(!currentGen){showToast('Générez d\'abord des fiches produits');return;}
   const btn=document.getElementById('downloadBtn');
   btn.disabled=true;btn.textContent='⏳ Création...';
   try{
@@ -938,7 +1000,7 @@ function renderHistory(){
 
 function renderDashRecent(){
   const el=document.getElementById('dashRecent');
-  if(!generations.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage(\'generator\')">Créer votre première boutique →</span></div>';return;}
+  if(!generations.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;font-weight:300">Aucune génération. <span style="cursor:pointer;color:var(--dark);font-weight:500" onclick="showPage(\'generator\')">Créer vos premières fiches →</span></div>';return;}
   el.innerHTML=generations.slice(0,3).map(h=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:500;color:var(--dark)">${h.boutique||h.niche}</div><div style="font-size:12px;color:var(--gray);font-weight:300">${h.niche} · ${h.products?.length||0} produits</div></div><span style="font-size:12px;color:var(--gray)">${new Date(h.created_at).toLocaleDateString('fr-FR')}</span></div>`).join('');
 }
 
@@ -947,6 +1009,9 @@ function updateStats(){
   document.getElementById('statProducts').textContent=generations.reduce((s,h)=>s+(h.products?.length||0),0);
   document.getElementById('statZips').textContent=generations.filter(g=>g.zip_downloaded).length;
 }
+
+// ─── renderDashRecent (fix texte) ─────────────────────────────────────────────
+// (déjà inline dans renderDashRecent ci-dessus)
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
 let toastTimer;
