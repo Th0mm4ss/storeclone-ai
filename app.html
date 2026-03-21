@@ -717,7 +717,10 @@ function startCheckout(plan,period){
   const p=period||document.getElementById('periodSelect')?.value||'monthly';
   const url=STRIPE_LINKS[plan]?.[p];
   if(!url){showToast('Lien introuvable');return;}
-  window.location.href=url;
+  // client_reference_id → Stripe le renvoie tel quel dans checkout.session.completed
+  // c'est le seul moyen fiable de lier un Payment Link à un utilisateur Supabase
+  const userId=authUser?.id||'';
+  window.location.href=url+'?client_reference_id='+encodeURIComponent(userId);
 }
 
 async function openPortal(){
