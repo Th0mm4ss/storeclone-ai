@@ -115,6 +115,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .hi:hover{border-color:var(--bmd);}.hn{font-size:14px;font-weight:500;color:var(--dark);margin-bottom:3px;letter-spacing:-0.2px;}.hm{font-size:12px;color:var(--gray);font-weight:300;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:var(--white);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
 .toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{background:#1a7f4b;}
 </style>
 </head>
 <body>
@@ -280,7 +281,7 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 // ─── Stripe Payment Links (pas d'API serveur) ─────────────────────────────────
-const STRIPE_LINKS={pro:'https://buy.stripe.com/test_00w9AT5TAa3E82t4mUg3602',business:'https://buy.stripe.com/test_dRm14na9Q8ZA4QhdXug3603'};
+const STRIPE_LINKS={pro:'https://buy.stripe.com/test_8x2fZh0zgcbM6Yp2eMg3604',business:'https://buy.stripe.com/test_8x214n2Ho8ZA82t06Eg3605'};
 const PLAN_LIMITS={starter:3,pro:30,business:Infinity};
 const PLAN_LABELS={starter:'Starter — Gratuit',pro:'Pro — 19€/mois',business:'Business — 49€/mois'};
 
@@ -484,12 +485,17 @@ function bootApp(){
     // ── Retour Stripe Checkout ──
     const params=new URLSearchParams(window.location.search);
     if(params.get('payment')==='success'){
-      showToast('🎉 Paiement réussi ! Votre plan a été mis à jour.');
       history.replaceState({},'',window.location.pathname);
+      // Recharger les données pour refléter le nouveau plan, puis toast
       loadUserData().then(()=>{
         if(planEl)planEl.textContent=`Plan ${cap(subscription?.plan||'starter')}`;
         renderPlanCards();updateQuotaBar();
-      }).catch(e=>console.error('[App] reload after payment failed:',e));
+        const planName=cap(subscription?.plan||'Pro');
+        showToast(`✅ Paiement confirmé ! Bienvenue dans le plan ${planName}.`,'success');
+      }).catch(e=>{
+        console.error('[App] reload after payment failed:',e);
+        showToast('✅ Paiement confirmé ! Bienvenue dans le plan Pro.','success');
+      });
     }else if(params.get('payment')==='cancelled'){
       showToast('Paiement annulé.');
       history.replaceState({},'',window.location.pathname);
@@ -854,7 +860,7 @@ function updateStats(){
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
 let toastTimer;
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3500);}
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.className='toast',300);},type==='success'?5000:3500);}
 </script>
 </body>
 </html>
