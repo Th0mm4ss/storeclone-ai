@@ -401,8 +401,10 @@ const PLAN_LABELS={starter:'Starter — Gratuit',pro:'Pro — 19€/mois',busine
 let authUser=null,profile=null,subscription=null,generations=[],currentGen=null;
 let monthlyCount=0; // Nombre de générations ce mois-ci (depuis DB)
 let _planPeriod='monthly'; // Période active dans le sélecteur de plans
-const STEPS=['Analyse de la niche…','Création des produits en cours…','Génération des fichiers HTML…','Optimisation SEO et tags…','Finalisation et qualité…'];
-const SUB_MSGS=[['Analyse du marché...','Recherche des tendances...','Identification des opportunités...'],['Conception des fiches produits...','Rédaction des descriptions SEO...','Calibrage des prix...'],['Design de l\'interface premium...','Intégration JavaScript...','Test des fonctionnalités...'],['Optimisation des 13 tags Etsy...','Calibrage pour l\'algorithme...','Vérification de la pertinence...'],['Contrôle qualité final...','Préparation du ZIP...','Tout est prêt !']];
+// Labels de progression (mis à jour dynamiquement avec les noms des produits après l'étape 1)
+const STEP_LABELS=['Analyse de la niche…','Génération produit 1…','Génération produit 2…','Génération produit 3…','Finalisation…'];
+// Pourcentages de progression : [active step 0, 1, 2, 3, 4, done]
+const STEP_PCTS=[0,15,40,65,90,100];
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 // _appStarted : verrou définitif — une fois true, rien ne peut revenir sur view-auth
@@ -1026,26 +1028,34 @@ async function callAPI(prompt,type='metadata',opts={}){
 
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-// ─── Progression ──────────────────────────────────────────────────────────────
+// ─── Progression (5 étapes, labels dynamiques, complétion individuelle) ────────
 function initProgress(){
-  const prog=document.getElementById('genProgress'),fill=document.getElementById('progFill'),stepsEl=document.getElementById('progSteps');
-  prog.classList.add('visible');
-  stepsEl.innerHTML=STEPS.map((s,i)=>`<div class="pst" id="pstep-${i}"><div class="psic">${i+1}</div><span>${s}</span></div>`).join('');
+  const progEl=document.getElementById('genProgress'),fill=document.getElementById('progFill'),stepsEl=document.getElementById('progSteps');
+  progEl.classList.add('visible');
+  stepsEl.innerHTML=STEP_LABELS.map((s,i)=>`<div class="pst" id="pstep-${i}"><div class="psic">${i+1}</div><span id="psteplbl-${i}">${s}</span></div>`).join('');
   fill.style.width='0%';
+  const state=[0,0,0,0,0]; // 0=pending 1=active 2=done
+  function render(){
+    state.forEach((st,i)=>{
+      const el=document.getElementById('pstep-'+i);if(!el)return;
+      el.classList.remove('act','done');
+      const ic=el.querySelector('.psic');
+      if(st===2){el.classList.add('done');ic.textContent='✓';}
+      else if(st===1){el.classList.add('act');ic.textContent=i+1;}
+      else{ic.textContent=i+1;}
+    });
+    const done=state.filter(s=>s===2).length;
+    fill.style.width=STEP_PCTS[done]+'%';
+  }
   return{
-    set(i){
-      document.querySelectorAll('.pst').forEach((el,idx)=>{
-        el.classList.remove('act','done');
-        if(idx<i){el.classList.add('done');el.querySelector('.psic').textContent='✓';}
-        else if(idx===i){el.classList.add('act');}
-      });
-      fill.style.width=Math.round((i/STEPS.length)*100)+'%';
-    },
-    done(){fill.style.width='100%';setTimeout(()=>prog.classList.remove('visible'),600);}
+    setLabel(i,label){const el=document.getElementById('psteplbl-'+i);if(el)el.textContent=label;},
+    activate(i){if(state[i]!==2)state[i]=1;render();},
+    complete(i){state[i]=2;render();},
+    done(){state.fill(2);fill.style.width='100%';document.querySelectorAll('.pst').forEach(el=>{el.classList.add('done');el.querySelector('.psic').textContent='✓';});setTimeout(()=>progEl.classList.remove('visible'),800);}
   };
 }
 
-// ─── Génération ───────────────────────────────────────────────────────────────
+// ─── Génération (4 appels API : 1 métadonnées + 3 HTML en parallèle) ───────────
 async function generate(){
   const niche=document.getElementById('nicheInput').value.trim();
   if(!niche){showToast('Entrez une niche');return;}
@@ -1059,85 +1069,87 @@ async function generate(){
   document.getElementById('infoNiche').textContent=niche;
   document.getElementById('infoStatus').textContent='En cours…';
   const prog=initProgress();
-  prog.set(0);
-  // Cosmetic progress animation (single API call takes 20-40s)
-  const STEP_DELAYS=[0,5000,12000,20000,27000];
-  const timers=[];
-  for(let i=1;i<STEPS.length;i++){
-    timers.push(setTimeout(()=>{
-      prog.set(i);
-      const msgs=SUB_MSGS[i]||[];
-      const sub=document.getElementById('progSub');
-      if(sub&&msgs.length)sub.textContent=msgs[Math.floor(Math.random()*msgs.length)];
-    },STEP_DELAYS[i]));
-  }
+  prog.activate(0); // Étape 1 active
+
   try{
-    const raw=await callAPI(niche,'all',{priceRange:optPrice,tone:optTone,outputLang:optLang});
-    timers.forEach(t=>clearTimeout(t));
-    prog.done();
-    // Parse JSON — robust approach
-    let meta;
-    const s=raw.indexOf('{'),e=raw.lastIndexOf('}');
-    if(s<0||e<0)throw new Error('Réponse invalide de l\'IA');
-    const jsonStr=raw.slice(s,e+1);
-    try{
-      meta=JSON.parse(jsonStr);
-    }catch(parseErr){
-      console.warn('[generate] JSON parse failed, trying repair:',parseErr.message);
-      meta=repairAndParse(jsonStr,niche);
-    }
-    if(!meta?.products?.length)throw new Error('Aucun produit généré — réessayez');
-    const products=meta.products.map(p=>({
-      ...p,
-      htmlContent:p.html||p.htmlContent||fallbackHTML(p,niche)
+    // ── Appel 1 : Métadonnées ──────────────────────────────────────────────────
+    console.log('[generate] Étape 1 : métadonnées…');
+    const metaRaw=await callAPI(niche,'metadata_only',{priceRange:optPrice,tone:optTone,outputLang:optLang});
+    const mStart=metaRaw.indexOf('{'),mEnd=metaRaw.lastIndexOf('}');
+    if(mStart<0||mEnd<0)throw new Error('Réponse métadonnées invalide');
+    const meta=JSON.parse(metaRaw.slice(mStart,mEnd+1));
+    if(!meta?.products?.length)throw new Error('Pas de produits dans les métadonnées');
+    const metaProducts=meta.products.slice(0,3);
+    console.log('[generate] Métadonnées OK — boutique:',meta.boutique,'| produits:',metaProducts.map(p=>p.name));
+    prog.complete(0); // Étape 1 terminée
+
+    // Mettre à jour les labels avec les vrais noms des produits
+    metaProducts.forEach((p,i)=>prog.setLabel(i+1,`Création de "${p.name}"…`));
+    prog.activate(1);prog.activate(2);prog.activate(3); // Les 3 appels HTML démarrent en parallèle
+
+    // ── Appels 2/3/4 : HTML en parallèle ──────────────────────────────────────
+    console.log('[generate] Étapes 2-4 : génération HTML en parallèle…');
+    const htmlPromises=metaProducts.map((p,i)=>{
+      const htmlPrompt=`Crée un fichier HTML premium complet pour ce produit :
+
+Niche : ${niche}
+Nom du produit : ${p.name}
+Type : ${p.type}
+Description : ${p.description}
+${optPrice&&optPrice!=='standard'?`Style de prix : ${optPrice}`:''}
+${optTone&&optTone!=='professionnel'?`Ton : ${optTone}`:''}
+
+Palette de couleurs adaptée à la niche "${niche}" — NE PAS utiliser le violet par défaut du template, choisis des couleurs qui évoquent cette niche.
+
+Le fichier doit faire minimum 300 lignes, contenir du vrai contenu spécifique à "${niche}", être interactif (localStorage, calculs, checkboxes), et avoir un design premium moderne.`;
+
+      return callAPI(htmlPrompt,'product_html').then(html=>{
+        const start=html.indexOf('<!DOCTYPE');
+        const htmlContent=start>=0?html.slice(start):html;
+        console.log('[generate] HTML',i+1,'terminé —',htmlContent.length,'chars');
+        prog.complete(i+1);
+        return htmlContent;
+      }).catch(err=>{
+        console.warn('[generate] HTML',i+1,'échoué:',err.message,'→ fallback');
+        prog.complete(i+1);
+        return fallbackHTML({nameFr:p.name,color:p.color||'#6366f1',emoji:p.emoji||'📋'},niche);
+      });
+    });
+
+    const htmlResults=await Promise.all(htmlPromises);
+
+    // ── Étape 5 : Finalisation ─────────────────────────────────────────────────
+    prog.activate(4);
+    const products=metaProducts.map((p,i)=>({
+      nameFr:p.name,
+      nameEn:p.nameEn||p.name,
+      type:p.type||'Template',
+      descFr:p.description||'',
+      descEn:p.descriptionEn||p.description||'',
+      tags:p.tags||[],
+      tagsEn:p.tagsEn||[],
+      price:p.price||'14.99',
+      color:p.color||['#6366f1','#0ea5e9','#10b981'][i],
+      emoji:p.emoji||'📋',
+      features:p.features||[],
+      htmlContent:htmlResults[i]
     }));
+
     currentGen={niche,boutique:meta.boutique||niche,products,date:new Date()};
     await saveGeneration(currentGen);
-    monthlyCount++; // Incrémenter immédiatement (avant rechargement async)
+    monthlyCount++;
     updateQuotaBar();
     renderQuota();
+    prog.done();
     showResults();
+
   }catch(err){
-    timers.forEach(t=>clearTimeout(t));
     prog.done();
     console.error('[generate]',err);
     showToast('Erreur: '+err.message);
     document.getElementById('infoStatus').textContent='Erreur';
   }
   btn.disabled=false;
-}
-
-function repairAndParse(jsonStr,niche){
-  // Attempt to salvage partial JSON when HTML escaping broke it
-  // Strategy: extract boutique + product metadata fields, use fallback HTML
-  try{
-    const boutique=(jsonStr.match(/"boutique"\s*:\s*"([^"]+)"/) ||[])[1]||niche;
-    const products=[];
-    // Find all nameFr fields to identify product boundaries
-    const nameMatches=[...jsonStr.matchAll(/"nameFr"\s*:\s*"([^"]+)"/g)];
-    nameMatches.slice(0,3).forEach((m,i)=>{
-      const seg=jsonStr.slice(m.index,m.index+2000);
-      const get=(re)=>(seg.match(re)||[])[1]||'';
-      const tags=[];
-      const tagsMatch=seg.match(/"tags"\s*:\s*\[([^\]]+)\]/);
-      if(tagsMatch)tagsMatch[1].replace(/"([^"]+)"/g,(_,t)=>tags.push(t));
-      products.push({
-        nameFr:m[1],nameEn:get(/"nameEn"\s*:\s*"([^"]+)"/)||m[1],
-        type:get(/"type"\s*:\s*"([^"]+)"/)||'Template',
-        price:get(/"price"\s*:\s*"([^"]+)"/)||'14.99',
-        color:get(/"color"\s*:\s*"([^"]+)"/)||['#6366f1','#0ea5e9','#10b981'][i],
-        emoji:get(/"emoji"\s*:\s*"([^"]+)"/)||'📋',
-        tags:tags.length?tags:[niche,'digital','template','download','etsy','printable','instant download','pdf','planner','tracker','worksheet','guide','journal'],
-        tagsEn:[niche,'digital template','printable','instant download','planner'],
-        descFr:get(/"descFr"\s*:\s*"([^"]+)"/)|| `Outil premium pour la niche ${niche}. Fichier HTML interactif.`,
-        descEn:get(/"descEn"\s*:\s*"([^"]+)"/)|| `Premium tool for ${niche}.`,
-        features:['Interactif','Design premium','Sauvegarde localStorage','Bilingue FR+EN'],
-        html:null
-      });
-    });
-    if(!products.length)return null;
-    return{boutique,products};
-  }catch(e){console.error('repair failed',e);return null;}
 }
 
 async function saveGeneration(gen){
@@ -1154,36 +1166,6 @@ async function saveGeneration(gen){
   updateStats();renderDashRecent();
 }
 
-async function genHTML(p,niche){
-  const prompt=`Crée un fichier HTML interactif premium pour un produit digital Etsy.
-
-Produit: ${p.nameFr} (${p.type}) - Niche: ${niche}
-Couleur: ${p.color} - Emoji: ${p.emoji}
-
-Crée un VRAI outil fonctionnel adapté à la niche:
-- Tracker → vrai système de suivi avec checkboxes, compteurs, barre de progression
-- Planner → vrai planificateur avec zones de saisie, sections organisées
-- Journal → vrai journal avec entrées, humeur, réflexions datées
-- Guide → guide illustré avec étapes claires, conseils pratiques
-- Workbook → cahier d'exercices avec questions, espaces de réponse
-
-EXIGENCES TECHNIQUES:
-- Fichier HTML unique avec CSS et JS inline
-- Design élégant avec la couleur ${p.color}
-- Police depuis Google Fonts (link dans le head)
-- Bilingue FR/EN avec bouton switcher
-- 100% fonctionnel (localStorage pour sauvegarder)
-- Footer: "Budget Bloom Studio — StoreClone AI"
-- Vraiment adapté à "${niche}" — noms, catégories, exemples spécifiques
-- Minimum 300 lignes
-
-Commence DIRECTEMENT par <!DOCTYPE html> sans aucun texte avant.`;
-  try{
-    const html=await callAPI(prompt,'product_html');
-    const start=html.indexOf('<!DOCTYPE');
-    return start>=0?html.slice(start):html;
-  }catch(e){return fallbackHTML(p,niche);}
-}
 
 function fallbackHTML(p,niche){
   return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${p.nameFr}</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"><style>:root{--c:${p.color}}*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',sans-serif;background:#f8f8f8;color:#1d1d1f}.hd{background:var(--c);padding:40px;color:white;text-align:center}.hd h1{font-size:28px;font-weight:700;margin-bottom:8px}.mn{max-width:700px;margin:24px auto;padding:0 20px}.cd{background:white;border-radius:12px;padding:24px;margin-bottom:16px;border:1px solid rgba(0,0,0,0.08)}.cd h2{font-size:16px;font-weight:600;color:var(--c);margin-bottom:14px}.row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.row label{font-size:12px;font-weight:500;color:#666;text-transform:uppercase}.row input,.row textarea{padding:10px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:14px;font-family:inherit;outline:none}.row input:focus,.row textarea:focus{border-color:var(--c)}.btn{background:var(--c);color:white;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.cell{background:${p.color}22;border:2px solid var(--c);border-radius:6px;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.2s}.cell.on{background:var(--c);color:white}.ft{text-align:center;padding:20px;font-size:11px;color:#999;border-top:1px solid rgba(0,0,0,0.06);margin-top:20px}</style></head><body><div class="hd"><div style="font-size:48px;margin-bottom:12px">${p.emoji}</div><h1>${p.nameFr}</h1><p style="opacity:0.8;font-size:14px">${niche} — Premium Template</p></div><div class="mn"><div class="cd"><h2>📋 Mes entrées ${niche}</h2>${[1,2,3].map(i=>`<div class="row"><label>Entrée ${i}</label><input type="text" placeholder="Saisissez ici..." oninput="save()"></div>`).join('')}<button class="btn" onclick="save();showT('Sauvegardé ✓')">Sauvegarder</button></div><div class="cd"><h2>✅ Suivi de la semaine</h2><div class="grid">${['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(d=>`<div class="cell" onclick="this.classList.toggle('on');save()">${d}</div>`).join('')}</div></div><div class="cd"><h2>📊 Notes et réflexions</h2><div class="row"><textarea rows="4" placeholder="Vos notes..." oninput="save()"></textarea></div></div></div><div class="ft">Budget Bloom Studio — StoreClone AI</div><script>function save(){const d={};document.querySelectorAll('input,textarea').forEach((el,i)=>d['f'+i]=el.value);document.querySelectorAll('.cell').forEach((el,i)=>d['c'+i]=el.classList.contains('on'));try{localStorage.setItem('sc_${niche.replace(/\s/g,'')}',JSON.stringify(d))}catch(e){}}function load(){try{const d=JSON.parse(localStorage.getItem('sc_${niche.replace(/\s/g,'')}'));if(d){document.querySelectorAll('input,textarea').forEach((el,i)=>{if(d['f'+i])el.value=d['f'+i]});document.querySelectorAll('.cell').forEach((el,i)=>{if(d['c'+i])el.classList.add('on')})}}catch(e){}}function showT(m){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:white;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;font-family:Inter,sans-serif';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000)}load();<\/script></body></html>`;
