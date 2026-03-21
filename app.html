@@ -255,7 +255,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 
     <div class="page" id="page-settings">
       <div class="ph"><div class="pt">Paramètres</div><div class="ps">Gérez votre compte et votre abonnement.</div></div>
-      <div style="max-width:620px;display:flex;flex-direction:column;gap:12px">
+      <div style="max-width:680px;display:flex;flex-direction:column;gap:12px">
         <div class="card"><div class="ct">Mon compte</div>
           <div class="fg"><label style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">Prénom</label><input type="text" class="fi" id="settingName"></div>
           <div class="fg" style="margin-bottom:0"><label style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">E-mail</label><input type="email" class="fi" id="settingEmail" disabled style="opacity:0.5;cursor:not-allowed"></div>
@@ -264,7 +264,12 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
         <div class="card">
           <div class="ct">Abonnement</div>
           <div id="quotaBar" style="margin-bottom:16px"></div>
-          <div id="planCards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
+          <div id="planCards"></div>
+        </div>
+        <div class="card" id="portalCard" style="display:none">
+          <div class="ct">Facturation</div>
+          <p style="font-size:13px;color:var(--gray);font-weight:300;margin-bottom:14px">Gérez vos factures, votre carte et votre abonnement.</p>
+          <button class="bs primary" onclick="openPortal()">Gérer mon abonnement →</button>
         </div>
       </div>
     </div>
@@ -280,8 +285,19 @@ const SUPABASE_URL='https://hbaaqukxtoqxaxcbqmkj.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYWFxdWt4dG9xeGF4Y2JxbWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTUzMDAsImV4cCI6MjA4OTUzMTMwMH0.xGjjmNPzDcYMj-Y4FcOqArNXagxHdj1RXYAEA11LVhQ';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-// ─── Stripe Payment Links (pas d'API serveur) ─────────────────────────────────
-const STRIPE_LINKS={pro:'https://buy.stripe.com/test_aFa5kDdm27VwfuV06Eg3606',business:'https://buy.stripe.com/test_4gMeVd2HofnYbeF2eMg3607'};
+// ─── Stripe Payment Links ─────────────────────────────────────────────────────
+const STRIPE_LINKS={
+  pro:{
+    monthly:   'https://buy.stripe.com/test_fZu5kDchYfnY82t7z6g3608',
+    quarterly: 'https://buy.stripe.com/test_28E4gz0zg4Jk6YpcTqg3609',
+    yearly:    'https://buy.stripe.com/test_cNidR9bdU6Rs6Ypf1yg360a',
+  },
+  business:{
+    monthly:   'https://buy.stripe.com/test_14A4gzdm28ZAeqR7z6g360b',
+    quarterly: 'https://buy.stripe.com/test_8x29AT4Pw8ZAbeF2eMg360c',
+    yearly:    'https://buy.stripe.com/test_8x2dR981I6RsaaB8Dag360d',
+  },
+};
 const PLAN_LIMITS={starter:3,pro:30,business:Infinity};
 const PLAN_LABELS={starter:'Starter — Gratuit',pro:'Pro — 19€/mois',business:'Business — 49€/mois'};
 
@@ -524,10 +540,32 @@ async function saveSettings(){
 }
 
 // ─── Stripe Payment Links ─────────────────────────────────────────────────────
-function startCheckout(plan){
-  const url=STRIPE_LINKS[plan];
-  if(!url){showToast('Plan introuvable');return;}
+function startCheckout(plan,period){
+  const p=period||document.getElementById('periodSelect')?.value||'monthly';
+  const url=STRIPE_LINKS[plan]?.[p];
+  if(!url){showToast('Lien introuvable');return;}
   window.location.href=url;
+}
+
+async function openPortal(){
+  const btn=document.querySelector('#portalCard button');
+  if(btn){btn.disabled=true;btn.textContent='Chargement…';}
+  try{
+    const{data}=await sb.auth.getSession();
+    const token=data?.session?.access_token;
+    if(!token){showToast('Session expirée — reconnectez-vous');return;}
+    const res=await fetch('/api/stripe/portal',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}
+    });
+    const json=await res.json();
+    if(json.error){showToast('Erreur : '+json.error);return;}
+    window.location.href=json.url;
+  }catch(err){
+    showToast('Erreur : '+err.message);
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Gérer mon abonnement →';}
+  }
 }
 
 // ─── Quota mensuel ────────────────────────────────────────────────────────────
@@ -556,28 +594,80 @@ function updateQuotaBar(){
 }
 
 // ─── Plans UI ─────────────────────────────────────────────────────────────────
+const PERIOD_PRICES={
+  pro:     {monthly:{price:'19€',label:''},quarterly:{price:'17€',label:'Économisez 10%'},yearly:{price:'15€',label:'Économisez 20%'}},
+  business:{monthly:{price:'49€',label:''},quarterly:{price:'44€',label:'Économisez 10%'},yearly:{price:'39€',label:'Économisez 20%'}},
+};
+
 function renderPlanCards(){
   const el=document.getElementById('planCards');if(!el)return;
   const current=subscription?.plan||'starter';
-  const plans=[
-    {id:'starter',name:'Starter',price:'0€',desc:'3 générations par mois',limit:'3 générations/mois'},
-    {id:'pro',name:'Pro',price:'19€<span style="font-size:12px;font-weight:300;color:var(--gray)">/mois</span>',desc:'30 générations par mois',limit:'30 générations/mois'},
-    {id:'business',name:'Business',price:'49€<span style="font-size:12px;font-weight:300;color:var(--gray)">/mois</span>',desc:'Générations illimitées',limit:'Illimité'},
-  ];
-  el.innerHTML=plans.map(p=>{
-    const isCurrent=p.id===current;
-    const isDowngrade=(current==='business'&&p.id!=='business')||(current==='pro'&&p.id==='starter');
-    const border=isCurrent?'border:2px solid var(--black)':'border:1px solid var(--border)';
-    let btn='';
-    if(isCurrent)btn=`<div style="padding:8px;background:var(--off);border-radius:6px;text-align:center;font-size:12px;font-weight:500;color:var(--green)">✓ Plan actuel</div>`;
-    else if(p.id==='starter')btn=`<button class="bs" style="width:100%;opacity:0.5;cursor:not-allowed" disabled>Rétrograder</button>`;
-    else btn=`<button class="bs primary" style="width:100%" onclick="startCheckout('${p.id}')">Passer en ${cap(p.id)}</button>`;
-    return`<div style="${border};border-radius:10px;padding:16px;position:relative">${p.id==='pro'?`<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--black);color:var(--white);font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap">Populaire</div>`:''}
-<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px">${p.name}</div>
-<div style="font-size:24px;font-weight:600;letter-spacing:-1px;margin-bottom:4px">${p.price}</div>
-<div style="font-size:12px;color:var(--gray);font-weight:300;margin-bottom:12px">${p.limit}</div>
-${btn}</div>`;
-  }).join('');
+  const isPaid=current==='pro'||current==='business';
+
+  // Afficher le bouton "Gérer mon abonnement" si abonnement payant
+  const portalCard=document.getElementById('portalCard');
+  if(portalCard)portalCard.style.display=isPaid?'block':'none';
+
+  el.innerHTML=`
+  <!-- Sélecteur de période -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--off);border-radius:10px;padding:4px;width:fit-content">
+    ${['monthly','quarterly','yearly'].map((p,i)=>`<button onclick="setPeriod('${p}')" id="period-${p}" style="padding:7px 16px;border-radius:7px;border:none;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;background:${i===0?'var(--white)':'transparent'};color:${i===0?'var(--dark)':'var(--gray)'};box-shadow:${i===0?'0 1px 4px rgba(0,0,0,0.08)':'none'}">${p==='monthly'?'Mensuel':p==='quarterly'?'3 mois (-10%)':'1 an (-20%)'}</button>`).join('')}
+  </div>
+  <!-- Cards Pro + Business -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="planCardsInner">
+    ${renderPlanCard('pro',current)}
+    ${renderPlanCard('business',current)}
+  </div>`;
+}
+
+function renderPlanCard(planId,current){
+  const period=document.getElementById('periodSelect2')?.value||'monthly';
+  const data=PERIOD_PRICES[planId][period]||PERIOD_PRICES[planId].monthly;
+  const isCurrent=planId===current;
+  const border=isCurrent?'border:2px solid var(--black)':'border:1px solid var(--border)';
+  const badge=planId==='pro'?`<div style="display:inline-block;background:var(--black);color:var(--white);font-size:10px;font-weight:600;padding:2px 9px;border-radius:100px;margin-bottom:10px">Populaire</div>`:'<div style="height:20px;margin-bottom:10px"></div>';
+  const savings=data.label?`<div style="font-size:11px;color:var(--green);font-weight:500;margin-bottom:4px">${data.label}</div>`:'<div style="height:16px;margin-bottom:4px"></div>';
+  const feats=planId==='pro'
+    ?['30 générations/mois','Titres, descriptions, tags','Bilingue FR + EN','Export ZIP']
+    :['Générations illimitées','Tout le plan Pro','Accès prioritaire','Support dédié'];
+  let btn=isCurrent
+    ?`<div style="padding:8px;background:var(--off);border-radius:6px;text-align:center;font-size:12px;font-weight:500;color:var(--green)">✓ Plan actuel</div>`
+    :`<button class="bs primary" style="width:100%" onclick="startCheckout('${planId}')">Choisir ${cap(planId)}</button>`;
+  return`<div style="${border};border-radius:10px;padding:18px;position:relative">
+${badge}
+<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:8px">${cap(planId)}</div>
+<div style="font-size:28px;font-weight:700;letter-spacing:-1px;margin-bottom:2px">${data.price}<span style="font-size:13px;font-weight:300;color:var(--gray)">/mois</span></div>
+${savings}
+<div style="margin:12px 0;border-top:1px solid var(--border)"></div>
+<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+${feats.map(f=>`<div style="font-size:12px;color:var(--dark);display:flex;align-items:center;gap:6px"><span style="color:var(--green);font-weight:600">✓</span>${f}</div>`).join('')}
+</div>
+${btn}
+</div>`;
+}
+
+function setPeriod(p){
+  ['monthly','quarterly','yearly'].forEach(id=>{
+    const btn=document.getElementById('period-'+id);
+    if(!btn)return;
+    const active=id===p;
+    btn.style.background=active?'var(--white)':'transparent';
+    btn.style.color=active?'var(--dark)':'var(--gray)';
+    btn.style.boxShadow=active?'0 1px 4px rgba(0,0,0,0.08)':'none';
+  });
+  // Re-render les cards avec la nouvelle période
+  const inner=document.getElementById('planCardsInner');
+  if(inner){
+    const current=subscription?.plan||'starter';
+    // Stocker la période dans un attribut data pour startCheckout
+    inner.dataset.period=p;
+    inner.innerHTML=renderPlanCard('pro',current)+renderPlanCard('business',current);
+    // Patch startCheckout pour lire la période active
+    inner.querySelectorAll('button.bs.primary').forEach(btn=>{
+      const orig=btn.getAttribute('onclick');
+      if(orig)btn.setAttribute('onclick',orig.replace('startCheckout(','startCheckout(').replace("')",`','${p}')`));
+    });
+  }
 }
 
 // ─── Navigation ───────────────────────────────────────────────────────────────

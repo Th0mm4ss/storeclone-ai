@@ -604,11 +604,47 @@ nav.scrolled {
 .hr { border: none; border-top: 1px solid var(--border); }
 
 /* ─── PRICING ─── */
+.period-tabs-lp {
+  display: inline-flex;
+  background: var(--off);
+  border-radius: 10px;
+  padding: 4px;
+  gap: 2px;
+  margin: 32px 0 0;
+}
+.period-tab-lp {
+  padding: 8px 18px;
+  border-radius: 7px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+  background: transparent;
+  color: var(--gray);
+}
+.period-tab-lp.active {
+  background: var(--white);
+  color: var(--near-black);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.price-savings-lp {
+  font-size: 11px;
+  font-weight: 600;
+  color: #1a7f4b;
+  background: #e6f7ed;
+  padding: 2px 8px;
+  border-radius: 100px;
+  display: inline-block;
+  margin-bottom: 4px;
+  min-height: 20px;
+}
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(3,1fr);
   gap: 16px;
-  margin-top: 64px;
+  margin-top: 32px;
 }
 .price-card {
   border: 1px solid var(--border-dark);
@@ -984,10 +1020,19 @@ footer {
     <div class="section-eyebrow reveal" style="justify-content:center" data-t="price_eyebrow">Tarifs</div>
     <h2 class="section-title reveal reveal-delay-1" data-t-html="price_title">Une offre adaptée<br>à <em>chaque ambition.</em></h2>
     <p class="section-sub reveal reveal-delay-2" style="margin:0 auto" data-t="price_sub">Démarrez sans engagement. Évoluez selon vos résultats.</p>
+
+    <!-- Period selector -->
+    <div class="period-tabs-lp reveal reveal-delay-2">
+      <button class="period-tab-lp active" id="lp-tab-monthly" onclick="setLPPeriod('monthly')">Mensuel</button>
+      <button class="period-tab-lp" id="lp-tab-quarterly" onclick="setLPPeriod('quarterly')">3 mois (-10%)</button>
+      <button class="period-tab-lp" id="lp-tab-yearly" onclick="setLPPeriod('yearly')">1 an (-20%)</button>
+    </div>
+
     <div class="pricing-grid reveal reveal-delay-3">
       <div class="price-card">
         <div class="price-name" data-t="plan1_name">Starter</div>
         <div class="price-amount"><sup>€</sup>0</div>
+        <div class="price-savings-lp" style="visibility:hidden">—</div>
         <div class="price-period" data-t="plan1_period">Sans limite de durée</div>
         <div class="price-divider"></div>
         <div class="price-feats">
@@ -996,14 +1041,15 @@ footer {
           <div class="price-feat" data-t="p1f3">Bilingue FR + EN</div>
           <div class="price-feat" data-t="p1f4">Export ZIP immédiat</div>
         </div>
-        <button class="price-btn" data-t="p1btn">Commencer gratuitement</button>
+        <button class="price-btn" onclick="window.location.href='app.html'" data-t="p1btn">Commencer gratuitement</button>
       </div>
 
       <div class="price-card featured">
         <div class="featured-label" data-t="feat_label">Le plus choisi</div>
         <div class="price-name" data-t="plan2_name">Pro</div>
-        <div class="price-amount"><sup>€</sup>19</div>
-        <div class="price-period" data-t="plan2_period">par mois, sans engagement</div>
+        <div class="price-amount"><sup>€</sup><span id="lp-pro-price">19</span></div>
+        <div id="lp-pro-savings" class="price-savings-lp" style="visibility:hidden">—</div>
+        <div class="price-period" id="lp-pro-period">par mois, sans engagement</div>
         <div class="price-divider"></div>
         <div class="price-feats">
           <div class="price-feat" data-t="p2f1">30 générations par mois</div>
@@ -1013,13 +1059,14 @@ footer {
           <div class="price-feat" data-t="p2f5">Génération bilingue automatique</div>
           <div class="price-feat" data-t="p2f6">Assistance prioritaire</div>
         </div>
-        <button class="price-btn" data-t="p2btn">Passer en Pro</button>
+        <button class="price-btn" id="lp-pro-btn" onclick="goLPCheckout('pro')" data-t="p2btn">Passer en Pro</button>
       </div>
 
       <div class="price-card">
         <div class="price-name" data-t="plan3_name">Business</div>
-        <div class="price-amount"><sup>€</sup>49</div>
-        <div class="price-period" data-t="plan3_period">par mois, sans engagement</div>
+        <div class="price-amount"><sup>€</sup><span id="lp-biz-price">49</span></div>
+        <div id="lp-biz-savings" class="price-savings-lp" style="visibility:hidden">—</div>
+        <div class="price-period" id="lp-biz-period">par mois, sans engagement</div>
         <div class="price-divider"></div>
         <div class="price-feats">
           <div class="price-feat" data-t="p3f1">Générations illimitées</div>
@@ -1027,7 +1074,7 @@ footer {
           <div class="price-feat" data-t="p3f3">Accès prioritaire aux nouvelles fonctionnalités</div>
           <div class="price-feat" data-t="p3f4">Support dédié</div>
         </div>
-        <button class="price-btn" data-t="p3btn">Passer en Business</button>
+        <button class="price-btn" id="lp-biz-btn" onclick="goLPCheckout('business')" data-t="p3btn">Passer en Business</button>
       </div>
     </div>
   </div>
@@ -1373,6 +1420,38 @@ Langue: ${lang === 'fr' ? 'français' : 'anglais'}. Noms distinctifs et premium.
 }
 
 document.getElementById('demoInput').addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
+
+// ─── PRICING PERIOD SELECTOR ───
+const LP_LINKS = {
+  pro:      { monthly: 'https://buy.stripe.com/test_fZu5kDchYfnY82t7z6g3608', quarterly: 'https://buy.stripe.com/test_28E4gz0zg4Jk6YpcTqg3609', yearly: 'https://buy.stripe.com/test_cNidR9bdU6Rs6Ypf1yg360a' },
+  business: { monthly: 'https://buy.stripe.com/test_14A4gzdm28ZAeqR7z6g360b', quarterly: 'https://buy.stripe.com/test_8x29AT4Pw8ZAbeF2eMg360c', yearly: 'https://buy.stripe.com/test_8x2dR981I6RsaaB8Dag360d' },
+};
+const LP_PRICES = {
+  pro:      { monthly: { amount: '19', label: '', period: 'par mois, sans engagement' }, quarterly: { amount: '17', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '15', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } },
+  business: { monthly: { amount: '49', label: '', period: 'par mois, sans engagement' }, quarterly: { amount: '44', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '39', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } },
+};
+let lpPeriod = 'monthly';
+
+function setLPPeriod(p) {
+  lpPeriod = p;
+  ['monthly','quarterly','yearly'].forEach(id => {
+    const btn = document.getElementById('lp-tab-' + id);
+    if (btn) btn.classList.toggle('active', id === p);
+  });
+  ['pro','business'].forEach(plan => {
+    const data = LP_PRICES[plan][p];
+    const amountEl = document.getElementById('lp-' + (plan === 'pro' ? 'pro' : 'biz') + '-price');
+    const savingsEl = document.getElementById('lp-' + (plan === 'pro' ? 'pro' : 'biz') + '-savings');
+    const periodEl = document.getElementById('lp-' + (plan === 'pro' ? 'pro' : 'biz') + '-period');
+    if (amountEl) amountEl.textContent = data.amount;
+    if (savingsEl) { savingsEl.textContent = data.label; savingsEl.style.visibility = data.label ? 'visible' : 'hidden'; }
+    if (periodEl) periodEl.textContent = data.period;
+  });
+}
+
+function goLPCheckout(plan) {
+  window.location.href = LP_LINKS[plan][lpPeriod];
+}
 </script>
 </body>
 </html>

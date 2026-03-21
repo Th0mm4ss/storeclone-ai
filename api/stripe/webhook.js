@@ -5,10 +5,14 @@ export const config = { api: { bodyParser: false } };
 
 const SUPABASE_URL = 'https://hbaaqukxtoqxaxcbqmkj.supabase.co';
 
-// Correspondance price_id → plan
+// Correspondance price_id → plan (6 prix : Pro/Business × mensuel/trimestriel/annuel)
 const PRICE_TO_PLAN = {
-  'price_1TCpL1FYDfyCcjvz2Wbc8ph7': 'pro',
-  'price_1TCpL2FYDfyCcjvzL7AZoZl1': 'business',
+  'price_1TDCSQFYDfyCcjvzGJVEYOQB': 'pro',      // Pro mensuel
+  'price_1TDMCJFYDfyCcjvzmDgpL57l': 'pro',      // Pro trimestriel
+  'price_1TDMCRFYDfyCcjvzbeO7wEDQ': 'pro',      // Pro annuel
+  'price_1TDCSaFYDfyCcjvz4u27klDM': 'business', // Business mensuel
+  'price_1TDMCaFYDfyCcjvzfZkECTOE': 'business', // Business trimestriel
+  'price_1TDMCiFYDfyCcjvzd792JSYe': 'business', // Business annuel
 };
 
 async function updateSubscription(userId, data) {
@@ -69,6 +73,26 @@ export default async function handler(req, res) {
       const stripeSub = await subRes.json();
       const priceId = stripeSub.items?.data[0]?.price?.id;
       const plan = PRICE_TO_PLAN[priceId] || 'starter';
+
+      // ── Annuler l'ancien abonnement si différent (1 abonnement actif max par user) ──
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      try {
+        const existingRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/subscriptions?user_id=eq.${userId}&select=stripe_subscription_id`,
+          { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey } }
+        );
+        const existing = await existingRes.json();
+        const oldSubId = existing?.[0]?.stripe_subscription_id;
+        if (oldSubId && oldSubId !== session.subscription) {
+          await fetch(`https://api.stripe.com/v1/subscriptions/${oldSubId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}` },
+          });
+          console.log('[Webhook] Ancien abonnement annulé:', oldSubId);
+        }
+      } catch (err) {
+        console.warn('[Webhook] Échec annulation ancien abonnement:', err.message);
+      }
 
       await updateSubscription(userId, {
         plan,
