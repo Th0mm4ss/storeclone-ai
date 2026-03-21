@@ -908,6 +908,32 @@ footer {
 .reveal-delay-1 { transition-delay: 0.1s; }
 .reveal-delay-2 { transition-delay: 0.2s; }
 .reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ─── MOBILE RESPONSIVE ─── */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hero-section { padding: 80px 20px 40px; }
+  .hero-title { font-size: clamp(28px, 8vw, 48px); }
+  .hero-sub { font-size: 15px; }
+  .hero-ctas { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hero-ctas a { text-align: center; }
+  .stats-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .s { padding: 60px 20px; }
+  .section-title { font-size: clamp(22px, 6vw, 38px); }
+  .features-grid { grid-template-columns: 1fr; }
+  .how-steps { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .faq-list { max-width: 100%; }
+  footer { flex-direction: column; gap: 20px; text-align: center; padding: 24px 20px; }
+  .footer-right { align-items: center !important; }
+  .cta-section { padding: 60px 20px; }
+  .demo-section { padding: 60px 20px; }
+}
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .hero-title { font-size: 26px; }
+}
 </style>
 </head>
 <body>
@@ -973,7 +999,7 @@ footer {
       <div class="demo-dot" style="background:#ff5f57"></div>
       <div class="demo-dot" style="background:#febc2e"></div>
       <div class="demo-dot" style="background:#28c840"></div>
-      <div class="demo-addr-bar">storeclone-ai.vercel.app</div>
+      <div class="demo-addr-bar">StoreClone AI</div>
     </div>
     <div class="demo-body">
       <div class="demo-label" data-t="demo_title">Générez vos produits maintenant</div>
@@ -1211,7 +1237,7 @@ footer {
 <section class="cta-section s reveal">
   <div class="cta-inner">
     <h2 class="cta-title" data-t-html="cta_title">Vos prochaines fiches produits<br>commencent <em>maintenant.</em></h2>
-    <p class="cta-sub" data-t="cta_sub">Rejoignez les vendeurs qui utilisent StoreClone AI pour créer des fiches produits professionnelles — sans compétences techniques, sans investissement initial.</p>
+    <p class="cta-sub" data-t="cta_sub">Rejoignez les vendeurs qui utilisent StoreClone AI pour créer des fiches produits professionnelles — sans compétences techniques.</p>
     <a href="/app.html" class="cta-btn" data-t="cta_btn">Essayer gratuitement — 3 fiches offertes</a>
   </div>
 </section>
@@ -1226,6 +1252,7 @@ footer {
       <a href="/mentions-legales.html" style="font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">Mentions légales</a>
       <a href="/cgv.html" style="font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">CGV</a>
       <a href="/politique-confidentialite.html" style="font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">Politique de confidentialité</a>
+      <a href="mailto:contact@storeclone-ai.com" style="font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">Contact</a>
     </div>
     <span data-t="footer" style="font-size:12px;color:var(--gray)">© 2026 StoreClone AI. Tous droits réservés.</span>
   </div>
@@ -1283,7 +1310,7 @@ const TR = {
     t3:'"Le référencement généré automatiquement est d\'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication."',
     t3role:'Vendeuse Etsy, templates',
     cta_title:'Vos prochaines fiches produits<br>commencent <em>maintenant.</em>',
-    cta_sub:'Rejoignez les vendeurs qui utilisent StoreClone AI pour créer des fiches produits professionnelles — sans compétences techniques, sans investissement initial.',
+    cta_sub:'Rejoignez les vendeurs qui utilisent StoreClone AI pour créer des fiches produits professionnelles — sans compétences techniques.',
     cta_btn:'Essayer gratuitement — 3 fiches offertes',
     footer:'© 2025 StoreClone AI. Tous droits réservés.',
     demo_products:[

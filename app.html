@@ -124,9 +124,78 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:var(--white);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.success{background:#1a7f4b;}
+
+/* ── Card appearance animation ── */
+@keyframes cardAppear{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.pc{animation:cardAppear 0.35s ease both;}
+.pc:nth-child(1){animation-delay:0.05s}.pc:nth-child(2){animation-delay:0.13s}.pc:nth-child(3){animation-delay:0.21s}
+
+/* ── Niche chip colors by category ── */
+.np span.nc-yoga,.np span.nc-wellness{background:#faf5ff;border-color:#e9d5ff;color:#7e22ce;}
+.np span.nc-food{background:#fff7ed;border-color:#fed7aa;color:#c2410c;}
+.np span.nc-wedding{background:#fdf2f8;border-color:#f5d0fe;color:#9d174d;}
+.np span.nc-fitness{background:#f0fdf4;border-color:#bbf7d0;color:#15803d;}
+.np span.nc-finance{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8;}
+.np span.nc-music{background:#fdf4ff;border-color:#f0abfc;color:#86198f;}
+.np span.nc-photo,.np span.nc-travel{background:#f0f9ff;border-color:#bae6fd;color:#0369a1;}
+.np span.nc-edu{background:#eef2ff;border-color:#c7d2fe;color:#4338ca;}
+.np span.nc-biz{background:#f8fafc;border-color:#cbd5e1;color:#334155;}
+.np span.nc-pets{background:#fffbeb;border-color:#fde68a;color:#b45309;}
+.np span.nc-art{background:#fff1f2;border-color:#fecdd3;color:#be123c;}
+.np span.nc-social{background:#ecfdf5;border-color:#a7f3d0;color:#065f46;}
+.np span.nc-deco{background:#fefce8;border-color:#fef08a;color:#a16207;}
+.np span.nc-kids{background:#fff7ed;border-color:#fed7aa;color:#9a3412;}
+
+/* ── AI Editor ── */
+#page-editor .ed-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;height:calc(100vh - 200px);min-height:480px;}
+#page-editor .ed-panel{display:flex;flex-direction:column;gap:10px;}
+#page-editor .ed-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--gray);}
+#page-editor .ed-iframe-wrap{flex:1;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#f5f5f7;min-height:300px;}
+#page-editor .ed-iframe-wrap iframe{width:100%;height:100%;border:none;display:block;}
+#page-editor .ed-prompt{flex:1;border:1px solid var(--bmd);border-radius:12px;padding:14px;font-size:13px;font-family:'Inter',sans-serif;color:var(--dark);resize:none;outline:none;transition:border-color 0.2s;min-height:140px;}
+#page-editor .ed-prompt:focus{border-color:var(--black);}
+.ed-select{width:100%;padding:9px 12px;border:1px solid var(--bmd);border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;color:var(--dark);background:var(--white);outline:none;cursor:pointer;transition:border-color 0.2s;margin-bottom:8px;}
+.ed-select:focus{border-color:var(--black);}
+.ed-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+
+/* ── Feedback widget ── */
+#feedback-btn{position:fixed;bottom:24px;right:24px;background:var(--dark);color:var(--white);border:none;border-radius:980px;padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;z-index:900;box-shadow:0 4px 20px rgba(0,0,0,0.18);transition:all 0.2s;display:none;}
+#feedback-btn:hover{background:#333;transform:translateY(-1px);}
+#feedback-modal{position:fixed;bottom:72px;right:24px;width:300px;background:var(--white);border:1px solid var(--bmd);border-radius:16px;padding:20px;box-shadow:0 8px 40px rgba(0,0,0,0.12);z-index:901;display:none;animation:fadeUp 0.2s ease both;}
+#feedback-modal h4{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:4px;}
+#feedback-modal p{font-size:12px;color:var(--gray);margin-bottom:10px;font-weight:300;}
+#feedback-modal textarea{width:100%;min-height:80px;padding:10px;border:1px solid var(--bmd);border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;color:var(--dark);resize:none;outline:none;transition:border-color 0.2s;margin-bottom:10px;display:block;}
+#feedback-modal textarea:focus{border-color:var(--black);}
+#feedback-modal .fb-btns{display:flex;gap:8px;}
+
+/* ── Hamburger ── */
+.hamburger{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--white);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;font-size:18px;line-height:1;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:99;}
+
+/* ── Mobile responsive ── */
+@media(max-width:768px){
+  .hamburger{display:flex;}
+  .sidebar{position:fixed;left:-260px;top:0;z-index:100;transition:left 0.25s ease;height:100vh;overflow-y:auto;}
+  .sidebar.open{left:0;box-shadow:4px 0 24px rgba(0,0,0,0.15);}
+  .sidebar-overlay.open{display:block;}
+  .am{padding:20px 16px;padding-top:60px;width:100%;min-width:0;}
+  .gl{grid-template-columns:1fr!important;}
+  .pg{gap:10px;}
+  .sr{grid-template-columns:1fr 1fr!important;}
+  .qa2{grid-template-columns:1fr!important;}
+  #editorLayout{grid-template-columns:1fr!important;}
+  #page-editor .ed-layout{grid-template-columns:1fr!important;height:auto;}
+  #page-editor .ed-iframe-wrap{height:280px;}
+  #appPlanCards,#planCardsInner{grid-template-columns:1fr!important;}
+  .np{gap:5px;}
+  .ras{flex-wrap:wrap;}
+}
 </style>
 </head>
 <body>
+
+<div class="hamburger" id="hamburger" onclick="toggleSidebar()">☰</div>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <div class="view active" id="view-auth">
   <div class="auth-card">
@@ -179,6 +248,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
     <div class="ni active" id="nav-dashboard" onclick="showPage('dashboard')"><span class="nii">◉</span> Tableau de bord</div>
     <div class="ni" id="nav-generator" onclick="showPage('generator')"><span class="nii">⚡</span> Générateur</div>
     <div class="ni" id="nav-history" onclick="showPage('history')"><span class="nii">↺</span> Historique</div>
+    <div class="ni" id="nav-editor" onclick="showPage('editor')"><span class="nii">✏️</span> Éditeur IA</div>
     <div class="sbs">Compte</div>
     <div class="ni" id="nav-plans" onclick="showPage('plans')"><span class="nii">💎</span> Plans</div>
     <div class="ni" id="nav-settings" onclick="showPage('settings')"><span class="nii">◎</span> Paramètres</div>
@@ -222,7 +292,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
           <div class="gic">
             <div class="git">Quelle est votre niche ?</div>
             <div class="gis">L'IA va créer 3 fiches produits SEO optimisées adaptées à votre niche.</div>
-            <div class="gnw"><input class="gni" id="nicheInput" placeholder="Ex: yoga, mariage, budget, cuisine, productivité..." onkeydown="if(event.key==='Enter')generate()"><button class="gb" id="genBtn" onclick="generate()">Générer ↗</button></div>
+            <div class="gnw"><input class="gni" id="nicheInput" placeholder="Ex: yoga, mariage, budget, cuisine, productivité..." maxlength="100" onkeydown="if(event.key==='Enter')generate()"><button class="gb" id="genBtn" onclick="generate()">Générer ↗</button></div>
             <div id="quotaDisplay" style="margin-bottom:16px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                 <span style="font-size:12px;color:var(--gray);font-weight:400;" id="quotaLabel">0 / 3 fiches ce mois</span>
@@ -234,22 +304,22 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
             </div>
             <div class="nl">Niches populaires</div>
             <div class="np" style="flex-wrap:wrap;">
-              <span onclick="setNiche('Yoga et méditation')">🧘 Yoga</span>
-              <span onclick="setNiche('Recettes de cuisine')">🍳 Cuisine</span>
-              <span onclick="setNiche('Planification de mariage')">💑 Mariage</span>
-              <span onclick="setNiche('Fitness et musculation')">💪 Fitness</span>
-              <span onclick="setNiche('Gestion du budget')">💰 Finance</span>
-              <span onclick="setNiche('Musique et composition')">🎧 Musique</span>
-              <span onclick="setNiche('Photographie')">📸 Photo</span>
-              <span onclick="setNiche('Voyage')">✈️ Voyage</span>
-              <span onclick="setNiche('Éducation et formation')">🎓 Éducation</span>
-              <span onclick="setNiche('Business et entrepreneuriat')">💼 Business</span>
-              <span onclick="setNiche('Animaux de compagnie')">🐾 Animaux</span>
-              <span onclick="setNiche('Art et créativité')">🎨 Art</span>
-              <span onclick="setNiche('Réseaux sociaux et marketing')">📱 Réseaux sociaux</span>
-              <span onclick="setNiche('Décoration intérieure')">🏠 Décoration</span>
-              <span onclick="setNiche('Enfants et parentalité')">🧒 Enfants</span>
-              <span onclick="setNiche('Bien-être et santé mentale')">💆 Bien-être</span>
+              <span class="nc-yoga" onclick="setNiche('Yoga et méditation')">🧘 Yoga</span>
+              <span class="nc-food" onclick="setNiche('Recettes de cuisine')">🍳 Cuisine</span>
+              <span class="nc-wedding" onclick="setNiche('Planification de mariage')">💑 Mariage</span>
+              <span class="nc-fitness" onclick="setNiche('Fitness et musculation')">💪 Fitness</span>
+              <span class="nc-finance" onclick="setNiche('Gestion du budget')">💰 Finance</span>
+              <span class="nc-music" onclick="setNiche('Musique et composition')">🎧 Musique</span>
+              <span class="nc-photo" onclick="setNiche('Photographie')">📸 Photo</span>
+              <span class="nc-travel" onclick="setNiche('Voyage')">✈️ Voyage</span>
+              <span class="nc-edu" onclick="setNiche('Éducation et formation')">🎓 Éducation</span>
+              <span class="nc-biz" onclick="setNiche('Business et entrepreneuriat')">💼 Business</span>
+              <span class="nc-pets" onclick="setNiche('Animaux de compagnie')">🐾 Animaux</span>
+              <span class="nc-art" onclick="setNiche('Art et créativité')">🎨 Art</span>
+              <span class="nc-social" onclick="setNiche('Réseaux sociaux et marketing')">📱 Réseaux sociaux</span>
+              <span class="nc-deco" onclick="setNiche('Décoration intérieure')">🏠 Décoration</span>
+              <span class="nc-kids" onclick="setNiche('Enfants et parentalité')">🧒 Enfants</span>
+              <span class="nc-wellness" onclick="setNiche('Bien-être et santé mentale')">💆 Bien-être</span>
             </div>
           </div>
           <div style="margin-bottom:16px;">
@@ -331,6 +401,13 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 
     <div class="page" id="page-history">
       <div class="ph"><div class="pt">Historique</div><div class="ps">Vos générations précédentes.</div></div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;">
+        <input id="historyFilter" class="fi" placeholder="Filtrer par niche…" style="max-width:220px;height:36px;" oninput="renderHistory()">
+        <select id="historySort" class="fi" style="max-width:180px;height:36px;cursor:pointer;" onchange="renderHistory()">
+          <option value="desc">Plus récents d'abord</option>
+          <option value="asc">Plus anciens d'abord</option>
+        </select>
+      </div>
       <div id="historyContent"><div class="he"><div class="hei">↺</div><div class="het">Aucune génération pour le moment.</div></div></div>
     </div>
 
@@ -370,7 +447,67 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       </div>
     </div>
 
+    <div class="page" id="page-editor">
+      <div class="ph">
+        <div class="pt">Éditeur IA</div>
+        <div class="ps">Sélectionnez une génération, choisissez un produit, puis demandez des modifications à l'IA.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start;" id="editorLayout">
+        <!-- Left panel: gen + product selection -->
+        <div>
+          <div class="card" style="margin-bottom:12px;">
+            <div class="ct">1. Choisir une génération</div>
+            <select class="ed-select" id="edGenSelect" onchange="selectEditorGen()">
+              <option value="">— Sélectionner —</option>
+            </select>
+            <div class="ct" style="margin-top:12px;">2. Choisir un produit</div>
+            <select class="ed-select" id="edProdSelect" onchange="selectEditorProduct()" disabled>
+              <option value="">— D'abord sélectionner une génération —</option>
+            </select>
+          </div>
+          <div class="card" id="edInfoCard" style="display:none;">
+            <div class="ct">Produit sélectionné</div>
+            <div id="edInfoContent" style="font-size:13px;color:var(--gray);font-weight:300;line-height:1.6;"></div>
+          </div>
+        </div>
+        <!-- Right panel: prompt + preview -->
+        <div id="edEditorPanel" style="display:none;">
+          <div class="ed-layout">
+            <div class="ed-panel">
+              <div class="ed-label">Aperçu actuel</div>
+              <div class="ed-iframe-wrap" id="edPreviewWrap">
+                <iframe id="edIframe" sandbox="allow-scripts allow-same-origin"></iframe>
+              </div>
+            </div>
+            <div class="ed-panel">
+              <div class="ed-label">Instructions de modification</div>
+              <textarea class="ed-prompt" id="edPromptInput" placeholder="Ex: Ajoute une section objectifs mensuel. Change la couleur principale en bleu marine. Ajoute 5 nouvelles tâches fitness."></textarea>
+              <div class="ed-actions">
+                <button class="bs primary" id="edApplyBtn" onclick="applyEdit()">✨ Modifier avec l'IA</button>
+                <button class="bs" id="edAcceptBtn" onclick="acceptEdit()" style="display:none;">✅ Accepter</button>
+                <button class="bs" id="edCancelBtn" onclick="cancelEdit()" style="display:none;">↩ Annuler</button>
+                <button class="bs" id="edDownloadBtn" onclick="downloadEdited()" style="display:none;">↓ Télécharger</button>
+              </div>
+              <div id="edStatus" style="font-size:12px;color:var(--gray);margin-top:8px;min-height:18px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
+</div>
+
+<!-- Feedback widget -->
+<button id="feedback-btn" onclick="toggleFeedback()">💬 Feedback</button>
+<div id="feedback-modal">
+  <h4>Votre avis compte 🙏</h4>
+  <p>Un bug, une suggestion, une idée ?</p>
+  <textarea id="feedbackText" placeholder="Décrivez votre retour…"></textarea>
+  <div class="fb-btns">
+    <button class="bs primary" onclick="submitFeedback()">Envoyer</button>
+    <button class="bs" onclick="toggleFeedback()">Annuler</button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -669,6 +806,8 @@ function bootApp(){
     // ── Basculer la vue — c'est l'étape critique ──
     console.log('[App] switching to view-app…');
     showView('app');
+    const fbBtn=document.getElementById('feedback-btn');
+    if(fbBtn)fbBtn.style.display='block';
     console.log('[App] view-app active ✓');
 
     // ── Retour Stripe Checkout ──
@@ -974,6 +1113,17 @@ function showPage(p){
   if(p==='settings'){renderPlanCards();updateQuotaBar();}
   if(p==='generator'){updateUpsellWidget();renderQuota();}
   if(p==='plans')renderAppPlanCards();
+  if(p==='editor')loadEditorGenList();
+  closeSidebar();
+}
+
+function toggleSidebar(){
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
 }
 
 function updateUpsellWidget(){
@@ -1057,8 +1207,11 @@ function initProgress(){
 
 // ─── Génération (4 appels API : 1 métadonnées + 3 HTML en parallèle) ───────────
 async function generate(){
-  const niche=document.getElementById('nicheInput').value.trim();
+  let niche=document.getElementById('nicheInput').value.trim();
+  // Strip HTML tags and enforce max length
+  niche=niche.replace(/<[^>]*>/g,'').slice(0,100).trim();
   if(!niche){showToast('Entrez une niche');return;}
+  document.getElementById('nicheInput').value=niche;
   if(!checkQuota())return;
   const optPrice=document.getElementById('optPrice')?.value||'standard';
   const optTone=document.getElementById('optTone')?.value||'professionnel';
@@ -1205,6 +1358,7 @@ function showResults(){
           <button class='bs' onclick='copyTags(${i})'>🏷 Tags</button>
           <button class='bs' onclick='downloadSingle(${i})'>↓ Fichier HTML</button>
           <button class='bs' onclick='preview(${i})'>👁 Plein écran</button>
+          <button class='bs' onclick='openEditorForProduct(${i})'>✏️ Modifier</button>
         </div>
       </div>`;
     grid.appendChild(card);
@@ -1336,8 +1490,41 @@ async function regenerate(){
 // ─── Historique & Stats ───────────────────────────────────────────────────────
 function renderHistory(){
   const el=document.getElementById('historyContent');
-  if(!generations.length){el.innerHTML='<div style="text-align:center;padding:40px 24px;"><div style="font-size:14px;color:var(--gray);margin-bottom:16px;">Vous n\'avez pas encore généré de fiches.</div><button class="bf" onclick="showPage(\'generator\')" style="display:inline-flex;align-items:center;width:auto;padding:10px 22px;">Créer ma première fiche →</button></div>';return;}
-  el.innerHTML=generations.map(h=>`<div class="hi"><div><div class="hn">${h.boutique||h.niche}</div><div class="hm">${h.niche} · ${h.products?.length||0} produits · ${new Date(h.created_at).toLocaleDateString('fr-FR')}</div></div><span style="padding:3px 9px;background:var(--off);border-radius:100px;font-size:12px;color:var(--gray)">${h.products?.length||0} produits</span></div>`).join('');
+  const filterVal=(document.getElementById('historyFilter')?.value||'').toLowerCase().trim();
+  const sortVal=document.getElementById('historySort')?.value||'desc';
+
+  let list=[...generations];
+  if(filterVal)list=list.filter(h=>(h.niche||'').toLowerCase().includes(filterVal)||(h.boutique||'').toLowerCase().includes(filterVal));
+  if(sortVal==='asc')list=list.reverse();
+
+  if(!list.length){
+    el.innerHTML=generations.length?
+      '<div style="text-align:center;padding:40px 24px;font-size:14px;color:var(--gray);">Aucune génération ne correspond à ce filtre.</div>':
+      '<div style="text-align:center;padding:40px 24px;"><div style="font-size:14px;color:var(--gray);margin-bottom:16px;">Vous n\'avez pas encore généré de fiches.</div><button class="bf" onclick="showPage(\'generator\')" style="display:inline-flex;align-items:center;width:auto;padding:10px 22px;">Créer ma première fiche →</button></div>';
+    return;
+  }
+  el.innerHTML=list.map(h=>`
+    <div class="hi" style="gap:12px;">
+      <div style="flex:1;min-width:0;">
+        <div class="hn">${h.boutique||h.niche}</div>
+        <div class="hm">${h.niche} · ${h.products?.length||0} produits · ${new Date(h.created_at).toLocaleDateString('fr-FR')}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <button class="bs" style="font-size:11px;padding:4px 10px;" onclick="openEditorForHistory('${h.id}')">✏️ Modifier</button>
+        <button class="bs" style="font-size:11px;padding:4px 10px;color:#c0392b;border-color:rgba(192,57,43,0.25);" onclick="deleteGeneration('${h.id}')">🗑 Supprimer</button>
+      </div>
+    </div>`).join('');
+}
+
+async function deleteGeneration(id){
+  if(!confirm('Supprimer cette génération définitivement ?'))return;
+  const{error}=await sb.from('generations').delete().eq('id',id);
+  if(error){showToast('Erreur: '+error.message);return;}
+  generations=generations.filter(g=>g.id!==id);
+  renderHistory();
+  updateStats();
+  renderDashRecent();
+  showToast('Génération supprimée.');
 }
 
 function renderDashRecent(){
@@ -1358,6 +1545,182 @@ function updateStats(){
 // ─── Toast ────────────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.className='toast',300);},type==='success'?5000:3500);}
+
+// ─── AI Editor ────────────────────────────────────────────────────────────────
+let editorCurrentHTML=null; // HTML affiché dans l'éditeur (version courante)
+let editorModifiedHTML=null; // HTML modifié par l'IA (en attente d'acceptation)
+let editorGenId=null;
+let editorProdIndex=null;
+
+function loadEditorGenList(){
+  const sel=document.getElementById('edGenSelect');
+  if(!sel)return;
+  sel.innerHTML='<option value="">— Sélectionner une génération —</option>'+
+    generations.map(g=>`<option value="${g.id}">${g.boutique||g.niche} · ${new Date(g.created_at).toLocaleDateString('fr-FR')}</option>`).join('');
+  document.getElementById('edProdSelect').innerHTML='<option value="">— D\'abord sélectionner une génération —</option>';
+  document.getElementById('edProdSelect').disabled=true;
+  document.getElementById('edInfoCard').style.display='none';
+  document.getElementById('edEditorPanel').style.display='none';
+}
+
+function selectEditorGen(){
+  const genId=document.getElementById('edGenSelect').value;
+  const gen=generations.find(g=>g.id===genId);
+  const prodSel=document.getElementById('edProdSelect');
+  if(!gen){prodSel.innerHTML='<option value="">— D\'abord sélectionner une génération —</option>';prodSel.disabled=true;return;}
+  editorGenId=genId;
+  prodSel.disabled=false;
+  prodSel.innerHTML='<option value="">— Choisir un produit —</option>'+
+    (gen.products||[]).map((p,i)=>`<option value="${i}">${p.emoji||''} ${p.nameFr||'Produit '+(i+1)}</option>`).join('');
+  document.getElementById('edInfoCard').style.display='none';
+  document.getElementById('edEditorPanel').style.display='none';
+}
+
+function selectEditorProduct(){
+  const idx=parseInt(document.getElementById('edProdSelect').value,10);
+  if(isNaN(idx))return;
+  const gen=generations.find(g=>g.id===editorGenId);
+  if(!gen)return;
+  const prod=gen.products?.[idx];
+  if(!prod)return;
+  editorProdIndex=idx;
+  editorCurrentHTML=prod.htmlContent||prod.html_modified||null;
+  editorModifiedHTML=null;
+
+  // Info card
+  document.getElementById('edInfoCard').style.display='block';
+  document.getElementById('edInfoContent').innerHTML=`
+    <strong>${prod.emoji||''} ${prod.nameFr}</strong><br>
+    <span style="color:var(--gray)">${prod.type} · €${prod.price}</span><br>
+    <span style="color:var(--gray)">${prod.descFr||''}</span>`;
+
+  // Editor panel
+  document.getElementById('edEditorPanel').style.display='block';
+  document.getElementById('edApplyBtn').style.display='';
+  document.getElementById('edAcceptBtn').style.display='none';
+  document.getElementById('edCancelBtn').style.display='none';
+  document.getElementById('edDownloadBtn').style.display='none';
+  document.getElementById('edStatus').textContent='';
+
+  // Iframe preview
+  const iframe=document.getElementById('edIframe');
+  if(iframe&&editorCurrentHTML)iframe.srcdoc=editorCurrentHTML;
+  else if(iframe)iframe.srcdoc='<p style="padding:20px;color:#999;font-family:Inter,sans-serif">Aucun HTML disponible pour ce produit.</p>';
+}
+
+async function applyEdit(){
+  if(!editorCurrentHTML){showToast('Sélectionnez d\'abord un produit.');return;}
+  const instructions=document.getElementById('edPromptInput').value.trim();
+  if(!instructions){showToast('Décrivez les modifications souhaitées.');return;}
+
+  const btn=document.getElementById('edApplyBtn');
+  btn.disabled=true;btn.textContent='⏳ Modification en cours…';
+  document.getElementById('edStatus').textContent='L\'IA modifie votre fichier…';
+
+  const fullPrompt=`Voici le fichier HTML actuel :\n\n${editorCurrentHTML}\n\n--- INSTRUCTIONS ---\n${instructions}\n\nRetourne le HTML complet modifié.`;
+
+  try{
+    const result=await callAPI(fullPrompt,'edit_html');
+    const start=result.indexOf('<!DOCTYPE');
+    editorModifiedHTML=start>=0?result.slice(start):result;
+    const iframe=document.getElementById('edIframe');
+    if(iframe)iframe.srcdoc=editorModifiedHTML;
+    document.getElementById('edAcceptBtn').style.display='';
+    document.getElementById('edCancelBtn').style.display='';
+    document.getElementById('edDownloadBtn').style.display='';
+    document.getElementById('edStatus').textContent='✅ Modifications appliquées. Vérifiez l\'aperçu puis acceptez ou annulez.';
+  }catch(err){
+    document.getElementById('edStatus').textContent='❌ Erreur: '+err.message;
+    showToast('Erreur: '+err.message);
+  }
+  btn.disabled=false;btn.textContent='✨ Modifier avec l\'IA';
+}
+
+function acceptEdit(){
+  if(!editorModifiedHTML)return;
+  const gen=generations.find(g=>g.id===editorGenId);
+  if(gen&&gen.products?.[editorProdIndex]){
+    gen.products[editorProdIndex].html_modified=editorModifiedHTML;
+    gen.products[editorProdIndex].htmlContent=editorModifiedHTML;
+    // Save to Supabase
+    sb.from('generations').update({products:gen.products.map(p=>({...p,htmlContent:''}))}).eq('id',editorGenId)
+      .then(()=>console.log('[Editor] saved to Supabase'))
+      .catch(e=>console.warn('[Editor] save error:',e));
+  }
+  editorCurrentHTML=editorModifiedHTML;
+  editorModifiedHTML=null;
+  document.getElementById('edAcceptBtn').style.display='none';
+  document.getElementById('edCancelBtn').style.display='none';
+  document.getElementById('edStatus').textContent='✅ Version acceptée et sauvegardée.';
+  showToast('Modifications sauvegardées !','success');
+}
+
+function cancelEdit(){
+  editorModifiedHTML=null;
+  const iframe=document.getElementById('edIframe');
+  if(iframe&&editorCurrentHTML)iframe.srcdoc=editorCurrentHTML;
+  document.getElementById('edAcceptBtn').style.display='none';
+  document.getElementById('edCancelBtn').style.display='none';
+  document.getElementById('edDownloadBtn').style.display='none';
+  document.getElementById('edStatus').textContent='Modifications annulées.';
+}
+
+function downloadEdited(){
+  const html=editorModifiedHTML||editorCurrentHTML;
+  if(!html){showToast('Aucun fichier à télécharger');return;}
+  const gen=generations.find(g=>g.id===editorGenId);
+  const prod=gen?.products?.[editorProdIndex];
+  const fname=(prod?.nameFr||'produit').replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-')+'-modifie.html';
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=fname;a.click();URL.revokeObjectURL(a.href);
+}
+
+// Open editor directly from a generation in history
+function openEditorForHistory(genId){
+  showPage('editor');
+  setTimeout(()=>{
+    const sel=document.getElementById('edGenSelect');
+    if(sel){sel.value=genId;selectEditorGen();}
+  },50);
+}
+
+// Open editor directly from a product card in results
+function openEditorForProduct(productIndex){
+  if(!currentGen?.id)return;
+  showPage('editor');
+  setTimeout(()=>{
+    const sel=document.getElementById('edGenSelect');
+    if(sel){sel.value=currentGen.id;selectEditorGen();}
+    setTimeout(()=>{
+      const prodSel=document.getElementById('edProdSelect');
+      if(prodSel){prodSel.value=productIndex;selectEditorProduct();}
+    },50);
+  },50);
+}
+
+// ─── Feedback widget ──────────────────────────────────────────────────────────
+let _feedbackOpen=false;
+function toggleFeedback(){
+  _feedbackOpen=!_feedbackOpen;
+  document.getElementById('feedback-modal').style.display=_feedbackOpen?'block':'none';
+  if(_feedbackOpen)document.getElementById('feedbackText').focus();
+}
+async function submitFeedback(){
+  const text=document.getElementById('feedbackText').value.trim();
+  if(!text){showToast('Écrivez un message avant d\'envoyer');return;}
+  const btn=document.querySelector('#feedback-modal .bs.primary');
+  btn.disabled=true;btn.textContent='Envoi…';
+  try{
+    await sb.from('feedback').insert({user_id:authUser?.id||null,message:text,created_at:new Date().toISOString()});
+    document.getElementById('feedbackText').value='';
+    toggleFeedback();
+    showToast('Merci pour votre retour ! 🙏','success');
+  }catch(e){
+    showToast('Erreur: '+e.message);
+  }
+  btn.disabled=false;btn.textContent='Envoyer';
+}
 </script>
 </body>
 </html>

@@ -1,6 +1,21 @@
 // Node.js serverless runtime (supports longer execution)
 export const maxDuration = 60;
 
+// ─── Rate limiting (in-memory, resets per cold start) ─────────────────────────
+const rateLimitMap = new Map(); // userId → { count, resetAt }
+function checkRateLimit(userId) {
+  if (!userId) return true; // no userId = pass through
+  const now = Date.now();
+  const entry = rateLimitMap.get(userId);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(userId, { count: 1, resetAt: now + 60_000 });
+    return true;
+  }
+  if (entry.count >= 10) return false;
+  entry.count++;
+  return true;
+}
+
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -170,12 +185,28 @@ export default async function handler(req, res) {
 
   const { prompt, type, priceRange, tone, outputLang } = req.body || {};
 
+  // Input validation
+  if (prompt && typeof prompt === 'string' && prompt.replace(/<[^>]*>/g, '').length > 100 && type !== 'product_html' && type !== 'edit_html') {
+    return res.status(400).json({ error: { message: 'La niche ne peut pas dépasser 100 caractères.' } });
+  }
+
   // Quota check uniquement sur les démarrages de génération (pas sur les appels HTML individuels)
+  const token = (req.headers['authorization'] || '').replace('Bearer ', '').trim();
   if (type === 'metadata_only' || type === 'all' || !type) {
-    const token = (req.headers['authorization'] || '').replace('Bearer ', '').trim();
     const quota = await checkServerQuota(token);
     if (!quota.ok) return res.status(429).json({ error: { message: quota.message } });
   }
+
+  // Rate limit (extract userId from token)
+  try {
+    if (token) {
+      const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+      const userId = payload?.sub;
+      if (userId && !checkRateLimit(userId)) {
+        return res.status(429).json({ error: { message: 'Trop de requêtes. Attendez une minute avant de réessayer.' } });
+      }
+    }
+  } catch (_) { /* invalid token format — ignore */ }
 
   let systemPrompt, userPrompt, maxTokens;
 
@@ -200,6 +231,12 @@ IMPÉRATIF : Les 3 produits doivent être de TYPES RADICALEMENT DIFFÉRENTS (TRA
   } else if (type === 'product_html') {
     systemPrompt = SYSTEM_HTML;
     userPrompt = prompt; // Prompt complet construit côté frontend
+    maxTokens = 12000;
+
+  // ── Appel éditeur IA : modification d'un fichier HTML existant ───────────────
+  } else if (type === 'edit_html') {
+    systemPrompt = `Tu es un expert en modification de fichiers HTML. Tu reçois un fichier HTML existant et des instructions de modification. Tu dois retourner le fichier HTML modifié en conservant le design existant et en appliquant exactement les changements demandés. Réponds UNIQUEMENT avec le code HTML complet modifié, sans markdown, sans backticks, sans explication avant ou après.`;
+    userPrompt = prompt; // Contains current HTML + user instructions
     maxTokens = 12000;
 
   // ── Legacy : tout en un seul appel (fallback) ─────────────────────────────────
