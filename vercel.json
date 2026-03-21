@@ -3,8 +3,5 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/$1" }
-  ],
-  "error": [
-    { "statusCode": 404, "dest": "/404.html" }
   ]
 }
