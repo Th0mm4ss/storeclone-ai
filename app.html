@@ -202,6 +202,45 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .auth-brand-features { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 1; }
 .auth-brand-feat { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #94a3b8; font-weight: 300; }
 .auth-brand-feat::before { content: '✓'; color: #4ade80; font-weight: 700; font-size: 13px; }
+
+/* ─── Auth screen blobs ─── */
+.auth-blobs { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.auth-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  will-change: transform;
+}
+.auth-blob-1 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(99,102,241,0.4) 0%, transparent 70%);
+  top: 10%; left: -10%;
+  animation: blobAuth1 18s ease-in-out infinite alternate;
+}
+.auth-blob-2 {
+  width: 250px; height: 250px;
+  background: radial-gradient(circle, rgba(14,165,233,0.35) 0%, transparent 70%);
+  bottom: 15%; right: -5%;
+  animation: blobAuth2 22s ease-in-out infinite alternate;
+}
+.auth-blob-3 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%);
+  top: 50%; left: 40%;
+  animation: blobAuth3 20s ease-in-out infinite alternate;
+}
+@keyframes blobAuth1 {
+  0% { transform: translate(0,0) scale(1); }
+  100% { transform: translate(40px,30px) scale(1.1); }
+}
+@keyframes blobAuth2 {
+  0% { transform: translate(0,0) scale(1); }
+  100% { transform: translate(-30px,-40px) scale(1.08); }
+}
+@keyframes blobAuth3 {
+  0% { transform: translate(0,0) scale(1); }
+  100% { transform: translate(20px,-20px) scale(1.05); }
+}
 .auth-form-side { flex: 0 0 480px; display: flex; align-items: center; justify-content: center; padding: 40px; background: var(--white); }
 @media(max-width:900px) {
   .auth-brand { display: none; }
@@ -268,6 +307,11 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 <div class="view active" id="view-auth">
   <div class="auth-split">
   <div class="auth-brand">
+    <div class="auth-blobs" aria-hidden="true">
+      <div class="auth-blob auth-blob-1"></div>
+      <div class="auth-blob auth-blob-2"></div>
+      <div class="auth-blob auth-blob-3"></div>
+    </div>
     <div class="auth-brand-logo">StoreClone <span>AI</span></div>
     <div class="auth-brand-title">Créez des fiches<br>produits SEO<br><em style="font-weight:300;font-style:italic">en 60 secondes.</em></div>
     <p class="auth-brand-sub">L'IA génère titres, descriptions, tags et prix — prêts à publier sur Etsy, Shopify et Gumroad.</p>
