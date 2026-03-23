@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /app.html
-Sitemap: https://storeclone-ai.vercel.app/sitemap.xml
+Sitemap: https://storeclone-ai.com/sitemap.xml

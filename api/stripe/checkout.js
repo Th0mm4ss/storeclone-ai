@@ -100,7 +100,7 @@ export default async function handler(req, res) {
   }
 
   const stripe = new Stripe(stripeKey, { apiVersion: '2025-02-24.acacia' });
-  const appUrl = (process.env.APP_URL || 'https://storeclone-ai.vercel.app').replace(/\/$/, '');
+  const appUrl = (process.env.APP_URL || 'https://storeclone-ai.com').replace(/\/$/, '');
 
   // ── 5. Récupérer ou créer le customer Stripe ──────────────────────────────
   let customerId;

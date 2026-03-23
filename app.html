@@ -732,7 +732,7 @@ async function resendConfirmation(){
   if(!_resendEmail)return;
   const btn=document.querySelector('#login-resend button');
   btn.disabled=true;btn.textContent='Envoi…';
-  const{error}=await sb.auth.resend({type:'signup',email:_resendEmail,options:{emailRedirectTo:'https://storeclone-ai.vercel.app/app.html'}});
+  const{error}=await sb.auth.resend({type:'signup',email:_resendEmail,options:{emailRedirectTo:'https://storeclone-ai.com/app.html'}});
   btn.disabled=false;btn.textContent='Renvoyer l\'email de confirmation';
   if(error){showAuthMsg('login','Erreur lors du renvoi : '+error.message);return;}
   showAuthMsg('login','Email de confirmation renvoyé ! Vérifiez votre boîte de réception et vos spams.','success');
@@ -800,7 +800,7 @@ async function register(){
   hideAuthMsg('reg');
   const btn=document.getElementById('regBtn');
   btn.disabled=true;btn.textContent='Création…';
-  const{error}=await sb.auth.signUp({email,password:pass,options:{data:{name},emailRedirectTo:'https://storeclone-ai.vercel.app/app.html'}});
+  const{error}=await sb.auth.signUp({email,password:pass,options:{data:{name},emailRedirectTo:'https://storeclone-ai.com/app.html'}});
   btn.disabled=false;btn.textContent='Créer mon compte';
   if(error){showAuthMsg('reg','Erreur : '+error.message);return;}
   // Cacher le formulaire et afficher le message de confirmation
@@ -827,7 +827,7 @@ async function sendReset(){
   if(!email){showAuthMsg('forgot','Veuillez entrer votre email.');return;}
   const btn=document.getElementById('forgotBtn');
   btn.disabled=true;btn.textContent='Envoi…';
-  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://storeclone-ai.vercel.app/app.html'});
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://storeclone-ai.com/app.html'});
   btn.disabled=false;btn.textContent='Envoyer le lien de réinitialisation';
   if(error){showAuthMsg('forgot','Erreur : '+error.message);return;}
   showAuthMsg('forgot','Email envoyé ! Vérifiez votre boîte de réception et vos spams.','success');

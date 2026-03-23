@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2025-02-24.acacia' });
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: 'https://storeclone-ai.vercel.app/app.html',
+      return_url: 'https://storeclone-ai.com/app.html',
     });
     return res.status(200).json({ url: session.url });
   } catch (err) {
