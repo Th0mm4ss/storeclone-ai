@@ -23,7 +23,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .auth-sub{font-size:14px;color:var(--gray);margin-bottom:28px;font-weight:300;line-height:1.5;}
 .fg{margin-bottom:14px;}.fg label{display:block;font-size:12px;font-weight:500;margin-bottom:6px;}
 .fi{width:100%;height:42px;padding:0 14px;border:1px solid var(--bmd);border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;color:var(--dark);background:var(--white);outline:none;transition:border-color 0.2s;}
-.fi:focus{border-color:var(--black);}.fi::placeholder{color:#aaa;}
+.fi:focus{border-color:var(--black);box-shadow:0 0 0 3px rgba(0,0,0,0.06);}.fi::placeholder{color:#aaa;}
 .bf{width:100%;height:42px;background:var(--black);color:var(--white);border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;margin-top:6px;}
 .bf:hover{background:#222;}
 .asw{font-size:13px;color:var(--gray);text-align:center;margin-top:18px;}.asw a{color:var(--dark);font-weight:500;cursor:pointer;}
@@ -77,8 +77,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .bs:disabled{opacity:0.5;cursor:not-allowed;}
 .pg{display:flex;flex-direction:column;gap:10px;}
 .pc{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow 0.2s;}.pc:hover{box-shadow:0 4px 24px rgba(0,0,0,0.08);}
-.pc-preview{position:relative;overflow:hidden;border-radius:12px 12px 0 0;background:#f5f5f7;height:300px;}
-.pc-preview iframe{width:100%;height:300px;border:none;pointer-events:none;border-radius:12px 12px 0 0;}
+.pc-preview{position:relative;overflow:hidden;border-radius:12px 12px 0 0;background:#f5f5f7;height:220px;}
+.pc-preview iframe{width:100%;height:220px;border:none;pointer-events:none;border-radius:12px 12px 0 0;}
 .pc-preview-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s;}
 .pc-preview-ov:hover{background:rgba(0,0,0,0.35);}
 .pc-preview-ov span{color:white;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.2s;background:rgba(0,0,0,0.65);padding:8px 18px;border-radius:8px;}
@@ -123,7 +123,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .he{text-align:center;padding:80px 40px;color:var(--gray);}.hei{font-size:36px;margin-bottom:12px;}.het{font-size:14px;line-height:1.6;font-weight:300;}
 .hi{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:pointer;transition:all 0.15s;}
 .hi:hover{border-color:var(--bmd);}.hn{font-size:14px;font-weight:500;color:var(--dark);margin-bottom:3px;letter-spacing:-0.2px;}.hm{font-size:12px;color:var(--gray);font-weight:300;}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:var(--white);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:var(--white);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);white-space:normal;max-width:90vw;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.success{background:#1a7f4b;}
 
@@ -211,7 +211,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 /* ── Mini chart ── */
 .mini-chart-wrap { margin-top: 16px; }
 .mini-chart-title { font-size: 12px; font-weight: 500; color: var(--dark); margin-bottom: 10px; }
-.mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 48px; }
+.mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 72px; }
 .mini-chart-bar {
   flex: 1;
   background: var(--black);
@@ -524,7 +524,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
             <div class="pln" id="upsellPlan">Plan Starter</div>
             <div class="plt" id="upsellTitle">Passez en Pro</div>
             <div class="pld" id="upsellDesc">30 générations par mois au lieu de 3. Débloquez tout le potentiel de StoreClone AI.</div>
-            <button class="plb" id="upsellBtn" onclick="showPage('settings')">Voir les plans →</button>
+            <button class="plb" id="upsellBtn" onclick="showPage('plans')">Voir les plans →</button>
           </div>
         </div>
       </div>
@@ -573,7 +573,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
         <div class="card">
           <div class="ct">Session</div>
           <p style="font-size:13px;color:var(--gray);font-weight:300;margin-bottom:14px">Connecté en tant que <strong id="settingEmailDisplay"></strong></p>
-          <button class="bs" style="color:#c0392b;border-color:rgba(192,57,43,0.3)" onclick="logout()">Se déconnecter</button>
+          <button class="bs" style="color:var(--gray);border-color:var(--border)" onclick="logout()">Se déconnecter</button>
         </div>
       </div>
     </div>
@@ -1475,7 +1475,7 @@ function showResults(){
     const tagsHtml=(p.tags||[]).map(t=>`<span class='tg'>${t}</span>`).join('');
     const featHtml=(p.features||[]).map(f=>`<div style='font-size:12px;color:var(--gray);padding:2px 0;font-weight:300'>✓ ${f}</div>`).join('');
     card.innerHTML=`<div class='pc-preview'>
-        <iframe id='pif-${i}' sandbox='allow-scripts allow-same-origin' style='width:100%;height:300px;border:none;border-radius:12px 12px 0 0;pointer-events:none;'></iframe>
+        <iframe id='pif-${i}' sandbox='allow-scripts allow-same-origin' style='width:100%;height:220px;border:none;border-radius:12px 12px 0 0;pointer-events:none;'></iframe>
         <div class='pc-preview-ov' onclick='preview(${i})'><span>👁 Aperçu plein écran</span></div>
       </div>
       <div class='pch'>
@@ -1624,10 +1624,12 @@ async function regenerate(){
 }
 
 // ─── Historique & Stats ───────────────────────────────────────────────────────
+function hashCode(s){let h=0;for(let i=0;i<s.length;i++){h=Math.imul(31,h)+s.charCodeAt(i)|0;}return h;}
 function renderHistory(){
   const el=document.getElementById('historyContent');
   const filterVal=(document.getElementById('historyFilter')?.value||'').toLowerCase().trim();
   const sortVal=document.getElementById('historySort')?.value||'desc';
+  const colors=['#6366f1','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6'];
 
   let list=[...generations];
   if(filterVal)list=list.filter(h=>(h.niche||'').toLowerCase().includes(filterVal)||(h.boutique||'').toLowerCase().includes(filterVal));
@@ -1639,8 +1641,11 @@ function renderHistory(){
       '<div style="text-align:center;padding:40px 24px;"><div style="font-size:14px;color:var(--gray);margin-bottom:16px;">Vous n\'avez pas encore généré de fiches.</div><button class="bf" onclick="showPage(\'generator\')" style="display:inline-flex;align-items:center;width:auto;padding:10px 22px;">Créer ma première fiche →</button></div>';
     return;
   }
-  el.innerHTML=list.map(h=>`
+  el.innerHTML=list.map(h=>{
+    const color=colors[Math.abs(hashCode(h.niche||''))%colors.length];
+    return `
     <div class="hi" style="gap:12px;">
+      <div style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;"></div>
       <div style="flex:1;min-width:0;">
         <div class="hn">${h.boutique||h.niche}</div>
         <div class="hm">${h.niche} · ${h.products?.length||0} produits · ${new Date(h.created_at).toLocaleDateString('fr-FR')}</div>
@@ -1649,7 +1654,8 @@ function renderHistory(){
         <button class="bs" style="font-size:11px;padding:4px 10px;" onclick="openEditorForHistory('${h.id}')">✏️ Modifier</button>
         <button class="bs" style="font-size:11px;padding:4px 10px;color:#c0392b;border-color:rgba(192,57,43,0.25);" onclick="deleteGeneration('${h.id}')">🗑 Supprimer</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 async function deleteGeneration(id){

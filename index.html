@@ -15,13 +15,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500&display=swap" rel="stylesheet">
 <style>
 :root {
   --white: #ffffff;
   --off: #f5f5f7;
   --black: #000000;
   --near-black: #1d1d1f;
-  --gray: #6e6e73;
+  --gray: #525252;
   --light-gray: #f5f5f7;
   --border: rgba(0,0,0,0.08);
   --border-dark: rgba(0,0,0,0.12);
@@ -37,6 +38,9 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
+
+/* ─── SATOSHI TITLES ─── */
+.hero-title, .section-title, .cta-title { font-family: 'Satoshi', 'Inter', sans-serif; }
 
 /* ─── PLATFORMS ─── */
 .platforms-row {
@@ -509,7 +513,7 @@ nav.scrolled {
 .section-wrap {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 120px 48px;
+  padding: 140px 48px;
 }
 .section-eyebrow {
   font-size: 12px;
@@ -1028,6 +1032,8 @@ footer {
 .footer-col-links { display: flex; flex-direction: column; gap: 8px; }
 .footer-col-link { font-size: 13px; color: var(--gray); text-decoration: none; font-weight: 300; transition: color 0.2s; }
 .footer-col-link:hover { color: var(--near-black); }
+.footer-grid a { transition: color 0.2s; }
+.footer-grid a:hover { color: var(--near-black); }
 .footer-bottom {
   border-top: 1px solid var(--border);
   padding: 20px 48px;
@@ -1099,11 +1105,44 @@ footer {
   .stats-row { grid-template-columns: 1fr; }
   .hero-title { font-size: 26px; }
 }
+
+/* ─── SCROLL HINT ─── */
+.scroll-hint { margin-top: 48px; color: var(--gray); animation: bounce 2s infinite; opacity: 0.5; display: flex; justify-content: center; }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+/* ─── MOBILE HAMBURGER (landing) ─── */
+.mobile-menu-btn { display:none; position:fixed; top:16px; right:16px; z-index:200; background:var(--white); border:1px solid var(--border-dark); border-radius:8px; width:40px; height:40px; align-items:center; justify-content:center; cursor:pointer; font-size:20px; }
+@media(max-width:768px) { .mobile-menu-btn { display:flex; } }
+.mobile-menu { display:none; position:fixed; inset:0; background:var(--white); z-index:199; flex-direction:column; align-items:center; justify-content:center; gap:24px; }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { font-size:20px; font-weight:500; color:var(--near-black); text-decoration:none; }
+
+/* ─── EXTRA MOBILE QUERIES ─── */
+@media(max-width:768px) {
+  .demo-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .hero-numbers { gap: 24px; }
+  .hero-divider { display: none; }
+  .hero { padding: 100px 20px 60px; min-height: auto; }
+  .demo-section { padding: 40px 20px; }
+  .section-wrap { padding: 80px 20px !important; }
+  .api-callout { flex-direction: column; text-align: center; }
+  .steps-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
 <canvas id="grid-canvas"></canvas>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
+<div class="mobile-menu" id="mobileMenu">
+  <button onclick="document.getElementById('mobileMenu').classList.remove('open')" style="position:absolute;top:20px;right:20px;font-size:24px;background:none;border:none;cursor:pointer;color:var(--gray)">✕</button>
+  <a href="#how" onclick="document.getElementById('mobileMenu').classList.remove('open')">Comment ça marche</a>
+  <a href="#features" onclick="document.getElementById('mobileMenu').classList.remove('open')">Fonctionnalités</a>
+  <a href="#pricing" onclick="document.getElementById('mobileMenu').classList.remove('open')">Tarifs</a>
+  <a href="/app.html" style="background:var(--black);color:var(--white);padding:14px 32px;border-radius:980px;">Essayer gratuitement</a>
+</div>
 
 <nav id="navbar">
   <div class="nav-logo">StoreClone <span>AI</span></div>
@@ -1126,7 +1165,7 @@ footer {
     <span data-t="eyebrow">Générateur de fiches produits SEO par IA</span>
     <span class="eyebrow-line"></span>
   </div>
-  <h1 class="hero-title" data-t-html="hero_title">Des fiches produits SEO<br>de qualité <em>professionnelle, générées en un clic.</em></h1>
+  <h1 class="hero-title" data-t-html="hero_title">Vos fiches produits SEO,<br><em>en 60 secondes.</em></h1>
   <p class="hero-sub" data-t="hero_sub">Titres, descriptions, tags et prix — l'IA crée tout pour vous, prêt à publier sur Etsy, Shopify, Gumroad et plus encore.</p>
   <div class="hero-actions">
     <a href="/app.html" class="btn-black" data-t="hero_cta1">Essayer gratuitement — 3 fiches offertes</a>
@@ -1155,7 +1194,17 @@ footer {
     <span class="plat-badge">Gumroad</span>
     <span class="plat-badge">Payhip</span>
   </div>
+  <div class="scroll-hint">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
 </section>
+
+<!-- ─── SOCIAL PROOF ─── -->
+<div style="text-align:center;padding:0 48px 40px;position:relative;z-index:1;">
+  <span style="font-size:13px;color:var(--gray);font-weight:300;letter-spacing:0.3px;">
+    Déjà <strong style="color:var(--near-black);font-weight:600;">500+</strong> fiches produits générées
+  </span>
+</div>
 
 <!-- ─── DEMO ─── -->
 <section class="demo-section s reveal" id="demo">
@@ -1237,8 +1286,6 @@ footer {
   </div>
 </section>
 
-<hr class="hr">
-
 <!-- ─── FEATURES ─── -->
 <section class="s" id="features">
   <div class="section-wrap">
@@ -1251,14 +1298,14 @@ footer {
         <div class="feat-desc" data-t="feat1_desc">L'IA génère de véritables fichiers interactifs — trackers, planners, tableaux de bord — d'un niveau de qualité bien supérieur aux fichiers Excel traditionnels. Une expérience produit qui fidélise vos acheteurs.</div>
       </div>
       <div class="feat-item">
-        <div class="feat-icon-wrap blue">📝</div>
-        <div class="feat-title" data-t="feat2_title">Descriptions SEO optimisées</div>
-        <div class="feat-desc" data-t="feat2_desc">Titres, descriptions et tags calibrés pour maximiser votre visibilité sur chaque marketplace. Chaque fiche est prête à publier, sans aucune retouche nécessaire.</div>
+        <div class="feat-icon-wrap blue">🔍</div>
+        <div class="feat-title" data-t="feat2_title">SEO optimisé pour chaque marketplace</div>
+        <div class="feat-desc" data-t="feat2_desc">Titres, descriptions et tags calibrés pour maximiser votre visibilité sur chaque marketplace — 13 tags Etsy, algorithme de recherche optimisé. Vos produits apparaissent dans les résultats pertinents dès leur mise en ligne.</div>
       </div>
       <div class="feat-item">
-        <div class="feat-icon-wrap green">🔍</div>
-        <div class="feat-title" data-t="feat3_title">Référencement Etsy optimisé</div>
-        <div class="feat-desc" data-t="feat3_desc">Titres, descriptions et treize tags calibrés pour l'algorithme de recherche Etsy. Vos produits apparaissent dans les résultats pertinents dès leur mise en ligne.</div>
+        <div class="feat-icon-wrap green">✏️</div>
+        <div class="feat-title" data-t="feat3_title">Éditeur IA pour personnaliser</div>
+        <div class="feat-desc" data-t="feat3_desc">Modifiez vos fichiers générés avec des instructions en langage naturel. Changez les couleurs, ajoutez des sections, adaptez le contenu — l'IA applique vos modifications instantanément.</div>
       </div>
       <div class="feat-item">
         <div class="feat-icon-wrap orange">🌍</div>
@@ -1268,8 +1315,6 @@ footer {
     </div>
   </div>
 </section>
-
-<hr class="hr">
 
 <!-- ─── PRICING ─── -->
 <section class="s" id="pricing">
@@ -1289,7 +1334,7 @@ footer {
       <div class="price-card">
         <div class="price-name" data-t="plan1_name">Starter</div>
         <div class="price-amount"><sup>€</sup>0</div>
-        <div class="price-savings-lp" style="visibility:hidden">—</div>
+        <div class="price-savings-lp" style="background:transparent;color:var(--gray);font-weight:300">Toujours gratuit</div>
         <div class="price-period" data-t="plan1_period">Sans limite de durée</div>
         <div class="price-divider"></div>
         <div class="price-feats">
@@ -1348,7 +1393,7 @@ footer {
       <div class="test-card">
         <span class="test-quote">«</span>
         <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t1">"Mes premières fiches produits fitness étaient en ligne en moins d'une heure. La qualité générée m'a moi-même surprise — mes clients pensent que je les ai conçues personnellement."</div>
+        <div class="test-text" data-t="t1">«&nbsp;Mes premières fiches produits fitness étaient en ligne en moins d'une heure. La qualité générée m'a moi-même surprise — mes clients pensent que je les ai conçues personnellement.&nbsp;»</div>
         <div class="test-author">
           <div class="test-avatar av-s">S</div>
           <div>
@@ -1360,7 +1405,7 @@ footer {
       <div class="test-card">
         <span class="test-quote">«</span>
         <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t2">"En trois semaines, j'exploite quatre niches différentes. Ce qui m'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes."</div>
+        <div class="test-text" data-t="t2">«&nbsp;En trois semaines, j'exploite quatre niches différentes. Ce qui m'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes.&nbsp;»</div>
         <div class="test-author">
           <div class="test-avatar av-t">T</div>
           <div>
@@ -1372,7 +1417,7 @@ footer {
       <div class="test-card">
         <span class="test-quote">«</span>
         <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t3">"Le référencement généré automatiquement est d'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication."</div>
+        <div class="test-text" data-t="t3">«&nbsp;Le référencement généré automatiquement est d'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication.&nbsp;»</div>
         <div class="test-author">
           <div class="test-avatar av-m">M</div>
           <div>
@@ -1421,7 +1466,7 @@ footer {
   <div class="cta-inner">
     <h2 class="cta-title" data-t-html="cta_title">Vos prochaines fiches produits<br>commencent <em>maintenant.</em></h2>
     <p class="cta-sub" data-t="cta_sub">Rejoignez les vendeurs qui utilisent StoreClone AI pour créer des fiches produits professionnelles — sans compétences techniques.</p>
-    <a href="/app.html" class="cta-btn" data-t="cta_btn">Essayer gratuitement — 3 fiches offertes</a>
+    <a href="/app.html" class="cta-btn" data-t="cta_btn">Commencer gratuitement →</a>
   </div>
 </section>
 
@@ -1431,7 +1476,7 @@ footer {
     <div class="footer-brand-col">
       <span class="footer-logo">StoreClone <span>AI</span></span>
       <p class="footer-brand-tagline">Générateur de fiches produits SEO<br>par intelligence artificielle.</p>
-      <a href="mailto:contact@storeclone-ai.com" style="font-size:13px;color:var(--gray);text-decoration:none;font-weight:300;" onmouseover="this.style.color='var(--near-black)'" onmouseout="this.style.color='var(--gray)'">contact@storeclone-ai.com</a>
+      <a href="mailto:contact@storeclone-ai.com" class="footer-col-link">contact@storeclone-ai.com</a>
     </div>
     <div>
       <div class="footer-col-title">Produit</div>
@@ -1472,7 +1517,7 @@ const TR = {
   fr: {
     nav_how:'Comment ça marche', nav_features:'Fonctionnalités', nav_pricing:'Tarifs', nav_cta:'Essayer gratuitement',
     eyebrow:'Générateur de fiches produits SEO par IA',
-    hero_title:'Des fiches produits SEO<br>de qualité <em>professionnelle, générées en un clic.</em>',
+    hero_title:'Vos fiches produits SEO,<br><em>en 60 secondes.</em>',
     hero_sub:'Titres, descriptions, tags et prix — l\'IA crée tout pour vous, prêt à publier sur Etsy, Shopify, Gumroad et plus encore.',
     platforms_label:'Compatible avec',
     hero_cta1:'Essayer gratuitement — 3 fiches offertes', hero_cta2:'Découvrir la plateforme',
@@ -1493,8 +1538,8 @@ const TR = {
     feat_eyebrow:'Fonctionnalités',
     feat_title:'Tout ce qu\'il faut<br>pour <em>vendre dès aujourd\'hui.</em>',
     feat1_title:'Produits digitaux HTML interactifs', feat1_desc:'L\'IA génère de véritables fichiers interactifs — trackers, planners, tableaux de bord — d\'un niveau de qualité bien supérieur aux fichiers Excel traditionnels.',
-    feat2_title:'Descriptions SEO optimisées', feat2_desc:'Titres, descriptions et tags calibrés pour maximiser votre visibilité sur chaque marketplace. Chaque fiche est prête à publier, sans aucune retouche nécessaire.',
-    feat3_title:'Référencement Etsy optimisé', feat3_desc:'Titres, descriptions et treize tags calibrés pour l\'algorithme de recherche Etsy. Vos produits apparaissent dans les résultats pertinents dès leur mise en ligne.',
+    feat2_title:'SEO optimisé pour chaque marketplace', feat2_desc:'Titres, descriptions et tags calibrés pour maximiser votre visibilité sur chaque marketplace — 13 tags Etsy, algorithme de recherche optimisé. Vos produits apparaissent dans les résultats pertinents dès leur mise en ligne.',
+    feat3_title:'Éditeur IA pour personnaliser', feat3_desc:'Modifiez vos fichiers générés avec des instructions en langage naturel. Changez les couleurs, ajoutez des sections, adaptez le contenu — l\'IA applique vos modifications instantanément.',
     feat4_title:'Bilingue français et anglais', feat4_desc:'Chaque fiche produit est générée simultanément en français et en anglais. Vous doublez votre audience sans effort supplémentaire.',
     price_eyebrow:'Tarifs',
     price_title:'Une offre adaptée<br>à <em>chaque ambition.</em>',
@@ -1511,15 +1556,15 @@ const TR = {
     p3btn:'Passer en Business',
     test_eyebrow:'Témoignages',
     test_title:'Ils développent<br>leur <em>activité avec nous.</em>',
-    t1:'"Mes premières fiches produits fitness étaient en ligne en moins d\'une heure. La qualité générée m\'a moi-même surprise — mes clients pensent que je les ai conçues personnellement."',
+    t1:'«\u00a0Mes premières fiches produits fitness étaient en ligne en moins d\'une heure. La qualité générée m\'a moi-même surprise — mes clients pensent que je les ai conçues personnellement.\u00a0»',
     t1role:'Créatrice de contenu, fitness',
-    t2:'"En trois semaines, j\'exploite quatre niches différentes. Ce qui m\'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes."',
+    t2:'«\u00a0En trois semaines, j\'exploite quatre niches différentes. Ce qui m\'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes.\u00a0»',
     t2role:'Entrepreneur, e-commerce',
-    t3:'"Le référencement généré automatiquement est d\'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication."',
+    t3:'«\u00a0Le référencement généré automatiquement est d\'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication.\u00a0»',
     t3role:'Vendeuse Etsy, templates',
     cta_title:'Vos prochaines fiches produits<br>commencent <em>maintenant.</em>',
     cta_sub:'Rejoignez les vendeurs qui utilisent StoreClone AI pour créer des fiches produits professionnelles — sans compétences techniques.',
-    cta_btn:'Essayer gratuitement — 3 fiches offertes',
+    cta_btn:'Commencer gratuitement →',
     footer:'© 2026 StoreClone AI. Tous droits réservés.',
     demo_products:[
       {type:'Tracker',name:'Budget Planner Premium FR',tags:['budget','finance','planner'],price:'14,99 €'},
@@ -1530,7 +1575,7 @@ const TR = {
   en: {
     nav_how:'How it works', nav_features:'Features', nav_pricing:'Pricing', nav_cta:'Try for free',
     eyebrow:'AI-powered SEO product listing generator',
-    hero_title:'Professional-grade SEO<br>product listings, <em>generated in one click.</em>',
+    hero_title:'Your SEO product listings,<br><em>in 60 seconds.</em>',
     hero_sub:'Titles, descriptions, tags and pricing — the AI creates everything for you, ready to publish on Etsy, Shopify, Gumroad and more.',
     hero_cta1:'Try for free — 3 listings included', hero_cta2:'Discover the platform',
     stat1:'generation time', stat2:'automated', stat3:'to get started',
@@ -1547,8 +1592,8 @@ const TR = {
     feat_eyebrow:'Features',
     feat_title:'Everything you need<br>to <em>sell today.</em>',
     feat1_title:'Interactive HTML digital products', feat1_desc:'The AI generates real interactive files — trackers, planners, dashboards — at a quality level far superior to traditional Excel files.',
-    feat2_title:'SEO-optimised descriptions', feat2_desc:'Titles, descriptions and tags calibrated to maximise your visibility on every marketplace. Each listing is ready to publish, with no editing required.',
-    feat3_title:'Optimised Etsy SEO', feat3_desc:'Titles, descriptions and thirteen tags calibrated for the Etsy search algorithm. Your products appear in relevant results from day one.',
+    feat2_title:'SEO optimised for every marketplace', feat2_desc:'Titles, descriptions and tags calibrated for every marketplace — 13 Etsy tags, search algorithm optimised. Your products appear in relevant results from day one.',
+    feat3_title:'AI Editor to customise', feat3_desc:'Edit your generated files with natural language instructions. Change colours, add sections, adapt content — the AI applies your changes instantly.',
     feat4_title:'Bilingual French and English', feat4_desc:'Each product listing is generated simultaneously in French and English. You double your audience with no additional effort.',
     price_eyebrow:'Pricing',
     price_title:'A plan tailored<br>to <em>every ambition.</em>',
@@ -1577,7 +1622,7 @@ const TR = {
     t3role:'Etsy seller, templates',
     cta_title:'Your next product listings<br>start <em>right now.</em>',
     cta_sub:'Join the sellers using StoreClone AI to create professional product listings — no technical skills required.',
-    cta_btn:'Try for free — 3 listings included',
+    cta_btn:'Start for free →',
     footer:'© 2026 StoreClone AI. All rights reserved.',
     demo_products:[
       {type:'Tracker',name:'Premium Budget Planner EN',tags:['budget','finance','planner'],price:'€14.99'},
@@ -1609,6 +1654,7 @@ function setLang(l) {
 // ─── ANIMATED GRID BACKGROUND ───
 (function() {
   const canvas = document.getElementById('grid-canvas');
+  if (window.innerWidth < 768) { canvas.style.display = 'none'; return; }
   const ctx = canvas.getContext('2d');
   let W, H;
 
