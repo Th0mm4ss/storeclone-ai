@@ -1322,7 +1322,98 @@ footer {
       </div>
       <div class="demo-progress" id="demoProgress"><div class="demo-progress-fill" id="demoFill"></div></div>
       <div class="demo-status" id="demoStatus" data-t="demo_loading">Analyse de la niche en cours…</div>
-      <div class="demo-grid" id="demoGrid"></div>
+
+      <div id="demo-result" style="display:none;margin-top:32px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <div style="display:flex;gap:8px;">
+            <button class="demo-prod-tab active" onclick="switchDemoProduct(0,this)"
+              style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);
+              background:var(--black);color:white;cursor:pointer;font-size:.85rem;
+              transition:all .2s;">
+              📄 <span id="demo-name-0">Produit 1</span>
+            </button>
+            <button class="demo-prod-tab" onclick="switchDemoProduct(1,this)"
+              style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);
+              background:white;color:var(--black);cursor:pointer;font-size:.85rem;
+              transition:all .2s;">
+              📄 <span id="demo-name-1">Produit 2</span>
+            </button>
+            <button class="demo-prod-tab" onclick="switchDemoProduct(2,this)"
+              style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);
+              background:white;color:var(--black);cursor:pointer;font-size:.85rem;
+              transition:all .2s;">
+              📄 <span id="demo-name-2">Produit 3</span>
+            </button>
+          </div>
+          <span style="font-size:.8rem;color:var(--gray);margin-left:auto;">
+            👆 Vrai fichier HTML interactif — essayez !
+          </span>
+        </div>
+
+        <!-- Aperçu iframe du produit -->
+        <div style="border-radius:16px;overflow:hidden;border:1px solid var(--border);
+          box-shadow:0 8px 32px rgba(0,0,0,0.08);background:white;">
+          <div style="background:#f5f5f5;padding:10px 16px;display:flex;
+            align-items:center;gap:8px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;gap:5px;">
+              <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:#ffbd2e;"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div>
+            </div>
+            <div style="flex:1;background:white;border-radius:6px;padding:4px 12px;
+              font-size:.8rem;color:var(--gray);border:1px solid var(--border);">
+              storeclone-ai.com/examples/<span id="demo-url-slug">budget-tracker.html</span>
+            </div>
+          </div>
+          <iframe id="demo-iframe" src="examples/budget-tracker.html"
+            style="width:100%;height:500px;border:none;display:block;"
+            sandbox="allow-scripts allow-same-origin allow-forms">
+          </iframe>
+        </div>
+
+        <!-- Fiche de vente sous l'iframe -->
+        <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="demo-listing">
+          <div style="padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
+            <div style="font-size:.75rem;color:var(--gray);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Titre SEO</div>
+            <div style="font-size:.95rem;font-weight:500;" id="demo-title">Monthly Budget Tracker — Printable &amp; Digital Planner</div>
+          </div>
+          <div style="padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
+            <div style="font-size:.75rem;color:var(--gray);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Prix recommandé</div>
+            <div style="font-size:1.4rem;font-weight:700;" id="demo-price">7,99 €</div>
+          </div>
+          <div style="padding:16px;background:white;border-radius:12px;border:1px solid var(--border);grid-column:1/-1;">
+            <div style="font-size:.75rem;color:var(--gray);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;">Tags Etsy (13)</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;" id="demo-tags">
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">budget tracker</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">monthly planner</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">finance planner</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">expense tracker</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">digital download</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">printable planner</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">savings tracker</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">budget spreadsheet</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">money tracker</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">financial planner</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">income tracker</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">household budget</span>
+              <span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">interactive planner</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA sous la démo -->
+        <div style="text-align:center;margin-top:24px;">
+          <a href="app.html" style="display:inline-block;padding:14px 32px;
+            background:var(--black);color:white;border-radius:10px;font-weight:600;
+            text-decoration:none;font-size:1rem;">
+            Créer mes propres produits — gratuit →
+          </a>
+          <p style="margin-top:10px;font-size:.85rem;color:var(--gray);">
+            Sans carte bancaire · 3 produits offerts
+          </p>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1868,6 +1959,58 @@ function switchExample(type, e) {
 }
 
 // ─── DEMO ───
+const DEMO_PRODUCTS = [
+  {
+    name: "Budget Tracker",
+    src: "examples/budget-tracker.html",
+    slug: "budget-tracker.html",
+    title: "Monthly Budget Tracker — Printable & Digital Planner",
+    price: "7,99 €",
+    tags: ["budget tracker","monthly planner","finance planner","expense tracker",
+           "digital download","printable planner","savings tracker",
+           "budget spreadsheet","money tracker","financial planner",
+           "income tracker","household budget","interactive planner"]
+  },
+  {
+    name: "Habit Tracker",
+    src: "examples/habit-tracker.html",
+    slug: "habit-tracker.html",
+    title: "30-Day Habit Tracker — Daily Routine & Goal Planner",
+    price: "5,99 €",
+    tags: ["habit tracker","daily planner","routine tracker","goal planner",
+           "digital download","30 day challenge","productivity planner",
+           "self improvement","morning routine","wellness tracker",
+           "streak tracker","printable planner","interactive planner"]
+  },
+  {
+    name: "Wedding Planner",
+    src: "examples/wedding-planner.html",
+    slug: "wedding-planner.html",
+    title: "Complete Wedding Planner — Budget, Checklist & Countdown",
+    price: "12,99 €",
+    tags: ["wedding planner","wedding checklist","wedding budget","bride planner",
+           "digital download","wedding organizer","wedding countdown",
+           "bridal planner","wedding to do list","event planner",
+           "printable wedding","wedding template","interactive planner"]
+  }
+];
+
+function switchDemoProduct(idx, btn) {
+  const p = DEMO_PRODUCTS[idx];
+  document.getElementById('demo-iframe').src = p.src;
+  document.getElementById('demo-url-slug').textContent = p.slug;
+  document.getElementById('demo-title').textContent = p.title;
+  document.getElementById('demo-price').textContent = p.price;
+  const tagsEl = document.getElementById('demo-tags');
+  tagsEl.innerHTML = p.tags.map(t =>
+    `<span style="background:#f5f5f5;padding:3px 10px;border-radius:20px;font-size:.8rem;">${t}</span>`
+  ).join('');
+  document.querySelectorAll('.demo-prod-tab').forEach((b, i) => {
+    b.style.background = i === idx ? 'var(--black)' : 'white';
+    b.style.color = i === idx ? 'white' : 'var(--black)';
+  });
+}
+
 async function runDemo() {
   const val = document.getElementById('demoInput').value.trim();
   if (!val) { document.getElementById('demoInput').focus(); return; }
@@ -1876,62 +2019,47 @@ async function runDemo() {
   const prog = document.getElementById('demoProgress');
   const fill = document.getElementById('demoFill');
   const status = document.getElementById('demoStatus');
-  const grid = document.getElementById('demoGrid');
 
   btn.disabled = true;
-  grid.innerHTML = '';
   prog.classList.add('visible');
   status.classList.add('visible');
 
   let pct = 0;
   const iv = setInterval(() => { pct = Math.min(pct + 2.2, 92); fill.style.width = pct + '%'; }, 50);
 
-  // Simuler un délai de génération réaliste (2 secondes)
-  await new Promise(r => setTimeout(r, 2000));
+  await new Promise(r => setTimeout(r, 1800));
 
-  // Générer des noms de produits dynamiques basés sur la niche saisie
+  clearInterval(iv);
+  fill.style.width = '100%';
+
+  // Noms dynamiques selon la niche
   const nicheLabel = val.charAt(0).toUpperCase() + val.slice(1);
-  const isFr = lang === 'fr';
-  const products = [
-    {
-      type: 'Tracker',
-      name: isFr ? `${nicheLabel} — Tracker Premium` : `${nicheLabel} — Premium Tracker`,
-      tags: [val.toLowerCase(), isFr ? 'tracker' : 'tracker', isFr ? 'suivi' : 'planner'],
-      price: isFr ? '14,99 €' : '€14.99'
-    },
-    {
-      type: 'Planner',
-      name: isFr ? `${nicheLabel} — Planner Mensuel` : `${nicheLabel} — Monthly Planner`,
-      tags: [val.toLowerCase(), isFr ? 'planner' : 'planner', isFr ? 'organisation' : 'organizer'],
-      price: isFr ? '12,99 €' : '€12.99'
-    },
-    {
-      type: 'Dashboard',
-      name: isFr ? `${nicheLabel} — Dashboard Interactif` : `${nicheLabel} — Interactive Dashboard`,
-      tags: [val.toLowerCase(), 'dashboard', isFr ? 'interactif' : 'interactive'],
-      price: isFr ? '9,99 €' : '€9.99'
-    }
-  ];
+  const names = [`${nicheLabel} Planner`, `${nicheLabel} Tracker`, `${nicheLabel} Dashboard`];
+  [0, 1, 2].forEach(i => {
+    const el = document.getElementById(`demo-name-${i}`);
+    if (el) el.textContent = names[i];
+  });
 
-  showCards(products);
+  setTimeout(() => {
+    prog.classList.remove('visible');
+    status.classList.remove('visible');
+    fill.style.width = '0';
+    btn.disabled = false;
 
-  function showCards(products) {
-    clearInterval(iv);
-    fill.style.width = '100%';
+    const result = document.getElementById('demo-result');
+    result.style.display = 'block';
+    result.style.opacity = '0';
+    switchDemoProduct(0, document.querySelector('.demo-prod-tab'));
+
     setTimeout(() => {
-      prog.classList.remove('visible');
-      status.classList.remove('visible');
-      fill.style.width = '0';
-      btn.disabled = false;
-      products.forEach((p, i) => {
-        const el = document.createElement('div');
-        el.className = 'demo-card';
-        el.innerHTML = `<div class="dc-type">${p.type}</div><div class="dc-name">${p.name}</div><div class="dc-tags">${p.tags.map(t=>`<span class="dc-tag">${t}</span>`).join('')}</div><div class="dc-price">${p.price}</div>`;
-        grid.appendChild(el);
-        setTimeout(() => el.classList.add('show'), i * 100 + 50);
-      });
-    }, 300);
-  }
+      result.style.transition = 'opacity .4s';
+      result.style.opacity = '1';
+    }, 50);
+
+    setTimeout(() => {
+      result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }, 300);
 }
 
 document.getElementById('demoInput').addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
