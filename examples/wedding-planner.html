@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Planner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap');
+  :root{--bg:#FFFBF8;--card:#FFFFFF;--text:#3A2E2A;--text-muted:#A0928A;--accent:#C08B6F;--accent-light:#F5E6DC;--accent-dark:#8B5E47;--gold:#C9A96E;--gold-light:#FDF3E0;--rose:#E8C4C4;--rose-deep:#D4A0A0;--success:#7CAE7A;--border:#EDE6E0;--shadow:0 3px 20px rgba(0,0,0,0.04);--radius:20px}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px;font-weight:400}
+  .container{max-width:880px;margin:0 auto}
+  header{text-align:center;margin-bottom:36px;padding:48px 24px 40px;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 60%,#6B4232 100%);border-radius:var(--radius);color:white;position:relative;overflow:hidden}
+  header::before{content:'';position:absolute;top:-80px;right:-60px;width:280px;height:280px;background:rgba(255,255,255,0.04);border-radius:50%}
+  .header-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:3px;opacity:0.7;margin-bottom:12px;font-weight:500}
+  header h1{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;margin-bottom:4px;letter-spacing:-0.5px;font-style:italic}
+  header p{font-size:14px;opacity:0.8;font-weight:300}
+  .date-setup{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .date-setup label{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px}
+  .date-setup input{padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:14px;background:var(--bg);color:var(--text)}
+  .date-setup input:focus{outline:none;border-color:var(--accent)}
+  .countdown-box{margin-left:auto;text-align:right}
+  .countdown-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--accent);line-height:1}
+  .countdown-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+  .stat-card{background:var(--card);border-radius:16px;padding:22px 18px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center}
+  .stat-icon{font-size:22px;margin-bottom:8px}
+  .stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:4px}
+  .stat-num.gold{color:var(--gold)}.stat-num.green{color:var(--success)}
+  .stat-lbl{font-size:11px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);font-weight:600}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+  .panel{background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);border:1px solid var(--border)}
+  .panel-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .panel-sub{font-size:12px;color:var(--text-muted);margin-bottom:20px}
+  .add-row{display:flex;gap:8px;margin-bottom:16px}
+  .add-row input{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:13px;background:var(--bg)}
+  .add-row input:focus{outline:none;border-color:var(--accent)}
+  .add-row button,.add-budget-row button{padding:10px 16px;background:var(--accent);color:white;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:transform .15s;white-space:nowrap}
+  .add-row button:hover,.add-budget-row button:hover{transform:translateY(-1px)}
+  .add-budget-row button{background:var(--gold)}
+  .checklist{list-style:none;max-height:320px;overflow-y:auto}
+  .checklist li{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:14px;animation:fadeIn .25s ease}
+  .checklist li:last-child{border-bottom:none}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .check-circle{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:11px;color:transparent}
+  .check-circle:hover{border-color:var(--accent)}
+  .check-circle.checked{background:var(--accent);border-color:var(--accent);color:white}
+  .check-text{flex:1}.check-text.done{text-decoration:line-through;color:var(--text-muted)}
+  .check-remove{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:6px;transition:background .15s;opacity:0}
+  .checklist li:hover .check-remove{opacity:1}
+  .check-remove:hover{background:#FFE0E3;color:#E63946}
+  .budget-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:14px}
+  .budget-item:last-child{border-bottom:none}
+  .budget-cat{font-weight:500}.budget-right{display:flex;align-items:center;gap:8px}
+  .budget-amt{font-weight:700;color:var(--accent-dark)}
+  .budget-remove{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:6px;opacity:0;transition:background .15s}
+  .budget-item:hover .budget-remove{opacity:1}
+  .budget-remove:hover{background:#FFE0E3;color:#E63946}
+  .budget-total{display:flex;justify-content:space-between;align-items:center;padding:16px 0 0;margin-top:8px;border-top:2px solid var(--border);font-weight:700}
+  .budget-total .total-amt{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--accent)}
+  .add-budget-row{display:flex;gap:8px;margin-bottom:16px}
+  .add-budget-row input{flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:13px;background:var(--bg)}
+  .add-budget-row input:focus{outline:none;border-color:var(--accent)}
+  .empty-state{text-align:center;padding:28px 16px;color:var(--text-muted);font-size:13px}
+  .empty-state .emoji{font-size:28px;margin-bottom:6px}
+  .progress-bar{margin-top:16px;height:10px;background:#EDEDED;border-radius:99px;overflow:hidden}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--rose-deep),var(--accent));border-radius:99px;transition:width .5s ease}
+  .progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:6px;font-weight:600}
+  footer{text-align:center;margin-top:36px;padding:20px;font-size:11px;color:var(--text-muted)}
+  @media(max-width:640px){.stats-row{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}header h1{font-size:28px}.countdown-box{margin-left:0;text-align:left}.date-setup{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header><div class="header-eyebrow">Your Dream Day</div><h1>Wedding Planner</h1><p>Organize every detail · Stay on budget · Enjoy the journey</p></header>
+  <div class="date-setup"><label>Wedding Date</label><input type="date" id="weddingDate" onchange="updateCountdown()"><div class="countdown-box"><div class="countdown-num" id="daysLeft">—</div><div class="countdown-label">days to go</div></div></div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-num" id="totalTasks">0</div><div class="stat-lbl">Tasks</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num green" id="doneTasks">0</div><div class="stat-lbl">Completed</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-num gold" id="totalBudget">$0</div><div class="stat-lbl">Budget</div></div>
+  </div>
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-title">📋 Checklist</div><div class="panel-sub">Add tasks and check them off as you go.</div>
+      <div class="add-row"><input type="text" id="taskInput" placeholder="e.g. Book photographer" maxlength="50"><button onclick="addTask()">+ Add</button></div>
+      <ul class="checklist" id="taskList"><li class="empty-state"><div class="emoji">💍</div>Add your first wedding task!</li></ul>
+      <div class="progress-bar"><div class="progress-inner" id="taskProgress" style="width:0%"></div></div>
+      <div class="progress-label"><span id="taskProgressLabel">0% complete</span><span id="taskCount">0/0</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">💰 Budget</div><div class="panel-sub">Track every expense for your big day.</div>
+      <div class="add-budget-row"><input type="text" id="budgetName" placeholder="e.g. Venue" maxlength="30"><input type="number" id="budgetAmount" placeholder="$" min="0" style="max-width:100px"><button onclick="addBudgetItem()">+ Add</button></div>
+      <div id="budgetList"><div class="empty-state"><div class="emoji">💳</div>Add your first expense!</div></div>
+    </div>
+  </div>
+  <footer>Wedding Planner · Created with StoreClone AI</footer>
+</div>
+<script>
+  let tasks=[],budgetItems=[];function updateCountdown(){const d=document.getElementById('weddingDate').value;if(!d){document.getElementById('daysLeft').textContent='—';return;}const diff=Math.ceil((new Date(d)-new Date())/(1e3*60*60*24));document.getElementById('daysLeft').textContent=diff>0?diff:'🎉';}function addTask(){const i=document.getElementById('taskInput'),n=i.value.trim();if(!n)return;tasks.push({name:n,done:false,id:Date.now()});i.value='';renderTasks();}function toggleTask(id){const t=tasks.find(t=>t.id===id);if(t)t.done=!t.done;renderTasks();}function removeTask(id){tasks=tasks.filter(t=>t.id!==id);renderTasks();}function renderTasks(){const list=document.getElementById('taskList'),done=tasks.filter(t=>t.done).length,total=tasks.length,pct=total>0?Math.round((done/total)*100):0;document.getElementById('totalTasks').textContent=total;document.getElementById('doneTasks').textContent=done;document.getElementById('taskProgress').style.width=pct+'%';document.getElementById('taskProgressLabel').textContent=pct+'% complete';document.getElementById('taskCount').textContent=done+'/'+total;if(total===0){list.innerHTML='<li class="empty-state"><div class="emoji">💍</div>Add your first wedding task!</li>';return;}list.innerHTML=tasks.map(t=>`<li><div class="check-circle${t.done?' checked':''}" onclick="toggleTask(${t.id})">${t.done?'✓':''}</div><span class="check-text${t.done?' done':''}">${t.name}</span><button class="check-remove" onclick="removeTask(${t.id})">✕</button></li>`).join('');}function addBudgetItem(){const n=document.getElementById('budgetName').value.trim(),a=parseFloat(document.getElementById('budgetAmount').value);if(!n||!a||a<=0)return;budgetItems.push({name:n,amount:a,id:Date.now()});document.getElementById('budgetName').value='';document.getElementById('budgetAmount').value='';renderBudget();}function removeBudgetItem(id){budgetItems=budgetItems.filter(b=>b.id!==id);renderBudget();}function renderBudget(){const div=document.getElementById('budgetList'),total=budgetItems.reduce((s,b)=>s+b.amount,0);document.getElementById('totalBudget').textContent='$'+total.toLocaleString();if(budgetItems.length===0){div.innerHTML='<div class="empty-state"><div class="emoji">💳</div>Add your first expense!</div>';return;}div.innerHTML=budgetItems.map(b=>`<div class="budget-item"><span class="budget-cat">${b.name}</span><div class="budget-right"><span class="budget-amt">$${b.amount.toLocaleString()}</span><button class="budget-remove" onclick="removeBudgetItem(${b.id})">✕</button></div></div>`).join('')+`<div class="budget-total"><span>Total</span><span class="total-amt">$${total.toLocaleString()}</span></div>`;}document.getElementById('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});document.getElementById('budgetName').addEventListener('keydown',e=>{if(e.key==='Enter')addBudgetItem();});
+</script>
+</body>
+</html>

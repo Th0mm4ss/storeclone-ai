@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30-Day Habit Tracker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+  :root{--bg:#FDF6F0;--card:#FFFFFF;--text:#2B2B2B;--text-muted:#9A8F85;--accent:#C45D3E;--accent-light:#FDEAE4;--accent-dark:#A14428;--success:#5B9A6F;--success-light:#E3F2E8;--border:#EDE6DF;--shadow:0 2px 20px rgba(0,0,0,0.05);--radius:18px}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+  .container{max-width:780px;margin:0 auto}
+  header{text-align:center;margin-bottom:32px;padding:44px 24px 36px;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);border-radius:var(--radius);color:white;position:relative;overflow:hidden}
+  header::after{content:'';position:absolute;bottom:-60px;left:-30px;width:200px;height:200px;background:rgba(255,255,255,0.05);border-radius:50%}
+  header h1{font-family:'Libre Baskerville',serif;font-size:30px;font-weight:700;margin-bottom:6px;letter-spacing:-0.3px}
+  header p{font-size:14px;opacity:0.85;font-weight:400}
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+  .stat-card{background:var(--card);border-radius:14px;padding:18px 16px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center}
+  .stat-card .num{font-size:26px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px}
+  .stat-card .num.green{color:var(--success)}
+  .stat-card .lbl{font-size:11px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);font-weight:700}
+  .streak-bar{background:var(--card);border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:24px}
+  .streak-bar-header{display:flex;justify-content:space-between;margin-bottom:12px}
+  .streak-bar-header span{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px}
+  .progress-track{height:12px;background:#EDEDED;border-radius:99px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#E8845C);border-radius:99px;transition:width .5s cubic-bezier(.25,1,.5,1)}
+  .panel{background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:24px}
+  .panel-title{font-size:16px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+  .panel-title .badge{background:var(--accent-light);color:var(--accent);font-size:11px;padding:3px 10px;border-radius:99px;font-weight:700}
+  .panel-sub{font-size:13px;color:var(--text-muted);margin-bottom:20px}
+  .habit-inputs{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+  .habit-inputs input{flex:1;min-width:180px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;background:var(--bg);transition:border-color .2s}
+  .habit-inputs input:focus{outline:none;border-color:var(--accent)}
+  .habit-inputs button{padding:10px 20px;background:var(--accent);color:white;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:transform .15s;white-space:nowrap}
+  .habit-inputs button:hover{transform:translateY(-1px)}
+  .habit-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+  .habit-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .habit-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .habit-name{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .habit-remove{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;padding:4px 10px;border-radius:8px;transition:background .15s,color .15s;font-family:'Nunito',sans-serif;font-weight:600}
+  .habit-remove:hover{background:#FFE0E3;color:#E63946}
+  .days-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+  .day-cell{aspect-ratio:1;border-radius:8px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);cursor:pointer;transition:all .2s;background:var(--bg);user-select:none}
+  .day-cell:hover{border-color:var(--accent);transform:scale(1.08)}
+  .day-cell.done{background:var(--accent);color:white;border-color:var(--accent)}
+  .day-cell.done::after{content:'✓'}
+  .habit-stats{display:flex;gap:16px;margin-top:10px;font-size:12px;color:var(--text-muted);font-weight:600}
+  .habit-stats span strong{color:var(--accent)}
+  .empty-habits{text-align:center;padding:40px 20px;color:var(--text-muted)}
+  .empty-habits .emoji{font-size:36px;margin-bottom:10px}
+  .empty-habits p{font-size:13px}
+  footer{text-align:center;padding:20px;font-size:11px;color:var(--text-muted)}
+  @media(max-width:640px){.stats-row{grid-template-columns:repeat(2,1fr)}.days-grid{grid-template-columns:repeat(6,1fr)}header h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header><h1>30-Day Habit Tracker</h1><p>Build better habits · One day at a time</p></header>
+  <div class="stats-row">
+    <div class="stat-card"><div class="num" id="totalHabits">0</div><div class="lbl">Habits</div></div>
+    <div class="stat-card"><div class="num green" id="totalChecks">0</div><div class="lbl">Check-ins</div></div>
+    <div class="stat-card"><div class="num" id="completionRate">0%</div><div class="lbl">Completion</div></div>
+    <div class="stat-card"><div class="num green" id="bestStreak">0</div><div class="lbl">Best Streak</div></div>
+  </div>
+  <div class="streak-bar">
+    <div class="streak-bar-header"><span>Overall Progress</span><span id="progressLabel">0 / 0 days</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">Your Habits <span class="badge">30 days</span></div>
+    <div class="panel-sub">Click a day to mark it complete. Add up to 5 habits.</div>
+    <div class="habit-inputs"><input type="text" id="habitInput" placeholder="e.g. Drink 2L water, Read 20 min…" maxlength="40"><button onclick="addHabit()">+ Add Habit</button></div>
+    <div id="habitsContainer"><div class="empty-habits"><div class="emoji">🌱</div><p>Add your first habit to get started!</p></div></div>
+  </div>
+  <footer>30-Day Habit Tracker · Created with StoreClone AI</footer>
+</div>
+<script>
+  const MAX_HABITS=5;let habits=[];function addHabit(){const i=document.getElementById('habitInput'),n=i.value.trim();if(!n||habits.length>=MAX_HABITS)return;habits.push({name:n,days:new Array(30).fill(false),id:Date.now()});i.value='';render();}function removeHabit(id){habits=habits.filter(h=>h.id!==id);render();}function toggleDay(hId,dI){const h=habits.find(h=>h.id===hId);if(h){h.days[dI]=!h.days[dI];render();}}function getStreak(days){let max=0,cur=0;days.forEach(d=>{if(d){cur++;max=Math.max(max,cur);}else{cur=0;}});return max;}function render(){const c=document.getElementById('habitsContainer'),tc=habits.reduce((s,h)=>s+h.days.filter(Boolean).length,0),tp=habits.length*30,rate=tp>0?Math.round((tc/tp)*100):0,bs=habits.reduce((m,h)=>Math.max(m,getStreak(h.days)),0);document.getElementById('totalHabits').textContent=habits.length;document.getElementById('totalChecks').textContent=tc;document.getElementById('completionRate').textContent=rate+'%';document.getElementById('bestStreak').textContent=bs;document.getElementById('progressLabel').textContent=tc+' / '+tp+' days';document.getElementById('progressFill').style.width=rate+'%';if(habits.length===0){c.innerHTML='<div class="empty-habits"><div class="emoji">🌱</div><p>Add your first habit to get started!</p></div>';return;}c.innerHTML=habits.map(h=>{const d=h.days.filter(Boolean).length,s=getStreak(h.days);return`<div class="habit-section"><div class="habit-header"><div class="habit-name">🎯 ${h.name}</div><button class="habit-remove" onclick="removeHabit(${h.id})">Remove</button></div><div class="days-grid">${h.days.map((v,i)=>`<div class="day-cell${v?' done':''}" onclick="toggleDay(${h.id},${i})">${v?'':i+1}</div>`).join('')}</div><div class="habit-stats"><span><strong>${d}</strong>/30 done</span><span>🔥 Streak: <strong>${s}</strong></span><span>${Math.round((d/30)*100)}% complete</span></div></div>`;}).join('');}document.getElementById('habitInput').addEventListener('keydown',e=>{if(e.key==='Enter')addHabit();});
+</script>
+</body>
+</html>

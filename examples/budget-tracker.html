@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Budget Tracker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+  :root{--bg:#FAF9F7;--card:#FFFFFF;--text:#1A1A1A;--text-muted:#7A7A7A;--accent:#2D6A4F;--accent-light:#D8F3DC;--accent-mid:#52B788;--danger:#E63946;--danger-light:#FFE0E3;--border:#E8E6E1;--shadow:0 2px 16px rgba(0,0,0,0.06);--radius:16px}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+  .container{max-width:860px;margin:0 auto}
+  header{text-align:center;margin-bottom:36px;padding:40px 24px 32px;background:linear-gradient(135deg,var(--accent) 0%,#1B4332 100%);border-radius:var(--radius);color:white;position:relative;overflow:hidden}
+  header::before{content:'';position:absolute;top:-40%;right:-20%;width:300px;height:300px;background:rgba(255,255,255,0.06);border-radius:50%}
+  header h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;margin-bottom:6px;letter-spacing:-0.5px}
+  header p{font-size:14px;opacity:0.8}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+  .stat-card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border)}
+  .stat-card .label{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;font-weight:600}
+  .stat-card .value{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--accent)}
+  .stat-card .value.danger{color:var(--danger)}.stat-card .value.neutral{color:var(--text)}
+  .budget-bar-container{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:24px}
+  .budget-bar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .budget-bar-header h3{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted)}
+  .budget-bar{width:100%;height:14px;background:#ECECEC;border-radius:99px;overflow:hidden}
+  .budget-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent-mid),var(--accent));border-radius:99px;transition:width .6s cubic-bezier(.25,1,.5,1)}
+  .budget-bar-fill.warning{background:linear-gradient(90deg,#F4A261,#E76F51)}.budget-bar-fill.over{background:linear-gradient(90deg,var(--danger),#C1121F)}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+  .panel{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border)}
+  .panel h2{font-size:16px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+  .panel h2 .icon{width:28px;height:28px;background:var(--accent-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:6px}
+  .form-group input,.form-group select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:var(--text);transition:border-color .2s}
+  .form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent)}
+  .btn{width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;margin-top:4px}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(45,106,79,0.25)}.btn:active{transform:translateY(0)}
+  .expense-list{list-style:none;max-height:340px;overflow-y:auto}
+  .expense-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);animation:slideIn .3s ease}
+  .expense-item:last-child{border-bottom:none}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+  .expense-info{display:flex;align-items:center;gap:12px}
+  .expense-cat{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .expense-name{font-weight:500;font-size:14px}.expense-category{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px}
+  .expense-amount{font-weight:700;font-size:15px;color:var(--danger);white-space:nowrap}
+  .expense-delete{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;padding:4px 8px;border-radius:6px;margin-left:10px;transition:background .15s,color .15s}
+  .expense-delete:hover{background:var(--danger-light);color:var(--danger)}
+  .expense-right{display:flex;align-items:center}
+  .empty-state{text-align:center;padding:32px 16px;color:var(--text-muted);font-size:13px}
+  .empty-state .emoji{font-size:32px;margin-bottom:8px}
+  .cat-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+  .cat-row:last-child{border-bottom:none}
+  .cat-left{display:flex;align-items:center;gap:10px}
+  .cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}.cat-name{font-size:13px;font-weight:500}.cat-amount{font-size:13px;font-weight:700}
+  .cat-bar-wrap{flex:1;height:6px;background:#ECECEC;border-radius:99px;margin:0 16px;overflow:hidden}
+  .cat-bar-inner{height:100%;border-radius:99px;transition:width .5s ease}
+  footer{text-align:center;margin-top:36px;padding:20px;font-size:11px;color:var(--text-muted)}
+  @media(max-width:640px){.stats-row{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}header h1{font-size:22px}.stat-card .value{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header><h1>Monthly Budget Tracker</h1><p>Track expenses · Stay on budget · Save smarter</p></header>
+  <div class="stats-row">
+    <div class="stat-card"><div class="label">Budget</div><div class="value neutral" id="totalBudget">$2,000</div></div>
+    <div class="stat-card"><div class="label">Spent</div><div class="value danger" id="totalSpent">$0</div></div>
+    <div class="stat-card"><div class="label">Remaining</div><div class="value" id="totalRemaining">$2,000</div></div>
+  </div>
+  <div class="budget-bar-container">
+    <div class="budget-bar-header"><h3>Budget Usage</h3><span id="budgetPercent">0%</span></div>
+    <div class="budget-bar"><div class="budget-bar-fill" id="budgetFill" style="width:0%"></div></div>
+  </div>
+  <div class="two-col">
+    <div class="panel">
+      <h2><span class="icon">+</span> Add Expense</h2>
+      <div class="form-group"><label>Description</label><input type="text" id="expName" placeholder="e.g. Grocery shopping"></div>
+      <div class="form-group"><label>Amount ($)</label><input type="number" id="expAmount" placeholder="0.00" min="0" step="0.01"></div>
+      <div class="form-group"><label>Category</label><select id="expCategory"><option value="food">🍕 Food & Dining</option><option value="transport">🚗 Transport</option><option value="shopping">🛍️ Shopping</option><option value="bills">📄 Bills & Utilities</option><option value="health">💊 Health</option><option value="entertainment">🎬 Entertainment</option><option value="other">📦 Other</option></select></div>
+      <button class="btn" onclick="addExpense()">Add Expense</button>
+    </div>
+    <div class="panel">
+      <h2><span class="icon">📋</span> Recent Expenses</h2>
+      <ul class="expense-list" id="expenseList"><li class="empty-state"><div class="emoji">📝</div>No expenses yet — add your first one!</li></ul>
+    </div>
+  </div>
+  <div class="panel">
+    <h2><span class="icon">📊</span> Spending by Category</h2>
+    <div id="catBreakdown"><div class="empty-state"><div class="emoji">📂</div>Categories will appear here once you add expenses.</div></div>
+  </div>
+  <footer>Monthly Budget Tracker · Created with StoreClone AI</footer>
+</div>
+<script>
+  const BUDGET=2000;const categories={food:{emoji:'🍕',label:'Food & Dining',color:'#E76F51'},transport:{emoji:'🚗',label:'Transport',color:'#2A9D8F'},shopping:{emoji:'🛍️',label:'Shopping',color:'#E9C46A'},bills:{emoji:'📄',label:'Bills & Utilities',color:'#264653'},health:{emoji:'💊',label:'Health',color:'#7209B7'},entertainment:{emoji:'🎬',label:'Entertainment',color:'#F4A261'},other:{emoji:'📦',label:'Other',color:'#7A7A7A'}};let expenses=[];function addExpense(){const n=document.getElementById('expName').value.trim(),a=parseFloat(document.getElementById('expAmount').value),c=document.getElementById('expCategory').value;if(!n||!a||a<=0)return;expenses.push({name:n,amount:a,category:c,id:Date.now()});document.getElementById('expName').value='';document.getElementById('expAmount').value='';render();}function removeExpense(id){expenses=expenses.filter(e=>e.id!==id);render();}function render(){const spent=expenses.reduce((s,e)=>s+e.amount,0),remaining=BUDGET-spent,percent=Math.min((spent/BUDGET)*100,100);document.getElementById('totalSpent').textContent='$'+spent.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});document.getElementById('totalRemaining').textContent='$'+remaining.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});document.getElementById('budgetPercent').textContent=Math.round(percent)+'%';const fill=document.getElementById('budgetFill');fill.style.width=percent+'%';fill.className='budget-bar-fill'+(percent>90?' over':percent>70?' warning':'');document.getElementById('totalRemaining').className='value'+(remaining<0?' danger':'');const list=document.getElementById('expenseList');if(expenses.length===0){list.innerHTML='<li class="empty-state"><div class="emoji">📝</div>No expenses yet — add your first one!</li>';}else{list.innerHTML=[...expenses].reverse().map(e=>{const cat=categories[e.category];return`<li class="expense-item"><div class="expense-info"><div class="expense-cat" style="background:${cat.color}15">${cat.emoji}</div><div><div class="expense-name">${e.name}</div><div class="expense-category">${cat.label}</div></div></div><div class="expense-right"><span class="expense-amount">-$${e.amount.toFixed(2)}</span><button class="expense-delete" onclick="removeExpense(${e.id})">✕</button></div></li>`;}).join('');}const catTotals={};expenses.forEach(e=>{catTotals[e.category]=(catTotals[e.category]||0)+e.amount;});const catDiv=document.getElementById('catBreakdown'),catKeys=Object.keys(catTotals).sort((a,b)=>catTotals[b]-catTotals[a]);if(catKeys.length===0){catDiv.innerHTML='<div class="empty-state"><div class="emoji">📂</div>Categories will appear here once you add expenses.</div>';}else{const maxCat=Math.max(...Object.values(catTotals));catDiv.innerHTML=catKeys.map(key=>{const cat=categories[key],total=catTotals[key],pct=(total/maxCat)*100;return`<div class="cat-row"><div class="cat-left"><div class="cat-dot" style="background:${cat.color}"></div><span class="cat-name">${cat.emoji} ${cat.label}</span></div><div class="cat-bar-wrap"><div class="cat-bar-inner" style="width:${pct}%;background:${cat.color}"></div></div><span class="cat-amount">$${total.toFixed(2)}</span></div>`;}).join('');}}
+</script>
+</body>
+</html>
