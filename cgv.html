@@ -8,114 +8,252 @@
 <style>
 :root{--white:#fff;--off:#f5f5f7;--black:#000;--dark:#1d1d1f;--gray:#525252;--border:rgba(0,0,0,0.08);}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:var(--dark);-webkit-font-smoothing:antialiased;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:var(--dark);-webkit-font-smoothing:antialiased;}
 .nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 40px;z-index:100;}
-.nav-logo{font-size:16px;font-weight:600;letter-spacing:-0.3px;color:var(--dark);text-decoration:none;}.nav-logo span{font-weight:300;}
-.nav-back{font-size:13px;color:var(--gray);text-decoration:none;transition:color 0.2s;}.nav-back:hover{color:var(--dark);}
-.container{max-width:720px;margin:0 auto;padding:100px 24px 80px;}
-h1{font-size:32px;font-weight:600;letter-spacing:-1px;margin-bottom:8px;}
-.subtitle{font-size:14px;color:var(--gray);margin-bottom:48px;font-weight:300;}
-h2{font-size:18px;font-weight:600;letter-spacing:-0.3px;margin:36px 0 12px;color:var(--dark);}
-p,li{font-size:14px;line-height:1.8;color:#444;font-weight:300;margin-bottom:12px;}
-ul{padding-left:20px;margin-bottom:16px;}
-li{margin-bottom:6px;}
-.placeholder{background:#FFF3CD;padding:2px 8px;border-radius:4px;font-weight:500;color:#856404;font-size:13px;}
-.footer{text-align:center;padding:40px;font-size:12px;color:var(--gray);border-top:1px solid var(--border);margin-top:60px;}
-table{width:100%;border-collapse:collapse;margin:16px 0;}
-th,td{text-align:left;padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border);}
-th{font-weight:600;color:var(--dark);background:var(--off);}
-td{color:#444;font-weight:300;}
+.nav-logo{font-size:16px;font-weight:600;letter-spacing:-0.3px;color:var(--dark);text-decoration:none;}
+.nav-logo span{font-weight:300;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-back{font-size:13px;color:var(--gray);text-decoration:none;transition:color .2s;}
+.nav-back:hover{color:var(--dark);}
+.lang-btn{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:white;color:var(--gray);cursor:pointer;transition:all .2s;font-family:'Inter',-apple-system,sans-serif;}
+.lang-btn:hover{border-color:var(--dark);color:var(--dark);}
+.container{max-width:740px;margin:0 auto;padding:88px 24px 80px;}
+.breadcrumb{font-size:12px;color:var(--gray);margin-bottom:28px;}
+.breadcrumb a{color:var(--gray);text-decoration:none;}
+.breadcrumb a:hover{color:var(--dark);}
+.breadcrumb span{margin:0 6px;opacity:.5;}
+.hero{margin-bottom:28px;}
+h1{font-size:32px;font-weight:600;letter-spacing:-1px;margin-bottom:6px;color:var(--dark);}
+.update-date{font-size:13px;color:var(--gray);font-weight:300;}
+.section-card{background:white;border-radius:12px;padding:32px;border:1px solid var(--border);margin-bottom:12px;}
+h2{font-size:15px;font-weight:600;letter-spacing:-0.2px;margin-bottom:14px;color:var(--dark);}
+p,li{font-size:14px;line-height:1.8;color:#444;font-weight:300;margin-bottom:10px;}
+p:last-child{margin-bottom:0;}
+ul{padding-left:20px;margin-bottom:10px;}
+li{margin-bottom:5px;}
+a{color:var(--dark);}
+a:hover{opacity:.7;}
+table{width:100%;border-collapse:collapse;margin:8px 0;}
+th,td{text-align:left;padding:10px 14px;font-size:13px;border-bottom:1px solid var(--border);}
+th{font-weight:600;color:var(--dark);background:var(--off);font-size:11px;text-transform:uppercase;letter-spacing:.06em;}
+tr:nth-child(even) td{background:#f9f9f9;}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:500;margin-right:4px;}
+.tag-free{background:#e8f5e9;color:#2e7d32;}
+.tag-pro{background:#e3f2fd;color:#1565c0;}
+.tag-biz{background:#f3e5f5;color:#6a1b9a;}
+.footer{text-align:center;padding:32px 0;font-size:12px;color:var(--gray);border-top:1px solid var(--border);margin-top:20px;}
+@media(max-width:600px){.nav{padding:0 20px;}.container{padding:80px 16px 60px;}.section-card{padding:20px;}table{font-size:12px;}th,td{padding:8px 10px;}}
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <a href="/" class="nav-logo">StoreClone<span>AI</span></a>
-  <a href="/" class="nav-back">&larr; Retour au site</a>
+  <div class="nav-right">
+    <a href="/" class="nav-back">&larr; Retour au site</a>
+    <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">EN</button>
+  </div>
 </nav>
 
 <div class="container">
-  <h1>Conditions Générales de Vente</h1>
-  <p class="subtitle">Dernière mise à jour : mars 2026</p>
 
-  <h2>1. Objet</h2>
-  <p>Les présentes Conditions Générales de Vente (CGV) régissent l'utilisation du service StoreClone AI, une plateforme de génération automatique de fiches produits pour les marketplaces e-commerce (ci-après « le Service »), édité par l'éditeur.</p>
-  <p>Toute inscription ou utilisation du Service implique l'acceptation pleine et entière des présentes CGV.</p>
+  <!-- ── FRANÇAIS ── -->
+  <div id="block-fr">
+    <div class="breadcrumb">
+      <a href="/">Accueil</a><span>›</span>Conditions Générales de Vente
+    </div>
+    <div class="hero">
+      <h1>Conditions Générales de Vente</h1>
+      <p class="update-date">Dernière mise à jour : 27 mars 2026</p>
+    </div>
 
-  <h2>2. Description du Service</h2>
-  <p>StoreClone AI permet à ses utilisateurs de :</p>
-  <ul>
-    <li>Générer automatiquement des fiches produits optimisées SEO (titre, description, tags, prix suggéré) à l'aide de l'intelligence artificielle</li>
-    <li>Exporter les fiches générées au format HTML ou les copier individuellement</li>
-    <li>Accéder aux options avancées de génération (SEO, bilingue, export instantané) selon le plan souscrit</li>
-  </ul>
+    <div class="section-card">
+      <h2>1. Objet</h2>
+      <p>Les présentes Conditions Générales de Vente (CGV) régissent l'accès et l'utilisation du service <strong>StoreClone AI</strong>, une plateforme SaaS permettant la création de produits digitaux interactifs (fichiers HTML) et de fiches de vente par intelligence artificielle, éditée par L'Éditeur (micro-entreprise en cours d'immatriculation).</p>
+      <p>Toute inscription ou utilisation du service vaut acceptation pleine et entière des présentes CGV.</p>
+    </div>
 
-  <h2>3. Plans et tarifs</h2>
-  <table>
-    <tr><th>Plan</th><th>Engagement</th><th>Prix mensuel</th><th>Générations / mois</th><th>Fonctionnalités</th></tr>
-    <tr><td>Starter</td><td>Sans engagement</td><td>Gratuit</td><td>3</td><td>Génération de fiches, export HTML</td></tr>
-    <tr><td>Pro</td><td>Mensuel</td><td>19 €/mois</td><td>30</td><td>Fiches SEO complètes, export ZIP, bilingue FR+EN</td></tr>
-    <tr><td>Pro</td><td>3 mois</td><td>17 €/mois</td><td>30</td><td>Idem Pro mensuel</td></tr>
-    <tr><td>Pro</td><td>1 an</td><td>15 €/mois</td><td>30</td><td>Idem Pro mensuel</td></tr>
-    <tr><td>Business</td><td>Mensuel</td><td>49 €/mois</td><td>Illimité</td><td>Pro + générations illimitées + accès prioritaire</td></tr>
-    <tr><td>Business</td><td>3 mois</td><td>44 €/mois</td><td>Illimité</td><td>Idem Business mensuel</td></tr>
-    <tr><td>Business</td><td>1 an</td><td>39 €/mois</td><td>Illimité</td><td>Idem Business mensuel</td></tr>
-  </table>
-  <p>Les prix sont indiqués en euros TTC. En tant que micro-entrepreneur, la TVA n'est pas applicable (article 293 B du CGI), sauf en cas de dépassement des seuils légaux.</p>
-  <p>Les engagements 3 mois et 1 an sont facturés mensuellement au tarif réduit. En cas de résiliation avant la fin de la période d'engagement, l'utilisateur reste redevable des mensualités restantes jusqu'à la fin de la période souscrite.</p>
-  <p>L'éditeur se réserve le droit de modifier les tarifs à tout moment. Les utilisateurs existants seront informés au moins 30 jours avant l'entrée en vigueur de tout changement tarifaire.</p>
+    <div class="section-card">
+      <h2>2. Accès au service</h2>
+      <p>L'inscription est gratuite et requiert uniquement une adresse email. Trois plans sont disponibles :</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>Engagement</th>
+            <th>Prix</th>
+            <th>Générations / mois</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="tag tag-free">Starter</span></td><td>Sans engagement</td><td>Gratuit</td><td>3</td></tr>
+          <tr><td><span class="tag tag-pro">Pro</span></td><td>Mensuel</td><td>19 €/mois</td><td>30</td></tr>
+          <tr><td><span class="tag tag-pro">Pro</span></td><td>3 mois</td><td>17 €/mois</td><td>30</td></tr>
+          <tr><td><span class="tag tag-pro">Pro</span></td><td>1 an</td><td>15 €/mois</td><td>30</td></tr>
+          <tr><td><span class="tag tag-biz">Business</span></td><td>Mensuel</td><td>49 €/mois</td><td>Illimité</td></tr>
+          <tr><td><span class="tag tag-biz">Business</span></td><td>3 mois</td><td>44 €/mois</td><td>Illimité</td></tr>
+          <tr><td><span class="tag tag-biz">Business</span></td><td>1 an</td><td>39 €/mois</td><td>Illimité</td></tr>
+        </tbody>
+      </table>
+      <p>Les prix sont indiqués en euros TTC. En tant que micro-entreprise, la TVA n'est pas applicable (art. 293 B du CGI), sauf dépassement des seuils légaux.</p>
+    </div>
 
-  <h2>4. Inscription et compte utilisateur</h2>
-  <p>L'accès au Service nécessite la création d'un compte. L'utilisateur s'engage à fournir des informations exactes et à maintenir la confidentialité de ses identifiants de connexion. Toute utilisation du compte est réputée effectuée par le titulaire du compte.</p>
+    <div class="section-card">
+      <h2>3. Commande et paiement</h2>
+      <p>Les paiements sont traités de manière sécurisée via <strong>Stripe</strong>. StoreClone AI ne stocke aucune donnée bancaire. La facturation est mensuelle ou annuelle selon le plan choisi, à date anniversaire de la souscription.</p>
+      <p>Il n'y a pas d'engagement minimum pour le plan mensuel. Les abonnements 3 mois et 1 an sont facturés mensuellement au tarif réduit ; en cas de résiliation anticipée, les mensualités restantes sont dues jusqu'à la fin de la période souscrite.</p>
+    </div>
 
-  <h2>5. Paiement et facturation</h2>
-  <p>Les paiements sont effectués par carte bancaire via la plateforme sécurisée Stripe. Les abonnements Pro et Business sont facturés mensuellement, à date anniversaire de la souscription. Une facture est disponible après chaque paiement dans l'espace utilisateur.</p>
+    <div class="section-card">
+      <h2>4. Droit de rétractation</h2>
+      <p>Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation ne s'applique pas aux contenus numériques fournis immédiatement après l'achat et dont l'exécution a commencé avec l'accord préalable du consommateur.</p>
+      <p>Toutefois, un remboursement peut être accordé au cas par cas dans les <strong>7 jours suivant l'achat</strong>, sur demande adressée à <a href="mailto:contact@storeclone-ai.com">contact@storeclone-ai.com</a>.</p>
+    </div>
 
-  <h2>6. Droit de rétractation</h2>
-  <p>Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation ne s'applique pas aux services pleinement exécutés avant la fin du délai de rétractation et dont l'exécution a commencé avec l'accord préalable du consommateur. En souscrivant à un plan payant et en utilisant le Service, l'utilisateur reconnaît renoncer à son droit de rétractation.</p>
-  <p>Toutefois, l'utilisateur peut annuler son abonnement à tout moment. L'accès au Service reste actif jusqu'à la fin de la période de facturation en cours. Aucun remboursement au prorata ne sera effectué.</p>
+    <div class="section-card">
+      <h2>5. Résiliation</h2>
+      <p>L'utilisateur peut résilier son abonnement à tout moment depuis son espace client. La résiliation prend effet à la fin de la période de facturation en cours — l'accès au service reste actif jusqu'à cette date.</p>
+      <p>Les données sont conservées pendant <strong>30 jours</strong> après la résiliation, puis supprimées définitivement sauf obligation légale de conservation.</p>
+      <p>L'Éditeur se réserve le droit de suspendre ou supprimer tout compte en cas de violation des présentes CGV ou d'utilisation abusive du service.</p>
+    </div>
 
-  <h2>7. Résiliation</h2>
-  <p>L'utilisateur peut résilier son abonnement à tout moment depuis les paramètres de son compte ou en contactant le support. La résiliation prend effet à la fin de la période de facturation en cours.</p>
-  <p>L'éditeur se réserve le droit de suspendre ou supprimer tout compte en cas de violation des présentes CGV, d'utilisation abusive du Service, ou de tentative de contournement des limites de quota.</p>
+    <div class="section-card">
+      <h2>6. Responsabilité</h2>
+      <p>StoreClone AI fournit les outils de création — l'utilisateur est seul responsable des produits qu'il crée, publie et vend. L'Éditeur ne garantit pas :</p>
+      <ul>
+        <li>L'exactitude ou la pertinence commerciale des contenus générés par l'IA</li>
+        <li>Les revenus générés par les produits créés via le service</li>
+        <li>La disponibilité continue et ininterrompue du service</li>
+      </ul>
+      <p>En cas d'indisponibilité du service, aucune compensation n'est due pour le plan Starter. Pour les plans payants, la responsabilité de l'Éditeur ne pourra excéder le montant payé au cours des 3 derniers mois.</p>
+    </div>
 
-  <h2>8. Propriété des contenus générés</h2>
-  <p>Les contenus générés par le Service (titres, descriptions, tags) sont la propriété de l'utilisateur une fois générés. L'éditeur ne revendique aucun droit de propriété intellectuelle sur les contenus créés via le Service.</p>
-  <p>L'utilisateur est seul responsable de l'utilisation des contenus générés et de leur conformité aux conditions d'utilisation des plateformes tierces (Etsy, Shopify, etc.).</p>
+    <div class="section-card">
+      <h2>7. Propriété des contenus générés</h2>
+      <p>Les produits digitaux générés via le service appartiennent <strong>intégralement à l'utilisateur</strong> qui les a créés. StoreClone AI ne revendique aucun droit de propriété intellectuelle sur ces contenus.</p>
+      <p>L'utilisateur est responsable de la conformité de ses produits avec les conditions d'utilisation des plateformes tierces (Etsy, Gumroad, Shopify, etc.).</p>
+    </div>
 
-  <h2>9. Limitation de responsabilité</h2>
-  <p>StoreClone AI est un outil d'aide à la création de contenu basé sur l'intelligence artificielle. L'éditeur ne garantit pas :</p>
-  <ul>
-    <li>L'exactitude, la pertinence ou l'originalité des contenus générés</li>
-    <li>Les performances commerciales (ventes, vues, trafic) résultant de l'utilisation des contenus</li>
-    <li>La disponibilité continue et ininterrompue du Service</li>
-    <li>La compatibilité permanente avec les API des plateformes tierces</li>
-  </ul>
-  <p>En aucun cas la responsabilité de l'éditeur ne pourra être engagée au-delà du montant total payé par l'utilisateur au cours des 12 derniers mois.</p>
+    <div class="section-card">
+      <h2>8. Modification des tarifs</h2>
+      <p>Tout changement de tarif sera communiqué aux utilisateurs existants par email au moins <strong>30 jours avant</strong> son entrée en vigueur. L'utilisation continue du service après cette date vaut acceptation des nouveaux tarifs.</p>
+    </div>
 
-  <h2>10. Utilisation acceptable</h2>
-  <p>L'utilisateur s'engage à ne pas utiliser le Service pour :</p>
-  <ul>
-    <li>Générer du contenu illicite, diffamatoire, trompeur ou portant atteinte aux droits de tiers</li>
-    <li>Revendre l'accès au Service à des tiers sans autorisation</li>
-    <li>Contourner les limites de quota par la création de comptes multiples</li>
-    <li>Tenter d'extraire, copier ou rétro-ingéniérer le système de génération IA</li>
-  </ul>
+    <div class="section-card">
+      <h2>9. Droit applicable</h2>
+      <p>Les présentes CGV sont soumises au droit français. En cas de litige, les parties s'engagent à rechercher une solution amiable. À défaut, les tribunaux compétents en France seront seuls compétents.</p>
+      <p>Pour toute question : <a href="mailto:contact@storeclone-ai.com">contact@storeclone-ai.com</a></p>
+    </div>
 
-  <h2>11. Modifications des CGV</h2>
-  <p>L'éditeur se réserve le droit de modifier les présentes CGV. Les utilisateurs seront informés par email de toute modification substantielle au moins 15 jours avant son entrée en vigueur. L'utilisation continue du Service après cette date vaut acceptation des nouvelles CGV.</p>
-
-  <h2>12. Droit applicable et litiges</h2>
-  <p>Les présentes CGV sont soumises au droit français. En cas de litige, les parties s'engagent à rechercher une solution amiable. À défaut, les tribunaux compétents du ressort de <span class="placeholder">[VOTRE VILLE]</span> seront seuls compétents.</p>
-  <p>Conformément aux dispositions du Code de la consommation, le consommateur peut recourir gratuitement au service de médiation : <span class="placeholder">[NOM DU MÉDIATEUR — à compléter lors de l'inscription à un service de médiation]</span>.</p>
-
-  <h2>13. Contact</h2>
-  <p>Pour toute question relative aux présentes CGV, contactez-nous à : <span class="placeholder">[VOTRE EMAIL DE CONTACT]</span></p>
-
-  <div class="footer">
-    &copy; 2026 StoreClone AI — Tous droits réservés
+    <div class="footer">
+      &copy; 2026 StoreClone AI — Tous droits réservés
+    </div>
   </div>
+
+  <!-- ── ENGLISH ── -->
+  <div id="block-en" style="display:none;">
+    <div class="breadcrumb">
+      <a href="/">Home</a><span>›</span>Terms of Sale
+    </div>
+    <div class="hero">
+      <h1>Terms of Sale</h1>
+      <p class="update-date">Last updated: March 27, 2026</p>
+    </div>
+
+    <div class="section-card">
+      <h2>1. Purpose</h2>
+      <p>These Terms of Sale govern access to and use of <strong>StoreClone AI</strong>, a SaaS platform enabling the creation of interactive digital products (HTML files) and product listings using artificial intelligence, published by The Publisher (sole trader — registration in progress).</p>
+      <p>Registering or using the service constitutes full acceptance of these Terms.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>2. Access to the Service</h2>
+      <p>Registration is free and requires only an email address. Three plans are available:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>Commitment</th>
+            <th>Price</th>
+            <th>Generations / month</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="tag tag-free">Starter</span></td><td>No commitment</td><td>Free</td><td>3</td></tr>
+          <tr><td><span class="tag tag-pro">Pro</span></td><td>Monthly</td><td>€19/month</td><td>30</td></tr>
+          <tr><td><span class="tag tag-pro">Pro</span></td><td>3 months</td><td>€17/month</td><td>30</td></tr>
+          <tr><td><span class="tag tag-pro">Pro</span></td><td>1 year</td><td>€15/month</td><td>30</td></tr>
+          <tr><td><span class="tag tag-biz">Business</span></td><td>Monthly</td><td>€49/month</td><td>Unlimited</td></tr>
+          <tr><td><span class="tag tag-biz">Business</span></td><td>3 months</td><td>€44/month</td><td>Unlimited</td></tr>
+          <tr><td><span class="tag tag-biz">Business</span></td><td>1 year</td><td>€39/month</td><td>Unlimited</td></tr>
+        </tbody>
+      </table>
+      <p>Prices are in euros including tax. As a sole trader, VAT does not apply unless legal thresholds are exceeded.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>3. Order and Payment</h2>
+      <p>Payments are processed securely via <strong>Stripe</strong>. StoreClone AI stores no banking data. Billing is monthly or annual depending on the chosen plan, on the subscription anniversary date.</p>
+      <p>There is no minimum commitment on the monthly plan. 3-month and annual subscriptions are billed monthly at the reduced rate; if cancelled early, the remaining monthly payments are due until the end of the subscribed period.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>4. Right of Withdrawal</h2>
+      <p>In accordance with Article L221-28 of the French Consumer Code, the right of withdrawal does not apply to digital content provided immediately after purchase and whose execution began with the consumer's prior consent.</p>
+      <p>However, a refund may be granted on a case-by-case basis within <strong>7 days of purchase</strong>, upon request to <a href="mailto:contact@storeclone-ai.com">contact@storeclone-ai.com</a>.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>5. Cancellation</h2>
+      <p>Users may cancel their subscription at any time from their account settings. Cancellation takes effect at the end of the current billing period — access remains active until that date.</p>
+      <p>Data is retained for <strong>30 days</strong> after cancellation, then permanently deleted unless a legal retention obligation applies.</p>
+      <p>The Publisher reserves the right to suspend or delete any account in the event of a breach of these Terms or abuse of the service.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>6. Liability</h2>
+      <p>StoreClone AI provides creation tools — the user is solely responsible for the products they create, publish and sell. The Publisher does not guarantee:</p>
+      <ul>
+        <li>The accuracy or commercial relevance of AI-generated content</li>
+        <li>Revenue generated from products created via the service</li>
+        <li>Continuous, uninterrupted availability of the service</li>
+      </ul>
+      <p>In the event of service unavailability, no compensation is owed for the Starter plan. For paid plans, the Publisher's liability shall not exceed the amount paid in the last 3 months.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>7. Ownership of Generated Content</h2>
+      <p>Digital products generated via the service <strong>belong entirely to the user</strong> who created them. StoreClone AI claims no intellectual property rights over such content.</p>
+      <p>The user is responsible for ensuring their products comply with the terms of third-party platforms (Etsy, Gumroad, Shopify, etc.).</p>
+    </div>
+
+    <div class="section-card">
+      <h2>8. Price Changes</h2>
+      <p>Any price change will be communicated to existing users by email at least <strong>30 days in advance</strong>. Continued use of the service after that date constitutes acceptance of the new prices.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>9. Applicable Law</h2>
+      <p>These Terms are governed by French law. In the event of a dispute, the parties agree to seek an amicable resolution. Failing that, the competent courts in France shall have sole jurisdiction.</p>
+      <p>For any questions: <a href="mailto:contact@storeclone-ai.com">contact@storeclone-ai.com</a></p>
+    </div>
+
+    <div class="footer">
+      &copy; 2026 StoreClone AI — All rights reserved
+    </div>
+  </div>
+
 </div>
 
+<script>
+let currentLang = 'fr';
+function toggleLang() {
+  currentLang = currentLang === 'fr' ? 'en' : 'fr';
+  document.getElementById('block-fr').style.display = currentLang === 'fr' ? 'block' : 'none';
+  document.getElementById('block-en').style.display = currentLang === 'en' ? 'block' : 'none';
+  document.getElementById('lang-toggle').textContent = currentLang === 'fr' ? 'EN' : 'FR';
+  document.documentElement.lang = currentLang;
+}
+</script>
 </body>
 </html>

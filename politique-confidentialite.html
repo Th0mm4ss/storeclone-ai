@@ -8,124 +8,302 @@
 <style>
 :root{--white:#fff;--off:#f5f5f7;--black:#000;--dark:#1d1d1f;--gray:#525252;--border:rgba(0,0,0,0.08);}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:var(--dark);-webkit-font-smoothing:antialiased;}
-.container{max-width:720px;margin:0 auto;padding:60px 24px 80px;}
-.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--gray);text-decoration:none;margin-bottom:32px;}
-.back:hover{color:var(--dark);}
-h1{font-size:32px;font-weight:600;letter-spacing:-0.8px;margin-bottom:8px;}
-.date{font-size:13px;color:var(--gray);margin-bottom:40px;}
-h2{font-size:18px;font-weight:600;letter-spacing:-0.3px;margin-top:32px;margin-bottom:12px;}
-p,li{font-size:14px;line-height:1.7;color:#444;margin-bottom:12px;}
-ul{padding-left:20px;margin-bottom:12px;}
-li{margin-bottom:6px;}
-.placeholder{background:#FFF3CD;padding:2px 6px;border-radius:4px;font-weight:500;color:#856404;}
-table{width:100%;border-collapse:collapse;margin:16px 0;}
-th,td{padding:10px 14px;text-align:left;border:1px solid #e8e8ed;font-size:13px;}
-th{background:#f5f5f7;font-weight:600;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:var(--dark);-webkit-font-smoothing:antialiased;}
+.nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 40px;z-index:100;}
+.nav-logo{font-size:16px;font-weight:600;letter-spacing:-0.3px;color:var(--dark);text-decoration:none;}
+.nav-logo span{font-weight:300;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-back{font-size:13px;color:var(--gray);text-decoration:none;transition:color .2s;}
+.nav-back:hover{color:var(--dark);}
+.lang-btn{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:white;color:var(--gray);cursor:pointer;transition:all .2s;font-family:'Inter',-apple-system,sans-serif;}
+.lang-btn:hover{border-color:var(--dark);color:var(--dark);}
+.container{max-width:740px;margin:0 auto;padding:88px 24px 80px;}
+.breadcrumb{font-size:12px;color:var(--gray);margin-bottom:28px;}
+.breadcrumb a{color:var(--gray);text-decoration:none;}
+.breadcrumb a:hover{color:var(--dark);}
+.breadcrumb span{margin:0 6px;opacity:.5;}
+.hero{margin-bottom:28px;}
+h1{font-size:32px;font-weight:600;letter-spacing:-1px;margin-bottom:6px;color:var(--dark);}
+.update-date{font-size:13px;color:var(--gray);font-weight:300;}
+.section-card{background:white;border-radius:12px;padding:32px;border:1px solid var(--border);margin-bottom:12px;}
+h2{font-size:15px;font-weight:600;letter-spacing:-0.2px;margin-bottom:14px;color:var(--dark);}
+p,li{font-size:14px;line-height:1.8;color:#444;font-weight:300;margin-bottom:10px;}
+p:last-child{margin-bottom:0;}
+ul{padding-left:20px;margin-bottom:10px;}
+li{margin-bottom:5px;}
+a{color:var(--dark);}
+a:hover{opacity:.7;}
+table{width:100%;border-collapse:collapse;margin:8px 0;}
+th,td{text-align:left;padding:10px 14px;font-size:13px;border-bottom:1px solid var(--border);}
+th{font-weight:600;color:var(--dark);background:var(--off);font-size:11px;text-transform:uppercase;letter-spacing:.06em;}
+tr:nth-child(even) td{background:#f9f9f9;}
+.rights-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+.right-item{background:var(--off);border-radius:8px;padding:14px 16px;}
+.right-item strong{display:block;font-size:13px;font-weight:600;color:var(--dark);margin-bottom:4px;}
+.right-item span{font-size:12px;color:var(--gray);font-weight:300;line-height:1.5;}
+.cookie-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.cookie-row:last-child{border-bottom:none;padding-bottom:0;}
+.cookie-badge{flex-shrink:0;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:500;background:#e8f5e9;color:#2e7d32;}
+.cookie-badge.necessary{background:#e8f5e9;color:#2e7d32;}
+.footer{text-align:center;padding:32px 0;font-size:12px;color:var(--gray);border-top:1px solid var(--border);margin-top:20px;}
+@media(max-width:600px){.nav{padding:0 20px;}.container{padding:80px 16px 60px;}.section-card{padding:20px;}.rights-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">StoreClone<span>AI</span></a>
+  <div class="nav-right">
+    <a href="/" class="nav-back">&larr; Retour au site</a>
+    <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">EN</button>
+  </div>
+</nav>
+
 <div class="container">
-<a href="/" class="back">← Retour à l'accueil</a>
-<h1>Politique de Confidentialité</h1>
-<p class="date">Dernière mise à jour : mars 2026</p>
 
-<p>StoreClone AI accorde une importance particulière à la protection de vos données personnelles. La présente politique décrit quelles données nous collectons, pourquoi nous les collectons, et comment nous les protégeons, conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés.</p>
+  <!-- ── FRANÇAIS ── -->
+  <div id="block-fr">
+    <div class="breadcrumb">
+      <a href="/">Accueil</a><span>›</span>Politique de confidentialité
+    </div>
+    <div class="hero">
+      <h1>Politique de confidentialité</h1>
+      <p class="update-date">Dernière mise à jour : 27 mars 2026</p>
+    </div>
 
-<h2>1. Responsable du traitement</h2>
-<p>
-Le responsable du traitement des données est :<br><br>
-Nom : l'éditeur<br>
-Adresse : France<br>
-Email : contact@storeclone-ai.com
-</p>
+    <div class="section-card">
+      <h2>1. Qui sommes-nous</h2>
+      <p><strong>StoreClone AI</strong> (micro-entreprise en cours d'immatriculation) est responsable du traitement de vos données personnelles au sens du RGPD.</p>
+      <p>Contact : <a href="mailto:contact@storeclone-ai.com">contact@storeclone-ai.com</a></p>
+    </div>
 
-<h2>2. Données collectées</h2>
-<table>
-<tr><th>Donnée</th><th>Finalité</th><th>Base légale</th></tr>
-<tr><td>Adresse email</td><td>Création de compte, communication</td><td>Exécution du contrat</td></tr>
-<tr><td>Nom / Prénom</td><td>Personnalisation du compte</td><td>Exécution du contrat</td></tr>
-<tr><td>Mot de passe (hashé)</td><td>Authentification</td><td>Exécution du contrat</td></tr>
-<tr><td>Historique des générations</td><td>Fonctionnement du service, historique utilisateur</td><td>Exécution du contrat</td></tr>
-<tr><td>Données de paiement</td><td>Traitement des abonnements</td><td>Exécution du contrat</td></tr>
-<tr><td>Adresse IP, données de connexion</td><td>Sécurité, prévention des fraudes</td><td>Intérêt légitime</td></tr>
-</table>
-<p><strong>Important :</strong> les données bancaires (numéro de carte, etc.) ne sont jamais collectées ni stockées par StoreClone AI. Elles sont traitées exclusivement par Stripe, notre prestataire de paiement certifié PCI-DSS.</p>
+    <div class="section-card">
+      <h2>2. Données collectées</h2>
+      <p>Nous collectons uniquement les données nécessaires au fonctionnement du service :</p>
+      <table>
+        <thead>
+          <tr><th>Donnée</th><th>Moment</th><th>Finalité</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Adresse email</td><td>Inscription</td><td>Authentification, communication</td></tr>
+          <tr><td>Nom (optionnel)</td><td>Inscription</td><td>Personnalisation du compte</td></tr>
+          <tr><td>Niches saisies & produits générés</td><td>Utilisation</td><td>Historique, fonctionnement du service</td></tr>
+          <tr><td>Plan d'abonnement</td><td>Automatique</td><td>Gestion des accès</td></tr>
+          <tr><td>Logs de connexion</td><td>Automatique</td><td>Sécurité, prévention des fraudes</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Données bancaires :</strong> nous ne stockons aucune donnée de paiement. Elles sont traitées exclusivement par Stripe (certifié PCI-DSS).</p>
+    </div>
 
-<h2>3. Utilisation des données</h2>
-<p>Vos données sont utilisées pour :</p>
-<ul>
-<li>Fournir et améliorer le service StoreClone AI</li>
-<li>Gérer votre compte et votre abonnement</li>
-<li>Traiter les paiements via Stripe</li>
-<li>Vous envoyer des communications relatives au service (confirmations, factures, mises à jour importantes)</li>
-<li>Assurer la sécurité et prévenir les utilisations frauduleuses</li>
-<li>Respecter nos obligations légales et réglementaires</li>
-</ul>
-<p>Nous n'utilisons <strong>jamais</strong> vos données à des fins publicitaires et ne les revendons à aucun tiers.</p>
+    <div class="section-card">
+      <h2>3. Finalités du traitement</h2>
+      <ul>
+        <li>Fournir le service (génération de produits, historique, export)</li>
+        <li>Gérer les abonnements et les paiements</li>
+        <li>Envoyer les emails transactionnels (confirmation de compte, mot de passe, factures)</li>
+        <li>Améliorer le service sur la base de l'utilisation agrégée et anonymisée</li>
+      </ul>
+      <p>Nous n'utilisons jamais vos données à des fins publicitaires et ne les revendons à aucun tiers.</p>
+    </div>
 
-<h2>4. Sous-traitants et transferts de données</h2>
-<p>Nous faisons appel aux sous-traitants suivants pour le fonctionnement du service :</p>
-<table>
-<tr><th>Sous-traitant</th><th>Finalité</th><th>Localisation</th></tr>
-<tr><td>Supabase</td><td>Base de données, authentification</td><td>EU (Irlande)</td></tr>
-<tr><td>Vercel</td><td>Hébergement du site</td><td>États-Unis (clauses contractuelles types)</td></tr>
-<tr><td>Stripe</td><td>Traitement des paiements</td><td>États-Unis (clauses contractuelles types)</td></tr>
-<tr><td>Anthropic</td><td>Génération de contenu IA</td><td>États-Unis (clauses contractuelles types)</td></tr>
-</table>
-<p>Les transferts de données vers les États-Unis sont encadrés par des clauses contractuelles types (CCT) conformément aux exigences du RGPD.</p>
+    <div class="section-card">
+      <h2>4. Base légale</h2>
+      <ul>
+        <li><strong>Exécution du contrat</strong> (art. 6.1.b RGPD) — fourniture du service, gestion du compte et des paiements</li>
+        <li><strong>Intérêt légitime</strong> (art. 6.1.f RGPD) — sécurité du service, prévention des fraudes, amélioration du produit</li>
+      </ul>
+    </div>
 
-<h2>5. Durée de conservation</h2>
-<ul>
-<li><strong>Données de compte :</strong> conservées pendant toute la durée d'utilisation du service, puis supprimées 12 mois après la clôture du compte</li>
-<li><strong>Historique des générations :</strong> conservé pendant toute la durée de l'abonnement actif</li>
-<li><strong>Données de facturation :</strong> conservées 10 ans conformément aux obligations comptables françaises</li>
-<li><strong>Logs de connexion :</strong> conservés 12 mois conformément aux obligations légales</li>
-</ul>
+    <div class="section-card">
+      <h2>5. Sous-traitants</h2>
+      <p>Nous faisons appel aux prestataires suivants pour assurer le fonctionnement du service :</p>
+      <table>
+        <thead>
+          <tr><th>Sous-traitant</th><th>Rôle</th><th>Localisation</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Supabase</strong></td><td>Base de données &amp; authentification</td><td>Irlande (UE)</td></tr>
+          <tr><td><strong>Vercel</strong></td><td>Hébergement</td><td>États-Unis</td></tr>
+          <tr><td><strong>Stripe</strong></td><td>Paiements</td><td>États-Unis</td></tr>
+          <tr><td><strong>Anthropic</strong></td><td>Génération IA</td><td>États-Unis</td></tr>
+        </tbody>
+      </table>
+      <p>Les transferts de données vers les États-Unis sont encadrés par les clauses contractuelles types (CCT) de la Commission européenne, conformément aux exigences du RGPD.</p>
+    </div>
 
-<h2>6. Vos droits (RGPD)</h2>
-<p>Conformément au RGPD, vous disposez des droits suivants :</p>
-<ul>
-<li><strong>Droit d'accès :</strong> obtenir une copie de vos données personnelles</li>
-<li><strong>Droit de rectification :</strong> corriger des données inexactes ou incomplètes</li>
-<li><strong>Droit à l'effacement :</strong> demander la suppression de vos données</li>
-<li><strong>Droit à la portabilité :</strong> recevoir vos données dans un format structuré et lisible</li>
-<li><strong>Droit d'opposition :</strong> vous opposer au traitement de vos données</li>
-<li><strong>Droit à la limitation :</strong> limiter le traitement dans certains cas</li>
-</ul>
-<p>Pour exercer ces droits, contactez-nous à : contact@storeclone-ai.com</p>
-<p>Nous répondrons à votre demande dans un délai maximum de 30 jours.</p>
-<p>Vous disposez également du droit d'introduire une réclamation auprès de la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) : <a href="https://www.cnil.fr" target="_blank">www.cnil.fr</a></p>
+    <div class="section-card">
+      <h2>6. Durée de conservation</h2>
+      <ul>
+        <li><strong>Données de compte :</strong> durée de l'abonnement + 30 jours après résiliation</li>
+        <li><strong>Données de paiement :</strong> conservées par Stripe selon leurs obligations légales</li>
+        <li><strong>Logs techniques :</strong> 90 jours</li>
+      </ul>
+    </div>
 
-<h2>7. Sécurité des données</h2>
-<p>Nous mettons en œuvre les mesures techniques et organisationnelles suivantes pour protéger vos données :</p>
-<ul>
-<li>Chiffrement des données en transit (HTTPS/TLS)</li>
-<li>Mots de passe hashés (jamais stockés en clair)</li>
-<li>Clés API stockées côté serveur uniquement (variables d'environnement)</li>
-<li>Accès restreint aux données de production</li>
-<li>Row Level Security (RLS) activée sur toutes les tables de la base de données</li>
-</ul>
+    <div class="section-card">
+      <h2>7. Vos droits (RGPD)</h2>
+      <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+      <div class="rights-grid">
+        <div class="right-item"><strong>Accès</strong><span>Obtenir une copie de vos données</span></div>
+        <div class="right-item"><strong>Rectification</strong><span>Corriger des données inexactes</span></div>
+        <div class="right-item"><strong>Effacement</strong><span>Demander la suppression de vos données</span></div>
+        <div class="right-item"><strong>Portabilité</strong><span>Recevoir vos données dans un format lisible</span></div>
+        <div class="right-item"><strong>Opposition</strong><span>Vous opposer à certains traitements</span></div>
+        <div class="right-item"><strong>Limitation</strong><span>Restreindre le traitement dans certains cas</span></div>
+      </div>
+      <p style="margin-top:16px;">Pour exercer ces droits : <a href="mailto:contact@storeclone-ai.com">contact@storeclone-ai.com</a> — réponse sous 30 jours maximum.</p>
+      <p>Vous disposez également du droit de recours auprès de la <strong>CNIL</strong> : <a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a></p>
+    </div>
 
-<h2>8. Cookies</h2>
-<p>StoreClone AI utilise uniquement des cookies strictement nécessaires au fonctionnement du service :</p>
-<ul>
-<li><strong>Cookie d'authentification :</strong> maintient votre session connectée</li>
-<li><strong>Cookie de préférences :</strong> langue choisie (FR/EN)</li>
-</ul>
-<p>Aucun cookie publicitaire, de traçage, ou analytique n'est utilisé. Aucun consentement supplémentaire n'est donc requis pour ces cookies strictement nécessaires.</p>
+    <div class="section-card">
+      <h2>8. Cookies</h2>
+      <div class="cookie-row">
+        <span class="cookie-badge necessary">Nécessaire</span>
+        <div>
+          <p style="margin-bottom:2px;"><strong style="font-weight:500;">Cookie de session Supabase</strong></p>
+          <p>Maintient votre connexion active. Strictement nécessaire au fonctionnement du service.</p>
+        </div>
+      </div>
+      <p style="margin-top:14px;">Aucun cookie publicitaire, de tracking ou analytique tiers n'est utilisé. Aucun bandeau de consentement n'est requis pour les cookies strictement nécessaires.</p>
+    </div>
 
-<h2>9. Contenu généré par l'IA</h2>
-<p>Les textes que vous soumettez pour la génération (nom de niche, paramètres) sont transmis à l'API Anthropic pour le traitement. Ces données sont utilisées uniquement pour générer votre contenu et ne sont pas conservées par Anthropic au-delà du traitement de la requête, conformément à leur politique d'utilisation de l'API.</p>
+    <div class="section-card">
+      <h2>9. Modifications</h2>
+      <p>Toute modification substantielle de cette politique sera publiée sur cette page avec mise à jour de la date, et notifiée par email au moins 15 jours avant son entrée en vigueur.</p>
+    </div>
 
-<h2>10. Mineurs</h2>
-<p>Le service StoreClone AI n'est pas destiné aux personnes de moins de 16 ans. Si nous apprenons que des données concernant un mineur de moins de 16 ans ont été collectées, nous les supprimerons dans les meilleurs délais.</p>
+    <div class="footer">
+      &copy; 2026 StoreClone AI — Tous droits réservés
+    </div>
+  </div>
 
-<h2>11. Modifications</h2>
-<p>La présente politique peut être mise à jour. En cas de modification substantielle, nous vous en informerons par email au moins 15 jours avant l'entrée en vigueur des changements.</p>
+  <!-- ── ENGLISH ── -->
+  <div id="block-en" style="display:none;">
+    <div class="breadcrumb">
+      <a href="/">Home</a><span>›</span>Privacy Policy
+    </div>
+    <div class="hero">
+      <h1>Privacy Policy</h1>
+      <p class="update-date">Last updated: March 27, 2026</p>
+    </div>
 
-<h2>12. Contact</h2>
-<p>Pour toute question relative à la protection de vos données : contact@storeclone-ai.com</p>
+    <div class="section-card">
+      <h2>1. Who We Are</h2>
+      <p><strong>StoreClone AI</strong> (sole trader — registration in progress) is the data controller for your personal data under the GDPR.</p>
+      <p>Contact: <a href="mailto:contact@storeclone-ai.com">contact@storeclone-ai.com</a></p>
+    </div>
+
+    <div class="section-card">
+      <h2>2. Data Collected</h2>
+      <p>We only collect data necessary to operate the service:</p>
+      <table>
+        <thead>
+          <tr><th>Data</th><th>When</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Email address</td><td>Sign-up</td><td>Authentication, communication</td></tr>
+          <tr><td>Name (optional)</td><td>Sign-up</td><td>Account personalisation</td></tr>
+          <tr><td>Niches &amp; generated products</td><td>Usage</td><td>History, service operation</td></tr>
+          <tr><td>Subscription plan</td><td>Automatic</td><td>Access management</td></tr>
+          <tr><td>Connection logs</td><td>Automatic</td><td>Security, fraud prevention</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Payment data:</strong> we store no payment data. It is processed exclusively by Stripe (PCI-DSS certified).</p>
+    </div>
+
+    <div class="section-card">
+      <h2>3. Purposes of Processing</h2>
+      <ul>
+        <li>Providing the service (product generation, history, export)</li>
+        <li>Managing subscriptions and payments</li>
+        <li>Sending transactional emails (account confirmation, password, invoices)</li>
+        <li>Improving the service based on aggregated, anonymised usage</li>
+      </ul>
+      <p>We never use your data for advertising purposes and do not sell it to any third party.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>4. Legal Basis</h2>
+      <ul>
+        <li><strong>Performance of a contract</strong> (Art. 6.1.b GDPR) — providing the service, managing the account and payments</li>
+        <li><strong>Legitimate interest</strong> (Art. 6.1.f GDPR) — service security, fraud prevention, product improvement</li>
+      </ul>
+    </div>
+
+    <div class="section-card">
+      <h2>5. Sub-processors</h2>
+      <p>We use the following providers to operate the service:</p>
+      <table>
+        <thead>
+          <tr><th>Sub-processor</th><th>Role</th><th>Location</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Supabase</strong></td><td>Database &amp; authentication</td><td>Ireland (EU)</td></tr>
+          <tr><td><strong>Vercel</strong></td><td>Hosting</td><td>United States</td></tr>
+          <tr><td><strong>Stripe</strong></td><td>Payments</td><td>United States</td></tr>
+          <tr><td><strong>Anthropic</strong></td><td>AI generation</td><td>United States</td></tr>
+        </tbody>
+      </table>
+      <p>Transfers of data to the United States are governed by the European Commission's Standard Contractual Clauses (SCCs), in accordance with GDPR requirements.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>6. Retention Periods</h2>
+      <ul>
+        <li><strong>Account data:</strong> duration of subscription + 30 days after cancellation</li>
+        <li><strong>Payment data:</strong> retained by Stripe in accordance with their legal obligations</li>
+        <li><strong>Technical logs:</strong> 90 days</li>
+      </ul>
+    </div>
+
+    <div class="section-card">
+      <h2>7. Your Rights (GDPR)</h2>
+      <p>Under the GDPR, you have the following rights:</p>
+      <div class="rights-grid">
+        <div class="right-item"><strong>Access</strong><span>Obtain a copy of your data</span></div>
+        <div class="right-item"><strong>Rectification</strong><span>Correct inaccurate data</span></div>
+        <div class="right-item"><strong>Erasure</strong><span>Request deletion of your data</span></div>
+        <div class="right-item"><strong>Portability</strong><span>Receive your data in a readable format</span></div>
+        <div class="right-item"><strong>Objection</strong><span>Object to certain processing</span></div>
+        <div class="right-item"><strong>Restriction</strong><span>Limit processing in certain cases</span></div>
+      </div>
+      <p style="margin-top:16px;">To exercise these rights: <a href="mailto:contact@storeclone-ai.com">contact@storeclone-ai.com</a> — response within 30 days.</p>
+      <p>You also have the right to lodge a complaint with the <strong>CNIL</strong> (French data protection authority): <a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a></p>
+    </div>
+
+    <div class="section-card">
+      <h2>8. Cookies</h2>
+      <div class="cookie-row">
+        <span class="cookie-badge necessary">Necessary</span>
+        <div>
+          <p style="margin-bottom:2px;"><strong style="font-weight:500;">Supabase session cookie</strong></p>
+          <p>Keeps you logged in. Strictly necessary for the service to function.</p>
+        </div>
+      </div>
+      <p style="margin-top:14px;">No advertising, tracking or third-party analytics cookies are used. No consent banner is required for strictly necessary cookies.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>9. Changes</h2>
+      <p>Any material changes to this policy will be published on this page with an updated date, and notified by email at least 15 days before taking effect.</p>
+    </div>
+
+    <div class="footer">
+      &copy; 2026 StoreClone AI — All rights reserved
+    </div>
+  </div>
+
 </div>
+
+<script>
+let currentLang = 'fr';
+function toggleLang() {
+  currentLang = currentLang === 'fr' ? 'en' : 'fr';
+  document.getElementById('block-fr').style.display = currentLang === 'fr' ? 'block' : 'none';
+  document.getElementById('block-en').style.display = currentLang === 'en' ? 'block' : 'none';
+  document.getElementById('lang-toggle').textContent = currentLang === 'fr' ? 'EN' : 'FR';
+  document.documentElement.lang = currentLang;
+}
+</script>
 </body>
 </html>
