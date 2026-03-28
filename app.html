@@ -1008,7 +1008,15 @@ function bootApp(){
       showToast('Paiement annulé.');
       history.replaceState({},'',window.location.pathname);
     }else{
-      showToast(`Bienvenue, ${name} !`);
+      const lastPlan=localStorage.getItem('sc_last_plan')||'starter';
+      const currentPlan=subscription?.plan||'starter';
+      localStorage.setItem('sc_last_plan',currentPlan);
+      if(lastPlan!==currentPlan&&(currentPlan==='pro'||currentPlan==='business')){
+        const emoji=currentPlan==='business'?'⭐':'🚀';
+        showToast(`${emoji} Bienvenue en ${cap(currentPlan)} !`,'success');
+      }else{
+        showToast(`Bienvenue, ${name} !`);
+      }
     }
   }catch(err){
     console.error('[App] bootApp() threw:', err);

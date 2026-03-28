@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:1200px;height:630px;overflow:hidden;}
+body{
+  font-family:-apple-system,'Inter',sans-serif;
+  background:#0f0f0f;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+.bg-blobs{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35;}
+.blob-1{width:500px;height:500px;background:#6366f1;top:-100px;left:-100px;}
+.blob-2{width:400px;height:400px;background:#8b5cf6;bottom:-80px;right:-80px;}
+.blob-3{width:300px;height:300px;background:#06b6d4;bottom:20px;left:200px;opacity:.2;}
+.content{position:relative;z-index:1;text-align:center;padding:0 80px;}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(99,102,241,.2);border:1px solid rgba(99,102,241,.4);
+  border-radius:100px;padding:8px 20px;
+  font-size:15px;font-weight:500;color:#a5b4fc;
+  margin-bottom:32px;letter-spacing:.3px;
+}
+.badge-dot{width:8px;height:8px;background:#6366f1;border-radius:50%;}
+h1{
+  font-size:76px;font-weight:700;line-height:1.05;
+  letter-spacing:-3px;margin-bottom:24px;
+}
+h1 span{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.sub{
+  font-size:26px;font-weight:300;color:#94a3b8;line-height:1.5;
+  max-width:700px;margin:0 auto 48px;
+}
+.pills{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.pill{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;padding:10px 20px;font-size:15px;color:#e2e8f0;font-weight:500;
+}
+.domain{
+  position:absolute;bottom:28px;right:40px;
+  font-size:16px;color:rgba(255,255,255,.3);font-weight:400;
+  letter-spacing:.5px;
+}
+</style>
+</head>
+<body>
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+<div class="content">
+  <div class="badge"><div class="badge-dot"></div> Propulsé par Claude AI</div>
+  <h1>StoreClone <span>AI</span></h1>
+  <p class="sub">Créez des produits digitaux interactifs vendables en 60 secondes — planners, trackers &amp; dashboards HTML prêts pour Etsy &amp; Gumroad.</p>
+  <div class="pills">
+    <div class="pill">🤖 Génération IA</div>
+    <div class="pill">📦 ZIP téléchargeable</div>
+    <div class="pill">🛒 Prêt à vendre</div>
+    <div class="pill">🌐 FR / EN</div>
+  </div>
+</div>
+<div class="domain">storeclone-ai.com</div>
+</body>
+</html>
