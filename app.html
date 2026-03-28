@@ -1901,6 +1901,27 @@ function renderMiniChart() {
   }
 }
 
+// ─── Détection langue ─────────────────────────────────────────────────────────
+function setLang(l) {
+  document.documentElement.lang = l;
+  localStorage.setItem('sc_lang', l);
+}
+async function detectAndSetLang() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlLang = urlParams.get('lang');
+  if (urlLang === 'fr' || urlLang === 'en') { setLang(urlLang); return; }
+  const saved = localStorage.getItem('sc_lang');
+  if (saved === 'fr' || saved === 'en') { setLang(saved); return; }
+  try {
+    const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(2000) });
+    const data = await res.json();
+    setLang(data.country_code === 'FR' ? 'fr' : 'en');
+  } catch {
+    setLang(navigator.language?.startsWith('fr') ? 'fr' : 'en');
+  }
+}
+detectAndSetLang();
+
 // ─── Feedback widget ──────────────────────────────────────────────────────────
 let _feedbackOpen=false;
 function toggleFeedback(){

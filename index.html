@@ -10,6 +10,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://storeclone-ai.com">
 <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='630' viewBox='0 0 1200 630'%3E%3Crect fill='%230f172a' width='1200' height='630'/%3E%3Crect fill='%23ffffff' opacity='0.05' x='0' y='0' width='1200' height='630' rx='0'/%3E%3Ctext x='600' y='280' text-anchor='middle' fill='white' font-size='80' font-family='Arial' font-weight='bold'%3EStoreClone AI%3C/text%3E%3Ctext x='600' y='360' text-anchor='middle' fill='%2394a3b8' font-size='32' font-family='Arial'%3EFiches produits SEO g%C3%A9n%C3%A9r%C3%A9es par IA en 60 secondes%3C/text%3E%3C/svg%3E">
+<meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23000' rx='20' width='100' height='100'/><text x='50' y='68' text-anchor='middle' fill='white' font-size='45' font-family='Arial' font-weight='bold'>SC</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1221,6 +1222,9 @@ footer {
 .example-tab.active { background: var(--black); color: white; border-color: var(--black); }
 @media (max-width: 640px) { #exampleFrame { height: 450px; } }
 </style>
+<link rel="alternate" hreflang="fr" href="https://storeclone-ai.com/?lang=fr" />
+<link rel="alternate" hreflang="en" href="https://storeclone-ai.com/?lang=en" />
+<link rel="alternate" hreflang="x-default" href="https://storeclone-ai.com/" />
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1922,6 +1926,8 @@ let lang = 'fr';
 
 function setLang(l) {
   lang = l;
+  localStorage.setItem('sc_lang', l);
+  document.documentElement.lang = l;
   document.getElementById('btnFR').classList.toggle('active', l==='fr');
   document.getElementById('btnEN').classList.toggle('active', l==='en');
   const d = TR[l];
@@ -1935,6 +1941,46 @@ function setLang(l) {
   });
   const inp = document.getElementById('demoInput');
   inp.placeholder = inp.getAttribute('data-ph-' + l);
+  // Meta SEO dynamique
+  if (l === 'fr') {
+    document.querySelector('meta[name="description"]')
+      ?.setAttribute('content', 'Créez des produits digitaux interactifs vendables en quelques clics. L\'IA génère des planners, trackers et dashboards HTML avec leur fiche de vente. Prêts pour Etsy, Gumroad et Shopify.');
+    document.querySelector('meta[property="og:locale"]')
+      ?.setAttribute('content', 'fr_FR');
+  } else {
+    document.querySelector('meta[name="description"]')
+      ?.setAttribute('content', 'Create sellable interactive digital products in just a few clicks. AI generates HTML planners, trackers and dashboards with a complete sales listing. Ready for Etsy, Gumroad and Shopify.');
+    document.querySelector('meta[property="og:locale"]')
+      ?.setAttribute('content', 'en_US');
+  }
+}
+
+async function detectAndSetLang() {
+  // 1. Paramètre URL — priorité maximale
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlLang = urlParams.get('lang');
+  if (urlLang === 'fr' || urlLang === 'en') {
+    setLang(urlLang);
+    localStorage.setItem('sc_lang', urlLang);
+    return;
+  }
+  // 2. Choix manuel sauvegardé
+  const saved = localStorage.getItem('sc_lang');
+  if (saved === 'fr' || saved === 'en') {
+    setLang(saved);
+    return;
+  }
+  // 3. Détection via géolocalisation IP
+  try {
+    const res = await fetch('https://ipapi.co/json/', {
+      signal: AbortSignal.timeout(2000)
+    });
+    const data = await res.json();
+    setLang(data.country_code === 'FR' ? 'fr' : 'en');
+  } catch {
+    // 4. Fallback : langue du navigateur
+    setLang(navigator.language?.startsWith('fr') ? 'fr' : 'en');
+  }
 }
 
 // ─── SCROLL ───
@@ -2178,6 +2224,9 @@ const sectionObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 document.querySelectorAll('.section-animate').forEach(el => sectionObserver.observe(el));
+
+// ─── LANGUE ───────────────────────────────────────────────────────────────────
+detectAndSetLang();
 </script>
 </body>
 </html>
