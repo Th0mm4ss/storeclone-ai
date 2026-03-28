@@ -132,6 +132,16 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 .pc{animation:cardAppear 0.35s ease both;}
 .pc:nth-child(1){animation-delay:0.05s}.pc:nth-child(2){animation-delay:0.13s}.pc:nth-child(3){animation-delay:0.21s}
 
+/* ── Stat cards fade-in ── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.sr .sc{animation:fadeInUp 0.4s ease both;}
+.sr .sc:nth-child(1){animation-delay:0s}.sr .sc:nth-child(2){animation-delay:0.1s}.sr .sc:nth-child(3){animation-delay:0.2s}
+
+/* ── Niche chip hover ── */
+.np span{transition:filter .15s;}
+.np span:hover{filter:brightness(0.9);}
+@media(max-width:768px){.np span{min-height:36px;font-size:.9rem;display:inline-flex;align-items:center;}}
+
 /* ── Niche chip colors by category ── */
 .np span.nc-yoga,.np span.nc-wellness{background:#faf5ff;border-color:#e9d5ff;color:#7e22ce;}
 .np span.nc-food{background:#fff7ed;border-color:#fed7aa;color:#c2410c;}
@@ -317,10 +327,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
     <div class="auth-brand-title">Créez des fiches<br>produits SEO<br><em style="font-weight:300;font-style:italic">en 60 secondes.</em></div>
     <p class="auth-brand-sub">L'IA génère titres, descriptions, tags et prix — prêts à publier sur Etsy, Shopify et Gumroad.</p>
     <div class="auth-brand-features">
-      <div class="auth-brand-feat">3 fiches gratuites pour démarrer</div>
-      <div class="auth-brand-feat">Export ZIP immédiat</div>
-      <div class="auth-brand-feat">SEO optimisé pour chaque marketplace</div>
-      <div class="auth-brand-feat">Bilingue français + anglais</div>
+      <div class="auth-brand-feat">✓ 3 produits digitaux générés en 1 clic</div>
+      <div class="auth-brand-feat">✓ Fiche de vente complète (titre, tags, prix)</div>
+      <div class="auth-brand-feat">✓ Export ZIP prêt pour Etsy et Gumroad</div>
     </div>
   </div>
   <div class="auth-form-side">
@@ -395,11 +404,28 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 
     <div class="page active" id="page-dashboard">
       <div class="ph"><div class="pt" id="dashGreeting">Bonjour 👋</div><div class="ps">Bienvenue sur StoreClone AI.</div></div>
-      <div id="dashWelcomeBlock" style="display:none;text-align:center;padding:48px 24px;background:var(--white);border:1px solid var(--border);border-radius:16px;margin-bottom:24px;">
-        <div style="font-size:32px;margin-bottom:16px;">🎉</div>
-        <div style="font-size:20px;font-weight:600;letter-spacing:-0.5px;margin-bottom:8px;">Bienvenue sur StoreClone AI !</div>
-        <div style="font-size:14px;color:var(--gray);font-weight:300;margin-bottom:24px;">Créez votre première fiche produit en 60 secondes.</div>
-        <button class="bf" onclick="showPage('generator')" style="display:inline-flex;gap:8px;align-items:center;">Générer ma première fiche →</button>
+      <div id="dashWelcomeBlock" style="display:none;margin-bottom:24px;">
+        <div style="background:white;border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;max-width:560px;margin:0 auto;">
+          <div style="font-size:2.5rem;margin-bottom:16px;">🚀</div>
+          <h2 style="font-size:1.3rem;font-weight:700;margin-bottom:8px;">Créez votre premier produit digital</h2>
+          <p style="color:var(--gray);margin-bottom:28px;font-size:.95rem;">3 étapes simples pour avoir un produit prêt à vendre</p>
+          <div style="display:flex;flex-direction:column;gap:16px;text-align:left;margin-bottom:28px;">
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--black);color:white;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">1</div>
+              <div><strong>Choisissez une niche</strong><p style="color:var(--gray);font-size:.9rem;margin-top:2px;">Fitness, mariage, budget, voyage, cuisine... Entrez n'importe quel thème.</p></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--black);color:white;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">2</div>
+              <div><strong>L'IA génère 3 produits</strong><p style="color:var(--gray);font-size:.9rem;margin-top:2px;">3 fichiers HTML interactifs + titre SEO + description + 13 tags Etsy + prix recommandé.</p></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--black);color:white;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">3</div>
+              <div><strong>Téléchargez et publiez</strong><p style="color:var(--gray);font-size:.9rem;margin-top:2px;">Exportez le ZIP et uploadez sur Etsy, Gumroad ou Shopify.</p></div>
+            </div>
+          </div>
+          <button onclick="showPage('generator')" style="background:var(--black);color:white;border:none;border-radius:10px;padding:14px 32px;font-size:1rem;font-weight:600;cursor:pointer;width:100%;">✨ Créer mon premier produit</button>
+          <p style="margin-top:10px;font-size:.8rem;color:var(--gray);">Gratuit · Moins de 60 secondes</p>
+        </div>
       </div>
       <div class="sr dash-stats">
         <div class="sc"><div class="sl2">Fiches générées</div><div class="sv" id="statStores">0</div><div class="ss">depuis le début</div></div>
@@ -1250,6 +1276,7 @@ function renderAppPlanCards() {
     {
       id: 'pro',
       name: 'Pro',
+      badge: '<div style="display:inline-block;background:var(--black);color:white;font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:8px;">🔥 Plus populaire</div>',
       amount: APP_PERIOD_PRICES.pro[_appPeriod].amount,
       label: APP_PERIOD_PRICES.pro[_appPeriod].label,
       features: ['30 générations par mois', '3 produits par génération', 'Export ZIP immédiat', 'SEO avancé et tags complets', 'Génération bilingue', 'Assistance prioritaire']
@@ -1257,9 +1284,10 @@ function renderAppPlanCards() {
     {
       id: 'business',
       name: 'Business',
+      badge: '<div style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:8px;letter-spacing:.03em;">⭐ Meilleure valeur</div>',
       amount: APP_PERIOD_PRICES.business[_appPeriod].amount,
       label: APP_PERIOD_PRICES.business[_appPeriod].label,
-      features: ['Générations illimitées', 'Tout le plan Pro', 'Accès prioritaire aux nouveautés', 'Support dédié']
+      features: ['Générations illimitées', 'Tout le plan Pro', 'Support prioritaire', 'Accès anticipé aux nouvelles features']
     }
   ];
 
@@ -1269,6 +1297,7 @@ function renderAppPlanCards() {
       ? '<div style="padding:10px;text-align:center;font-size:13px;color:var(--gray);font-weight:500;">✓ Plan actuel</div>'
       : (c.id === 'starter' ? '<button class="bf" onclick="showPage(\'generator\')" style="width:100%">Commencer gratuitement</button>' : '<button class="bf" onclick="startCheckout(\'' + c.id + '\',\'' + _appPeriod + '\')" style="width:100%">Choisir ' + c.name + '</button>');
     return '<div style="background:var(--white);border:1px solid ' + (isCurrent ? 'var(--black)' : 'var(--border)') + ';border-radius:16px;padding:24px;">' +
+      (c.badge || '') +
       '<div style="font-size:16px;font-weight:600;margin-bottom:4px;">' + c.name + '</div>' +
       '<div style="font-size:28px;font-weight:600;letter-spacing:-1px;margin:12px 0 4px;"><sup style="font-size:14px;">€</sup>' + c.amount + '</div>' +
       '<div style="font-size:12px;color:var(--gray);margin-bottom:16px;">' + c.label + '</div>' +
@@ -1673,12 +1702,16 @@ function renderHistory(){
   }
   el.innerHTML=list.map(h=>{
     const color=colors[Math.abs(hashCode(h.niche||''))%colors.length];
+    const diff=Date.now()-new Date(h.created_at).getTime();
+    const mins=Math.floor(diff/60000),hrs=Math.floor(diff/3600000),days=Math.floor(diff/86400000);
+    const ago=days>0?`il y a ${days} jour${days>1?'s':''}`:hrs>0?`il y a ${hrs}h`:mins>1?`il y a ${mins} min`:'à l\'instant';
+    const zipBadge=h.zip_downloaded?`<span style="background:#dcfce7;color:#15803d;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;border:1px solid #bbf7d0;">ZIP ✓</span>`:'';
     return `
     <div class="hi" style="gap:12px;">
-      <div style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;margin-top:3px;"></div>
       <div style="flex:1;min-width:0;">
-        <div class="hn">${h.boutique||h.niche}</div>
-        <div class="hm">${h.niche} · ${h.products?.length||0} produits · ${new Date(h.created_at).toLocaleDateString('fr-FR')}</div>
+        <div class="hn" style="display:flex;align-items:center;gap:8px;">${h.boutique||h.niche} ${zipBadge}</div>
+        <div class="hm">${h.niche} · ${h.products?.length||0} produits · ${ago}</div>
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
         <button class="bs" style="font-size:11px;padding:4px 10px;" onclick="openEditorForHistory('${h.id}')">✏️ Modifier</button>
@@ -1709,6 +1742,13 @@ function updateStats(){
   document.getElementById('statStores').textContent=generations.length;
   document.getElementById('statProducts').textContent=generations.reduce((s,h)=>s+(h.products?.length||0),0);
   document.getElementById('statZips').textContent=generations.filter(g=>g.zip_downloaded).length;
+  // Orange quota hint for Starter
+  const plan=subscription?.plan||'starter';
+  if(plan==='starter'){
+    const remaining=3-monthlyCount;
+    const el=document.getElementById('statStores');
+    if(el&&remaining<=1)el.style.color='#f59e0b';
+  }
 }
 
 // ─── renderDashRecent (fix texte) ─────────────────────────────────────────────

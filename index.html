@@ -769,6 +769,7 @@ nav.scrolled {
 .price-card.featured {
   background: var(--black);
   border: 2px solid var(--black);
+  transform: scale(1.02);
   transform: scale(1.03);
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
 }
@@ -939,6 +940,11 @@ nav.scrolled {
 }
 .cta-btn:hover { background: #e8e8e8; transform: scale(1.02); }
 
+/* ─── WYG HOVER ─── */
+.wyg-card { transition: all .2s ease; }
+.wyg-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+/* ─── DEMO TABS ─── */
+.demo-prod-tab:hover { background: #f5f5f5 !important; color: var(--black) !important; }
 /* ─── FAQ ─── */
 .faq-list { border-top: 1px solid var(--border); }
 .faq-item { border-bottom: 1px solid var(--border); }
@@ -1464,29 +1470,33 @@ footer {
     <h2 class="section-title" data-t="wyg_title" style="text-align:center;margin-bottom:8px;">Un produit complet, prêt à vendre</h2>
     <p style="text-align:center;color:var(--gray);margin-bottom:36px;font-size:1rem;" data-t="wyg_sub">Pour chaque génération, vous recevez 3 produits digitaux avec tout ce qu'il faut pour les vendre.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
+      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
         <span style="font-size:1.4rem;flex-shrink:0;">📄</span>
         <div><strong data-t="wyg_item1_title">Fichier HTML interactif</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item1_desc">Planner, tracker ou dashboard autonome — animations, localStorage, design premium inclus.</span></div>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
+      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
         <span style="font-size:1.4rem;flex-shrink:0;">✏️</span>
         <div><strong data-t="wyg_item2_title">Titre SEO optimisé</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item2_desc">Un titre accrocheur pensé pour Etsy et Gumroad, prêt à copier-coller.</span></div>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
+      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
         <span style="font-size:1.4rem;flex-shrink:0;">📝</span>
         <div><strong data-t="wyg_item3_title">Description de vente</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item3_desc">Description complète avec bénéfices, format et instructions d'utilisation.</span></div>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
+      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
         <span style="font-size:1.4rem;flex-shrink:0;">🏷️</span>
         <div><strong data-t="wyg_item4_title">13 tags Etsy</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item4_desc">Les 13 tags maximum Etsy, optimisés pour le référencement de votre niche.</span></div>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
+      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
         <span style="font-size:1.4rem;flex-shrink:0;">💰</span>
         <div><strong data-t="wyg_item5_title">Prix recommandé</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item5_desc">Suggestion de prix basée sur le marché de votre niche pour maximiser les ventes.</span></div>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:var(--black);border-radius:12px;border:1px solid var(--black);">
+      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:var(--black);border-radius:12px;border:1px solid var(--black);">
         <span style="font-size:1.4rem;flex-shrink:0;">📦</span>
-        <div><strong style="color:white;" data-t="wyg_item6_title">ZIP prêt à uploader</strong><br><span style="color:rgba(255,255,255,0.7);font-size:.9rem;" data-t="wyg_item6_desc">Tous vos fichiers + README.txt avec les instructions pas à pas. Un clic pour tout télécharger.</span></div>
+        <div>
+          <strong style="color:white;" data-t="wyg_item6_title">ZIP prêt à uploader</strong><br>
+          <span style="color:rgba(255,255,255,0.7);font-size:.9rem;" data-t="wyg_item6_desc">Tous vos fichiers + README.txt avec les instructions pas à pas. Un clic pour tout télécharger.</span>
+          <div style="margin-top:6px;font-size:.75rem;color:rgba(255,255,255,0.5);">Inclus dans tous les plans</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1625,6 +1635,7 @@ footer {
       </div>
 
       <div class="price-card">
+        <div style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:8px;letter-spacing:.03em;">⭐ Meilleure valeur</div>
         <div class="price-name" data-t="plan3_name">Business</div>
         <div class="price-amount"><sup>€</sup><span id="lp-biz-price">49</span></div>
         <div id="lp-biz-savings" class="price-savings-lp"></div>
@@ -1651,36 +1662,36 @@ footer {
       <div class="test-card">
         <span class="test-quote">«</span>
         <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t1">«&nbsp;Mes premières fiches produits fitness étaient en ligne en moins d'une heure. La qualité générée m'a moi-même surprise — mes clients pensent que je les ai conçues personnellement.&nbsp;»</div>
+        <div class="test-text" data-t="t1">«&nbsp;J'ai généré mes 3 premiers produits en moins de 10 minutes. Les fichiers HTML sont vraiment interactifs, bien mieux que ce que j'aurais fait moi-même.&nbsp;»</div>
         <div class="test-author">
-          <div class="test-avatar av-s">S</div>
+          <div class="test-avatar av-s">M</div>
           <div>
-            <div class="test-name">Sarah M.</div>
-            <div class="test-role" data-t="t1role">Créatrice de contenu, fitness</div>
+            <div class="test-name">Marie L.</div>
+            <div class="test-role" data-t="t1role">Vendeuse Etsy, niche planners</div>
           </div>
         </div>
       </div>
       <div class="test-card">
         <span class="test-quote">«</span>
         <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t2">«&nbsp;En trois semaines, j'exploite quatre niches différentes. Ce qui m'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes.&nbsp;»</div>
+        <div class="test-text" data-t="t2">«&nbsp;Ce qui m'a convaincu c'est de voir le vrai produit avant de m'inscrire. Les 13 tags Etsy générés automatiquement m'ont fait gagner un temps fou.&nbsp;»</div>
         <div class="test-author">
-          <div class="test-avatar av-t">T</div>
+          <div class="test-avatar av-t">J</div>
           <div>
-            <div class="test-name">Thomas L.</div>
-            <div class="test-role" data-t="t2role">Entrepreneur, e-commerce</div>
+            <div class="test-name">Julien M.</div>
+            <div class="test-role" data-t="t2role">Créateur de templates digitaux</div>
           </div>
         </div>
       </div>
       <div class="test-card">
         <span class="test-quote">«</span>
         <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t3">«&nbsp;Le référencement généré automatiquement est d'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication.&nbsp;»</div>
+        <div class="test-text" data-t="t3">«&nbsp;J'étais sceptique sur les outils IA mais les produits générés sont vraiment utilisables tels quels. J'ai vendu mon premier tracker fitness la semaine où je l'ai mis en ligne.&nbsp;»</div>
         <div class="test-author">
-          <div class="test-avatar av-m">M</div>
+          <div class="test-avatar av-m">S</div>
           <div>
-            <div class="test-name">Marie K.</div>
-            <div class="test-role" data-t="t3role">Vendeuse Etsy, templates</div>
+            <div class="test-name">Sophie R.</div>
+            <div class="test-role" data-t="t3role">Vendeuse Gumroad</div>
           </div>
         </div>
       </div>
@@ -1696,24 +1707,24 @@ footer {
     <h2 class="section-title reveal reveal-delay-1">Questions <em>fréquentes.</em></h2>
     <div class="faq-list" style="max-width:720px;margin:48px auto 0;">
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">Comment fonctionne StoreClone AI ? <span class="faq-arrow">▸</span></button>
-        <div class="faq-a">Entrez simplement votre niche (yoga, cuisine, mariage...) et notre IA génère en 60 secondes des fiches produits complètes : titres, descriptions, tags SEO et prix recommandés. Vous pouvez ensuite les copier ou les télécharger en ZIP.</div>
+        <button class="faq-q" onclick="toggleFaq(this)">Est-ce que les fichiers HTML se vendent vraiment sur Etsy ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Oui. Les produits digitaux interactifs (planners, trackers, dashboards HTML) se vendent très bien sur Etsy. Ils fonctionnent directement dans le navigateur sans installation — l'acheteur télécharge le fichier et l'ouvre immédiatement. Ce format est en forte croissance sur les marketplaces digitales.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">C'est vraiment gratuit ? <span class="faq-arrow">▸</span></button>
-        <div class="faq-a">Le plan Starter est 100% gratuit et le reste à vie. Vous pouvez générer 3 fiches par mois sans carte bancaire. Les plans Pro et Business débloquent plus de générations et des fonctionnalités avancées.</div>
+        <button class="faq-q" onclick="toggleFaq(this)">J'ai zéro compétence technique, est-ce que je peux utiliser StoreClone AI ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Absolument. Vous entrez une niche (ex: fitness, mariage, budget), l'IA fait tout le reste. Vous recevez 3 fichiers HTML prêts à vendre, avec leur titre, description, tags et prix. Aucune ligne de code à écrire.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">Les fiches sont-elles optimisées pour le SEO ? <span class="faq-arrow">▸</span></button>
-        <div class="faq-a">Oui. Chaque fiche est générée avec 13 tags Etsy, un titre optimisé pour la recherche, et des descriptions rédigées pour convertir. Le tout en français et en anglais.</div>
+        <button class="faq-q" onclick="toggleFaq(this)">Combien puis-je gagner avec ces produits ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Les produits digitaux sur Etsy se vendent généralement entre 5€ et 25€. Avec des téléchargements récurrents et zéro coût de production, c'est un revenu passif réel. Vos résultats dépendent de votre niche, de vos visuels et de la qualité de votre fiche produit.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">Puis-je annuler mon abonnement à tout moment ? <span class="faq-arrow">▸</span></button>
-        <div class="faq-a">Oui, tous les plans sont sans engagement mensuel. Vous pouvez annuler depuis votre espace client, votre accès reste actif jusqu'à la fin de la période payée.</div>
+        <button class="faq-q" onclick="toggleFaq(this)">Est-ce que je possède les produits que je génère ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Oui, entièrement. Les fichiers HTML générés vous appartiennent à 100%. Vous pouvez les vendre sur Etsy, Gumroad, Shopify ou n'importe quelle plateforme, les modifier, les personnaliser. StoreClone AI ne revendique aucun droit sur vos créations.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">Quelles plateformes sont supportées ? <span class="faq-arrow">▸</span></button>
-        <div class="faq-a">Les fiches générées sont optimisées pour Etsy, Shopify, Gumroad et Payhip. Vous pouvez les copier-coller ou télécharger le ZIP pour les uploader sur la plateforme de votre choix.</div>
+        <button class="faq-q" onclick="toggleFaq(this)">Quelle est la différence entre les plans ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Le plan Starter est gratuit et vous donne 3 générations par mois — parfait pour tester. Le plan Pro (19€/mois) donne 30 générations, l'accès aux options avancées et la régénération. Le plan Business est illimité pour les créateurs prolifiques.</div>
       </div>
     </div>
   </div>
@@ -1805,7 +1816,7 @@ const TR = {
     plan1_name:'Starter', plan1_period:'Sans limite de durée',
     p1f1:'3 produits digitaux par mois', p1f2:'Fiche de vente complète incluse', p1f3:'Bilingue FR + EN', p1f4:'Export ZIP immédiat',
     p1btn:'Commencer gratuitement',
-    feat_label:'Le plus choisi',
+    feat_label:'🔥 Plus populaire',
     plan2_name:'Pro', plan2_period:'par mois, sans engagement',
     p2f1:'30 produits digitaux par mois', p2f2:'3 fichiers HTML interactifs par création', p2f3:'Export ZIP immédiat', p2f4:'SEO avancé et tags complets', p2f5:'Génération bilingue automatique', p2f6:'Assistance prioritaire',
     p2btn:'Passer en Pro',
@@ -1814,12 +1825,12 @@ const TR = {
     p3btn:'Passer en Business',
     test_eyebrow:'Témoignages',
     test_title:'Ils développent<br>leur <em>activité avec nous.</em>',
-    t1:'«\u00a0Mes premières fiches produits fitness étaient en ligne en moins d\'une heure. La qualité générée m\'a moi-même surprise — mes clients pensent que je les ai conçues personnellement.\u00a0»',
-    t1role:'Créatrice de contenu, fitness',
-    t2:'«\u00a0En trois semaines, j\'exploite quatre niches différentes. Ce qui m\'aurait demandé plusieurs mois de travail se réalise désormais en quelques minutes.\u00a0»',
-    t2role:'Entrepreneur, e-commerce',
-    t3:'«\u00a0Le référencement généré automatiquement est d\'une précision remarquable. Mes fiches produits apparaissent dans les résultats Etsy dès le premier jour de publication.\u00a0»',
-    t3role:'Vendeuse Etsy, templates',
+    t1:'«\u00a0J\'ai généré mes 3 premiers produits en moins de 10 minutes. Les fichiers HTML sont vraiment interactifs, bien mieux que ce que j\'aurais fait moi-même.\u00a0»',
+    t1role:'Vendeuse Etsy, niche planners',
+    t2:'«\u00a0Ce qui m\'a convaincu c\'est de voir le vrai produit avant de m\'inscrire. Les 13 tags Etsy générés automatiquement m\'ont fait gagner un temps fou.\u00a0»',
+    t2role:'Créateur de templates digitaux',
+    t3:'«\u00a0J\'étais sceptique sur les outils IA mais les produits générés sont vraiment utilisables tels quels. J\'ai vendu mon premier tracker fitness la semaine où je l\'ai mis en ligne.\u00a0»',
+    t3role:'Vendeuse Gumroad',
     cta_title:'Prêt à créer votre premier produit digital ?',
     cta_sub:'Rejoignez les créateurs qui vendent des produits digitaux sans compétences techniques. 3 produits offerts, sans carte bancaire.',
     cta_btn:'Créer mon premier produit — gratuit',
@@ -1876,7 +1887,7 @@ const TR = {
     plan1_name:'Starter', plan1_period:'No time limit',
     p1f1:'3 digital products per month', p1f2:'Complete sales listing included', p1f3:'Bilingual FR + EN', p1f4:'Instant ZIP export',
     p1btn:'Start for free',
-    feat_label:'Most popular',
+    feat_label:'🔥 Most popular',
     plan2_name:'Pro', plan2_period:'per month, no commitment',
     p2f1:'30 digital products per month', p2f2:'3 interactive HTML files per creation', p2f3:'Instant ZIP export', p2f4:'Advanced SEO and full tags', p2f5:'Automatic bilingual generation', p2f6:'Priority support',
     p2btn:'Go Pro',
@@ -1888,12 +1899,12 @@ const TR = {
     api_desc:'Edit any product in plain language. Change colors, add sections, customize content — no code needed.',
     test_eyebrow:'Testimonials',
     test_title:'They grow<br>their <em>business with us.</em>',
-    t1:'"My first fitness product listings were live in under an hour. The quality of the generated content surprised even me — my customers think I designed them personally."',
-    t1role:'Content creator, fitness',
-    t2:'"In three weeks I\'m running four different niches. What would have taken months of work now happens in minutes."',
-    t2role:'Entrepreneur, e-commerce',
-    t3:'"The automatically generated SEO is remarkably precise. My product listings appear in Etsy search results from the very first day of publishing."',
-    t3role:'Etsy seller, templates',
+    t1:'"I generated my first 3 products in under 10 minutes. The HTML files are genuinely interactive — way better than anything I could have made myself."',
+    t1role:'Etsy seller, planners niche',
+    t2:'"What convinced me was seeing the real product before signing up. The 13 automatically generated Etsy tags saved me a ton of time."',
+    t2role:'Digital template creator',
+    t3:'"I was skeptical about AI tools but the generated products are truly usable as-is. I sold my first fitness tracker the week I put it online."',
+    t3role:'Gumroad seller',
     cta_title:'Ready to create your first digital product?',
     cta_sub:'Join creators selling digital products without technical skills. 3 products free, no credit card.',
     cta_btn:'Create my first product — free',
@@ -2231,6 +2242,26 @@ document.querySelectorAll('.section-animate').forEach(el => sectionObserver.obse
 
 // ─── LANGUE ───────────────────────────────────────────────────────────────────
 detectAndSetLang();
+
+// ─── STICKY CTA MOBILE ───────────────────────────────────────────────────────
+(function() {
+  var shown = false;
+  window.addEventListener('scroll', function() {
+    if (shown) return;
+    if (window.scrollY > 400) {
+      var el = document.getElementById('sticky-cta');
+      if (el && window.innerWidth <= 768) {
+        el.style.display = 'block';
+        shown = true;
+      }
+    }
+  });
+})();
 </script>
+
+<div id="sticky-cta" style="display:none;position:fixed;bottom:0;left:0;right:0;padding:12px 16px 20px;background:white;border-top:1px solid var(--border);box-shadow:0 -4px 20px rgba(0,0,0,0.08);z-index:999;text-align:center;">
+  <a href="app.html" style="display:block;background:var(--black);color:white;padding:14px 24px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;" data-t="cta_btn">Créer mon premier produit — gratuit</a>
+  <p style="margin-top:6px;font-size:.8rem;color:var(--gray);">Sans carte bancaire · 3 produits offerts</p>
+</div>
 </body>
 </html>
