@@ -298,6 +298,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
   .ras{flex-wrap:wrap;}
 }
 </style>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -674,11 +675,11 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 </div>
 
 <!-- Feedback widget -->
-<button id="feedback-btn" onclick="toggleFeedback()">💬 Feedback</button>
+<button id="feedback-btn" onclick="toggleFeedback()">💬 Une idée ?</button>
 <div id="feedback-modal">
   <h4>Votre avis compte 🙏</h4>
   <p>Un bug, une suggestion, une idée ?</p>
-  <textarea id="feedbackText" placeholder="Décrivez votre retour…"></textarea>
+  <textarea id="feedbackText" placeholder="Un bug, une idée, quelque chose qui t'a manqué... Dis-moi tout (2 phrases suffisent)"></textarea>
   <div class="fb-btns">
     <button class="bs primary" onclick="submitFeedback()">Envoyer</button>
     <button class="bs" onclick="toggleFeedback()">Annuler</button>
@@ -1420,6 +1421,7 @@ async function generate(){
 
     // ── Appels 2/3/4 : HTML en parallèle ──────────────────────────────────────
     console.log('[generate] Étapes 2-4 : génération HTML en parallèle…');
+    let failedHtmlCount=0;
     const htmlPromises=metaProducts.map((p,i)=>{
       const htmlPrompt=`Crée un fichier HTML premium complet pour ce produit :
 
@@ -1437,18 +1439,20 @@ Le fichier doit faire minimum 300 lignes, contenir du vrai contenu spécifique �
       return callAPI(htmlPrompt,'product_html').then(html=>{
         const start=html.indexOf('<!DOCTYPE');
         const htmlContent=start>=0?html.slice(start):html;
-        const v=validateHTML(htmlContent,p.name);
+        const v=validateHTML(htmlContent,p.name||p.nameFr||'Produit');
         console.log('[generate] HTML',i+1,'terminé —',htmlContent.length,'chars |',v.lineCount,'lignes');
         prog.complete(i+1);
         return htmlContent;
       }).catch(err=>{
         console.warn('[generate] HTML',i+1,'échoué:',err.message,'→ fallback');
+        failedHtmlCount++;
         prog.complete(i+1);
-        return fallbackHTML({nameFr:p.name,color:p.color||'#6366f1',emoji:p.emoji||'📋'},niche);
+        return fallbackHTML({nameFr:p.name||p.nameFr||'Produit',color:p.color||'#6366f1',emoji:p.emoji||'📋'},niche);
       });
     });
 
     const htmlResults=await Promise.all(htmlPromises);
+    if(failedHtmlCount>0)showToast(`⚠️ ${failedHtmlCount} produit${failedHtmlCount>1?'s':''} n'a pas pu être généré. Essayez de régénérer.`);
 
     // ── Étape 5 : Finalisation ─────────────────────────────────────────────────
     prog.activate(4);
@@ -1525,7 +1529,7 @@ function showResults(){
       <div class='pch'>
         <div class='pcl' style='flex-direction:column;align-items:flex-start;gap:4px'>
           <div style='display:flex;align-items:center;gap:8px'><span class='pcb'>${p.type}</span><span style='font-size:11px;color:var(--gray)'>€${p.price}</span></div>
-          <span class='pcn'>${p.emoji||''} ${p.nameFr}</span>
+          <span class='pcn'>${p.emoji||''} ${p.nameFr||p.nameEn||p.name||'Produit'}</span>
           <span style='font-size:11px;color:var(--gray);font-weight:300'>${p.nameEn||''}</span>
         </div>
       </div>
@@ -1565,49 +1569,23 @@ async function downloadZip(){
     const folder=zip.folder(boutique.replace(/[^a-zA-Z0-9-]/g,'-'));
     products.forEach((p,i)=>{
       const fname=`0${i+1}-${(p.nameFr||'produit').replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-')}.html`;
-      folder.file(fname,p.htmlContent);
+      folder.file(fname,p.htmlContent||p.html||'');
     });
-    const readme=`═══════════════════════════════════════════
-  ${boutique}
-  Généré par StoreClone AI
-═══════════════════════════════════════════
+    const readme=`# ${boutique}
 
-Niche: ${niche}
-Date: ${new Date().toLocaleDateString('fr-FR')}
-Produits: ${products.length}
+Vos produits digitaux générés par StoreClone AI
 
-FICHIERS INCLUS
-──────────────────────────────────────────
-${products.map((p,i)=>`${i+1}. ${p.nameFr}.html → €${p.price}`).join('\n')}
+## Fichiers inclus
+${products.map((p,i)=>`- ${`0${i+1}-${(p.nameFr||p.name||'produit').replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-')}`}.html : ${p.nameFr||p.name||'Produit'}`).join('\n')}
 
-COMMENT UTILISER
-──────────────────────────────────────────
-1. Ouvrez chaque .html dans Chrome
-2. Prenez des screenshots → images Etsy
-3. Uploadez le .html comme fichier produit
-4. Copiez les descriptions ci-dessous
+## Comment vendre ces produits
+1. Uploadez le fichier HTML sur Etsy, Gumroad ou Shopify
+2. Utilisez le titre SEO et la description fournis dans l'app
+3. Copiez les 13 tags Etsy dans votre fiche produit
+4. Fixez le prix recommandé ou ajustez selon votre marché
 
-DESCRIPTIONS ET TAGS ETSY
-──────────────────────────────────────────
-${products.map(p=>`
-=== ${p.nameFr} / ${p.nameEn} ===
-Prix: €${p.price}
-
-Description FR:
-${p.descFr}
-
-Description EN:
-${p.descEn}
-
-Tags FR (${p.tags.length}):
-${p.tags.join(', ')}
-
-Tags EN:
-${p.tagsEn.join(', ')}
-`).join('\n')}
-═══════════════════════════════════════════
-  Budget Bloom Studio — StoreClone AI
-═══════════════════════════════════════════`;
+## Support
+contact@storeclone-ai.com | storeclone-ai.com`;
     folder.file('README.txt',readme);
     const blob=await zip.generateAsync({type:'blob'});
     const a=document.createElement('a');
@@ -1630,7 +1608,7 @@ function preview(i){
   if(!currentGen)return;
   const p=currentGen.products[i];
   // Blob URL : seul moyen fiable d'exécuter du JS (document.write peut bloquer les scripts)
-  const blob=new Blob([p.htmlContent||''],{type:'text/html'});
+  const blob=new Blob([p.htmlContent||p.html||''],{type:'text/html'});
   const url=URL.createObjectURL(blob);
   window.open(url,'_blank');
   setTimeout(()=>URL.revokeObjectURL(url),10000);
@@ -1651,7 +1629,7 @@ function validateHTML(html,productName){
 function copyProd(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText(`${p.nameFr||p.name||''}\n\n${p.descFr||p.desc||''}\n\nTags: ${(p.tags||[]).join(', ')}\nPrix: €${p.price}`).then(()=>showToast('Copié !'));}
 function copyDesc(i){if(!currentGen)return;const p=currentGen.products[i];const txt=`${p.nameFr||''}\n\n${p.descFr||''}\n\n---\n\n${p.nameEn||''}\n\n${p.descEn||''}`;navigator.clipboard.writeText(txt).then(()=>showToast('Description copiée !'));}
 function copyTags(i){if(!currentGen)return;const p=currentGen.products[i];navigator.clipboard.writeText((p.tags||[]).join(', ')).then(()=>showToast('Tags copiés !'));}
-function downloadSingle(i){if(!currentGen)return;const p=currentGen.products[i];const blob=new Blob([p.htmlContent||''],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);const name=`0${i+1}-${(p.nameFr||'produit').replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-')}.html`;a.download=name;a.click();URL.revokeObjectURL(a.href);}
+function downloadSingle(i){if(!currentGen)return;const p=currentGen.products[i];const blob=new Blob([p.htmlContent||p.html||''],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);const name=`0${i+1}-${(p.nameFr||'produit').replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-')}.html`;a.download=name;a.click();URL.revokeObjectURL(a.href);}
 function copyAllText(){
   if(!currentGen)return;
   const text=currentGen.products.map((p,i)=>{
@@ -1770,13 +1748,13 @@ function selectEditorProduct(){
   const prod=gen.products?.[idx];
   if(!prod)return;
   editorProdIndex=idx;
-  editorCurrentHTML=prod.htmlContent||prod.html_modified||null;
+  editorCurrentHTML=prod.htmlContent||prod.html_modified||prod.html||null;
   editorModifiedHTML=null;
 
   // Info card
   document.getElementById('edInfoCard').style.display='block';
   document.getElementById('edInfoContent').innerHTML=`
-    <strong>${prod.emoji||''} ${prod.nameFr}</strong><br>
+    <strong>${prod.emoji||''} ${prod.nameFr||prod.nameEn||prod.name||'Produit'}</strong><br>
     <span style="color:var(--gray)">${prod.type} · €${prod.price}</span><br>
     <span style="color:var(--gray)">${prod.descFr||''}</span>`;
 

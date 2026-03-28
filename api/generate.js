@@ -73,12 +73,13 @@ RÈGLES ABSOLUES :
 - Chaque produit répond à un besoin DIFFÉRENT dans la niche
 - Noms premium et accrocheurs (pas génériques)
 - Descriptions 80-100 mots, orientées bénéfices (pas features)
-- 13 tags par produit, du plus spécifique au plus général, optimisés Etsy
+- 13 tags FR par produit, du plus spécifique au plus général, optimisés Etsy
+- 13 tags EN par produit (tagsEn) : différents des tags FR, couvrant synonymes et recherches connexes, optimisés pour Etsy international
 - Prix réalistes pour produits digitaux (5€-35€)
-- Couleurs HEX différentes et adaptées à chaque produit (pas la même couleur pour tous)
+- color : couleur HEX principale adaptée à la niche, différente pour chaque produit — ce sera la couleur CSS --primary du fichier HTML généré
 
 Réponds UNIQUEMENT en JSON valide sans markdown ni backticks :
-{"boutique":"Nom de marque accrocheur","products":[{"name":"Nom FR premium","nameEn":"English name","type":"TRACKER|WORKBOOK|DASHBOARD|TEMPLATE","description":"Description FR 80-100 mots orientée bénéfices","descriptionEn":"English description 80-100 words","tags":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13"],"tagsEn":["tag1","tag2","tag3","tag4","tag5"],"price":"14.99","color":"#hexcolor","emoji":"emoji","features":["feature1","feature2","feature3","feature4"]},{"name":"...","nameEn":"...","type":"...","description":"...","descriptionEn":"...","tags":[],"tagsEn":[],"price":"","color":"","emoji":"","features":[]},{"name":"...","nameEn":"...","type":"...","description":"...","descriptionEn":"...","tags":[],"tagsEn":[],"price":"","color":"","emoji":"","features":[]}]}`;
+{"boutique":"Nom de marque accrocheur","products":[{"name":"Nom FR premium","nameEn":"English name","type":"TRACKER|WORKBOOK|DASHBOARD|TEMPLATE","description":"Description FR 80-100 mots orientée bénéfices","descriptionEn":"English description 80-100 words","tags":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13"],"tagsEn":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13"],"price":"14.99","color":"#hexcolor","emoji":"emoji","features":["feature1","feature2","feature3","feature4"]},{"name":"...","nameEn":"...","type":"...","description":"...","descriptionEn":"...","tags":[],"tagsEn":[],"price":"","color":"","emoji":"","features":[]},{"name":"...","nameEn":"...","type":"...","description":"...","descriptionEn":"...","tags":[],"tagsEn":[],"price":"","color":"","emoji":"","features":[]}]}`;
 
 // ─── System prompt — HTML (v2 — exigences maximales) ─────────────────────────
 const SYSTEM_HTML = `Tu es un designer produit UI/UX de classe mondiale. Tu crées des fichiers HTML autonomes qui ressemblent à des applications web professionnelles, PAS à des documents.
