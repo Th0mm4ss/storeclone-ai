@@ -1227,6 +1227,8 @@ footer {
 .example-tab:hover { border-color: var(--near-black); }
 .example-tab.active { background: var(--black); color: white; border-color: var(--black); }
 @media (max-width: 640px) { #exampleFrame { height: 450px; } }
+@media (max-width: 640px) { .flow-arrow { display: none !important; } }
+@media (max-width: 640px) { .case-grid { grid-template-columns: 1fr !important; } }
 </style>
 <link rel="alternate" hreflang="fr" href="https://storeclone-ai.com/?lang=fr" />
 <link rel="alternate" hreflang="en" href="https://storeclone-ai.com/?lang=en" />
@@ -1269,14 +1271,14 @@ footer {
 <section class="hero s">
   <div class="hero-eyebrow">
     <span class="eyebrow-line"></span>
-    <span data-t="eyebrow">Générateur de produits digitaux vendables par IA</span>
+    <span data-t="eyebrow">Créez et vendez des produits digitaux grâce à l'IA</span>
     <span class="eyebrow-line"></span>
   </div>
-  <h1 class="hero-title" data-t-html="hero_title">Créez des produits digitaux<br><em>vendables en quelques clics.</em></h1>
-  <p class="hero-sub" data-t="hero_sub">L'IA génère des fichiers HTML interactifs vendables — planners, trackers, dashboards — avec leur fiche de vente complète. Prêts à publier sur Etsy, Gumroad et Shopify.</p>
+  <h1 class="hero-title" data-t-html="hero_title">L'IA crée vos produits digitaux.<br><em>Vous les vendez sur Etsy.</em></h1>
+  <p class="hero-sub" data-t="hero_sub">Entrez une niche. L'IA génère 3 fichiers interactifs prêts à vendre — planner, tracker, dashboard — avec le titre, la description, les tags et le prix. Vous téléchargez, vous uploadez, c'est vendu.</p>
   <div class="hero-actions">
     <a href="/app.html" class="btn-black" data-t="hero_cta1">Créer mon premier produit — gratuit</a>
-    <a href="#how" class="btn-outline" data-t="hero_cta2">Voir la démo</a>
+    <a href="#demo" class="btn-outline" data-t="hero_cta2">Voir la démo</a>
   </div>
   <div class="hero-numbers" id="hero-numbers">
     <div class="hero-num">
@@ -1304,6 +1306,76 @@ footer {
   <div style="font-size:11px;color:var(--gray);margin-top:12px;font-weight:300;letter-spacing:0.2px;text-align:center;">Planners · Trackers · Dashboards · Templates · Budgets · Journals</div>
   <div class="scroll-hint">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- ─── FLOW VISUEL ─── -->
+<section style="padding:48px 0 0;position:relative;z-index:1;">
+  <div class="section-wrap" style="max-width:900px;margin:0 auto;padding:40px 40px;">
+    <p style="text-align:center;font-size:.85rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;" data-t="flow_eyebrow">Comment ça marche</p>
+    <h2 style="text-align:center;font-size:1.6rem;font-weight:700;margin-bottom:40px;" data-t="flow_title">Vous tapez une niche. Vous recevez tout ça.</h2>
+    <div style="display:flex;align-items:flex-start;gap:0;flex-wrap:wrap;justify-content:center;">
+      <!-- Étape 1 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;min-width:160px;flex:1;">
+        <div style="width:52px;height:52px;border-radius:14px;background:#f5f5f5;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">⌨️</div>
+        <div style="text-align:center;">
+          <div style="font-weight:600;font-size:.95rem;margin-bottom:4px;" data-t="flow_step1_title">Vous tapez</div>
+          <div style="background:var(--black);color:white;border-radius:8px;padding:6px 14px;font-size:.85rem;font-weight:500;display:inline-block;">"fitness"</div>
+          <p style="color:var(--gray);font-size:.82rem;margin-top:6px;" data-t="flow_step1_sub">N'importe quelle niche</p>
+        </div>
+      </div>
+      <!-- Flèche -->
+      <div class="flow-arrow" style="display:flex;align-items:center;padding:0 8px;margin-top:16px;color:var(--gray);font-size:1.3rem;flex-shrink:0;">→</div>
+      <!-- Étape 2 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;min-width:160px;flex:1;">
+        <div style="width:52px;height:52px;border-radius:14px;background:#f5f5f5;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">✨</div>
+        <div style="text-align:center;">
+          <div style="font-weight:600;font-size:.95rem;margin-bottom:6px;" data-t="flow_step2_title">L'IA génère</div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#15803d;font-weight:500;">📄 Fitness Tracker HTML</div>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#15803d;font-weight:500;">📄 Workout Planner HTML</div>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#15803d;font-weight:500;">📄 Progress Dashboard HTML</div>
+          </div>
+          <p style="color:var(--gray);font-size:.82rem;margin-top:6px;" data-t="flow_step2_sub">3 fichiers interactifs</p>
+        </div>
+      </div>
+      <!-- Flèche -->
+      <div class="flow-arrow" style="display:flex;align-items:center;padding:0 8px;margin-top:16px;color:var(--gray);font-size:1.3rem;flex-shrink:0;">→</div>
+      <!-- Étape 3 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;min-width:160px;flex:1;">
+        <div style="width:52px;height:52px;border-radius:14px;background:#f5f5f5;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">📋</div>
+        <div style="text-align:center;">
+          <div style="font-weight:600;font-size:.95rem;margin-bottom:6px;" data-t="flow_step3_title">+ La fiche de vente</div>
+          <div style="display:inline-flex;flex-direction:column;gap:3px;align-items:flex-start;">
+            <span style="font-size:.8rem;color:var(--gray);">✓ <span style="color:var(--black);font-weight:500;">Titre SEO</span> optimisé</span>
+            <span style="font-size:.8rem;color:var(--gray);">✓ <span style="color:var(--black);font-weight:500;">Description</span> complète</span>
+            <span style="font-size:.8rem;color:var(--gray);">✓ <span style="color:var(--black);font-weight:500;">13 tags</span> Etsy</span>
+            <span style="font-size:.8rem;color:var(--gray);">✓ <span style="color:var(--black);font-weight:500;">Prix</span> recommandé</span>
+          </div>
+          <p style="color:var(--gray);font-size:.82rem;margin-top:6px;" data-t="flow_step3_sub">Prête à copier-coller</p>
+        </div>
+      </div>
+      <!-- Flèche -->
+      <div class="flow-arrow" style="display:flex;align-items:center;padding:0 8px;margin-top:16px;color:var(--gray);font-size:1.3rem;flex-shrink:0;">→</div>
+      <!-- Étape 4 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;min-width:160px;flex:1;">
+        <div style="width:52px;height:52px;border-radius:14px;background:#f5f5f5;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🚀</div>
+        <div style="text-align:center;">
+          <div style="font-weight:600;font-size:.95rem;margin-bottom:6px;" data-t="flow_step4_title">Vous publiez</div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#c2410c;font-weight:500;">Etsy</div>
+            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#c2410c;font-weight:500;">Gumroad</div>
+            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#c2410c;font-weight:500;">Shopify</div>
+          </div>
+          <p style="color:var(--gray);font-size:.82rem;margin-top:6px;" data-t="flow_step4_sub">Et vous vendez</p>
+        </div>
+      </div>
+    </div>
+    <!-- CTA -->
+    <div style="text-align:center;margin-top:36px;padding-top:32px;border-top:1px solid var(--border);">
+      <a href="app.html" style="display:inline-block;background:var(--black);color:white;padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;" data-t="cta_btn">Créer mon premier produit — gratuit</a>
+      <p style="margin-top:8px;font-size:.82rem;color:var(--gray);">Sans carte bancaire · 3 produits offerts</p>
+    </div>
   </div>
 </section>
 
@@ -1502,60 +1574,6 @@ footer {
   </div>
 </section>
 
-<!-- ─── HOW IT WORKS ─── -->
-<section class="s" id="how">
-  <div class="section-wrap">
-    <div class="section-eyebrow reveal" data-t="how_eyebrow">Processus</div>
-    <h2 class="section-title reveal reveal-delay-1" data-t-html="how_title">Trois étapes.<br>Vos fiches produits <em>en ligne.</em></h2>
-    <p class="section-sub reveal reveal-delay-2" data-t="how_sub">Aucune compétence technique requise. Aucun design à maîtriser. La plateforme prend en charge l'intégralité du processus.</p>
-    <div class="timeline-wrap section-animate">
-      <div class="timeline-step">
-        <div class="timeline-number">1</div>
-        <div class="timeline-step-inner">
-          <div class="timeline-step-icon">🎯</div>
-          <div class="timeline-step-content">
-            <div class="timeline-step-label" data-t="step_n1">Étape 01</div>
-            <div class="timeline-step-title" data-t="step1_title">Choisissez votre niche</div>
-            <div class="timeline-step-desc" data-t="step1_desc">Fitness, mariage, budget, cuisine… Indiquez votre thème et l'IA identifie les meilleurs produits digitaux à créer pour ce marché.</div>
-          </div>
-        </div>
-      </div>
-      <div class="timeline-step">
-        <div class="timeline-number">2</div>
-        <div class="timeline-step-inner">
-          <div class="timeline-step-icon">⚡</div>
-          <div class="timeline-step-content">
-            <div class="timeline-step-label" data-t="step_n2">Étape 02</div>
-            <div class="timeline-step-title" data-t="step2_title">L'IA crée vos produits</div>
-            <div class="timeline-step-desc" data-t="step2_desc">En quelques clics : fichiers HTML interactifs vendables, descriptions SEO, 13 tags Etsy et prix recommandés. Chaque produit est unique et prêt à vendre.</div>
-          </div>
-        </div>
-      </div>
-      <div class="timeline-step">
-        <div class="timeline-number">3</div>
-        <div class="timeline-step-inner">
-          <div class="timeline-step-icon">🚀</div>
-          <div class="timeline-step-content">
-            <div class="timeline-step-label" data-t="step_n3">Étape 03</div>
-            <div class="timeline-step-title" data-t="step3_title">Téléchargez et publiez</div>
-            <div class="timeline-step-desc" data-t="step3_desc">Téléchargez le ZIP complet — produits HTML + fiches de vente. Uploadez directement sur Etsy, Gumroad ou Payhip et commencez à vendre.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="api-callout reveal">
-      <div class="api-callout-left">
-        <div class="api-callout-tag" data-t="api_tag">Plan Pro — Générez plus, vendez plus</div>
-        <div class="api-callout-title" data-t="api_title">30 produits digitaux par mois pour scaler votre business e-commerce.</div>
-        <div class="api-callout-desc" data-t="api_desc">Avec le plan Pro, créez jusqu'à 30 produits digitaux vendables par mois — fichiers HTML interactifs, descriptions SEO, 13 tags Etsy et prix recommandés inclus. Accès prioritaire aux nouvelles fonctionnalités.</div>
-      </div>
-      <div class="api-callout-right">
-        <div class="api-tag"><div class="api-dot"></div> Pro</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ─── FEATURES ─── -->
 <section class="s" id="features">
   <div class="section-wrap">
@@ -1583,6 +1601,60 @@ footer {
         <div class="feat-desc" data-t="feat4_desc">Chaque fiche produit est générée simultanément en français et en anglais. Vous doublez votre audience sans effort supplémentaire, en accédant aux marchés internationaux.</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ─── CAS CONCRET ─── -->
+<section style="padding:60px 0;position:relative;z-index:1;">
+  <div class="section-wrap" style="max-width:800px;margin:0 auto;padding:40px 40px;">
+    <p style="text-align:center;font-size:.85rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;" data-t="case_eyebrow">En pratique</p>
+    <h2 style="text-align:center;font-size:1.6rem;font-weight:700;margin-bottom:32px;" data-t="case_title">Concrètement, voici ce que ça donne</h2>
+    <div style="background:#fafafa;border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6366f1,#8b5cf6);"></div>
+      <div class="case-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
+        <!-- Colonne gauche : le scénario -->
+        <div>
+          <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:16px;" data-t="case_scenario_label">Le scénario</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <span style="font-size:1.1rem;flex-shrink:0;">👤</span>
+              <div><strong data-t="case_who_title">Qui</strong><p style="color:var(--gray);font-size:.88rem;margin:2px 0 0;" data-t="case_who">Une personne qui veut vendre des produits digitaux sur Etsy, sans compétences techniques.</p></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <span style="font-size:1.1rem;flex-shrink:0;">🎯</span>
+              <div><strong data-t="case_niche_title">La niche choisie</strong><p style="color:var(--gray);font-size:.88rem;margin:2px 0 0;" data-t="case_niche">Fitness — tracker d'entraînement, planner nutrition, dashboard progression.</p></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <span style="font-size:1.1rem;flex-shrink:0;">⏱️</span>
+              <div><strong data-t="case_time_title">Ce qu'elle fait</strong><p style="color:var(--gray);font-size:.88rem;margin:2px 0 0;" data-t="case_time">Elle tape « fitness » dans StoreClone AI. L'IA génère 3 produits complets avec leurs fiches de vente. Elle les uploade sur Etsy.</p></div>
+            </div>
+          </div>
+        </div>
+        <!-- Colonne droite : le résultat -->
+        <div>
+          <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:16px;" data-t="case_result_label">Ce qu'elle obtient</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+              <div><div style="font-size:.85rem;font-weight:600;">Fitness Progress Tracker</div><div style="font-size:.78rem;color:var(--gray);">Fichier HTML interactif</div></div>
+              <div style="font-size:1rem;font-weight:700;color:#15803d;">7,99 €</div>
+            </div>
+            <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+              <div><div style="font-size:.85rem;font-weight:600;">Workout & Nutrition Planner</div><div style="font-size:.78rem;color:var(--gray);">Fichier HTML interactif</div></div>
+              <div style="font-size:1rem;font-weight:700;color:#15803d;">9,99 €</div>
+            </div>
+            <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+              <div><div style="font-size:.85rem;font-weight:600;">90-Day Challenge Dashboard</div><div style="font-size:.78rem;color:var(--gray);">Fichier HTML interactif</div></div>
+              <div style="font-size:1rem;font-weight:700;color:#15803d;">12,99 €</div>
+            </div>
+            <div style="background:var(--black);border-radius:10px;padding:14px 16px;text-align:center;margin-top:4px;">
+              <div style="color:white;font-size:.85rem;font-weight:500;" data-t="case_total_label">3 produits prêts à vendre</div>
+              <div style="color:rgba(255,255,255,0.6);font-size:.78rem;margin-top:2px;" data-t="case_total_sub">Titre · Description · 13 tags · Prix · ZIP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="text-align:center;color:var(--gray);font-size:.85rem;margin-top:20px;" data-t="case_note">☝️ Les produits digitaux ne nécessitent aucun stock, aucune livraison, aucune compétence technique.</p>
   </div>
 </section>
 
@@ -1785,9 +1857,9 @@ footer {
 const TR = {
   fr: {
     nav_how:'Comment ça marche', nav_features:'Fonctionnalités', nav_pricing:'Tarifs', nav_cta:'Essayer gratuitement',
-    eyebrow:'Générateur de produits digitaux vendables par IA',
-    hero_title:'Créez des produits digitaux<br><em>vendables en quelques clics.</em>',
-    hero_sub:'L\'IA génère des fichiers HTML interactifs vendables — planners, trackers, dashboards — avec leur fiche de vente complète. Prêts à publier sur Etsy, Gumroad et Shopify.',
+    eyebrow:'Créez et vendez des produits digitaux grâce à l\'IA',
+    hero_title:'L\'IA crée vos produits digitaux.<br>Vous les vendez sur Etsy.',
+    hero_sub:'Entrez une niche. L\'IA génère 3 fichiers interactifs prêts à vendre — planner, tracker, dashboard — avec le titre, la description, les tags et le prix. Vous téléchargez, vous uploadez, c\'est vendu.',
     platforms_label:'Compatible avec',
     hero_cta1:'Créer mon premier produit — gratuit', hero_cta2:'Voir la démo',
     stat1:'produits créés en 1 clic', stat2:'automatisé', stat3:'pour démarrer',
@@ -1855,13 +1927,36 @@ const TR = {
       {type:'Tracker',name:'Budget Planner Premium FR',tags:['budget','finance','planner'],price:'14,99 €'},
       {type:'Template',name:'Habit Tracker Annuel',tags:['habitudes','productivité'],price:'12,99 €'},
       {type:'Planner',name:'Goal Setter Mensuel',tags:['objectifs','motivation'],price:'9,99 €'},
-    ]
+    ],
+    flow_eyebrow:'Comment ça marche',
+    flow_title:'Vous tapez une niche. Vous recevez tout ça.',
+    flow_step1_title:'Vous tapez',
+    flow_step1_sub:'N\'importe quelle niche',
+    flow_step2_title:'L\'IA génère',
+    flow_step2_sub:'3 fichiers interactifs',
+    flow_step3_title:'+ La fiche de vente',
+    flow_step3_sub:'Prête à copier-coller',
+    flow_step4_title:'Vous publiez',
+    flow_step4_sub:'Et vous vendez',
+    case_eyebrow:'En pratique',
+    case_title:'Concrètement, voici ce que ça donne',
+    case_scenario_label:'Le scénario',
+    case_who_title:'Qui',
+    case_who:'Une personne qui veut vendre des produits digitaux sur Etsy, sans compétences techniques.',
+    case_niche_title:'La niche choisie',
+    case_niche:'Fitness — tracker d\'entraînement, planner nutrition, dashboard progression.',
+    case_time_title:'Ce qu\'elle fait',
+    case_time:'Elle tape « fitness » dans StoreClone AI. L\'IA génère 3 produits complets avec leurs fiches de vente. Elle les uploade sur Etsy.',
+    case_result_label:'Ce qu\'elle obtient',
+    case_total_label:'3 produits prêts à vendre',
+    case_total_sub:'Titre · Description · 13 tags · Prix · ZIP',
+    case_note:'☝️ Les produits digitaux ne nécessitent aucun stock, aucune livraison, aucune compétence technique.',
   },
   en: {
     nav_how:'How it works', nav_features:'Features', nav_pricing:'Pricing', nav_cta:'Try for free',
-    eyebrow:'AI-powered sellable digital product generator',
-    hero_title:'Create sellable digital products<br><em>in just a few clicks.</em>',
-    hero_sub:'AI generates sellable interactive HTML files — planners, trackers, dashboards — with their complete sales listing. Ready to publish on Etsy, Gumroad and Shopify.',
+    eyebrow:'Create and sell digital products with AI',
+    hero_title:'AI creates your digital products.<br>You sell them on Etsy.',
+    hero_sub:'Enter a niche. AI generates 3 interactive files ready to sell — planner, tracker, dashboard — with title, description, tags and price. You download, you upload, it\'s sold.',
     hero_cta1:'Create my first product — free', hero_cta2:'Watch demo',
     stat1:'products created in 1 click', stat2:'automated', stat3:'to get started',
     demo_title:'Generate your products now',
@@ -1929,7 +2024,30 @@ const TR = {
       {type:'Tracker',name:'Premium Budget Planner EN',tags:['budget','finance','planner'],price:'€14.99'},
       {type:'Template',name:'Annual Habit Tracker',tags:['habits','productivity'],price:'€12.99'},
       {type:'Planner',name:'Monthly Goal Setter',tags:['goals','motivation'],price:'€9.99'},
-    ]
+    ],
+    flow_eyebrow:'How it works',
+    flow_title:'You type a niche. You get all of this.',
+    flow_step1_title:'You type',
+    flow_step1_sub:'Any niche you want',
+    flow_step2_title:'AI generates',
+    flow_step2_sub:'3 interactive files',
+    flow_step3_title:'+ The sales listing',
+    flow_step3_sub:'Ready to copy-paste',
+    flow_step4_title:'You publish',
+    flow_step4_sub:'And you sell',
+    case_eyebrow:'In practice',
+    case_title:'Concretely, here\'s what you get',
+    case_scenario_label:'The scenario',
+    case_who_title:'Who',
+    case_who:'Someone who wants to sell digital products on Etsy, with no technical skills.',
+    case_niche_title:'Niche chosen',
+    case_niche:'Fitness — workout tracker, nutrition planner, progress dashboard.',
+    case_time_title:'What they do',
+    case_time:'They type \'fitness\' into StoreClone AI. AI generates 3 complete products with their sales listings. They upload to Etsy.',
+    case_result_label:'What they get',
+    case_total_label:'3 products ready to sell',
+    case_total_sub:'Title · Description · 13 tags · Price · ZIP',
+    case_note:'☝️ Digital products require no stock, no shipping, no technical skills.',
   }
 };
 
