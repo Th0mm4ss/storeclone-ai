@@ -897,10 +897,11 @@ nav.scrolled {
 .cta-inner {
   max-width: 1080px;
   margin: 0 auto;
-  background: var(--black);
+  background: #0a0a0a;
   border-radius: 24px;
   padding: 80px 60px;
   text-align: center;
+  background-image: none;
 }
 .cta-title {
   font-size: clamp(40px, 5vw, 68px);
@@ -1228,7 +1229,7 @@ footer {
 .example-tab.active { background: var(--black); color: white; border-color: var(--black); }
 @media (max-width: 640px) { #exampleFrame { height: 450px; } }
 @media (max-width: 640px) { .flow-arrow { display: none !important; } }
-@media (max-width: 640px) { .case-grid { grid-template-columns: 1fr !important; } }
+@media (max-width: 640px) { .case-grid { grid-template-columns: 1fr !important; gap: 12px !important; } }
 </style>
 <link rel="alternate" hreflang="fr" href="https://storeclone-ai.com/?lang=fr" />
 <link rel="alternate" hreflang="en" href="https://storeclone-ai.com/?lang=en" />
@@ -1274,7 +1275,7 @@ footer {
     <span data-t="eyebrow">Créez et vendez des produits digitaux grâce à l'IA</span>
     <span class="eyebrow-line"></span>
   </div>
-  <h1 class="hero-title" data-t-html="hero_title">L'IA crée vos produits digitaux.<br><em>Vous les vendez sur Etsy.</em></h1>
+  <h1 class="hero-title" data-t-html="hero_title">L'IA crée vos produits digitaux.<br><em>Vous les vendez où vous voulez.</em></h1>
   <p class="hero-sub" data-t="hero_sub">Entrez une niche. L'IA génère 3 fichiers interactifs prêts à vendre — planner, tracker, dashboard — avec le titre, la description, les tags et le prix. Vous téléchargez, vous uploadez, c'est vendu.</p>
   <div class="hero-actions">
     <a href="/app.html" class="btn-black" data-t="hero_cta1">Créer mon premier produit — gratuit</a>
@@ -1304,75 +1305,47 @@ footer {
     <span class="plat-badge">Payhip</span>
   </div>
   <div style="font-size:11px;color:var(--gray);margin-top:12px;font-weight:300;letter-spacing:0.2px;text-align:center;">Planners · Trackers · Dashboards · Templates · Budgets · Journals</div>
-  <div class="scroll-hint">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-  </div>
 </section>
 
-<!-- ─── FLOW VISUEL ─── -->
-<section style="padding:48px 0 0;position:relative;z-index:1;">
-  <div class="section-wrap" style="max-width:900px;margin:0 auto;padding:40px 40px;">
-    <p style="text-align:center;font-size:.85rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;" data-t="flow_eyebrow">Comment ça marche</p>
-    <h2 style="text-align:center;font-size:1.6rem;font-weight:700;margin-bottom:40px;" data-t="flow_title">Vous tapez une niche. Vous recevez tout ça.</h2>
-    <div style="display:flex;align-items:flex-start;gap:0;flex-wrap:wrap;justify-content:center;">
+<!-- ─── COMMENT ÇA MARCHE ─── -->
+<section style="padding:64px 0 48px;position:relative;z-index:1;">
+  <div class="section-wrap" style="max-width:760px;margin:0 auto;padding:0 40px;">
+    <p style="text-align:center;font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;">Comment ça marche</p>
+    <h2 style="text-align:center;font-size:1.7rem;font-weight:700;margin-bottom:48px;letter-spacing:-.5px;">Vous tapez une niche. <br>Vous recevez tout ça.</h2>
+    <div style="display:flex;flex-direction:column;gap:0;">
       <!-- Étape 1 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;min-width:160px;flex:1;">
-        <div style="width:52px;height:52px;border-radius:14px;background:#f5f5f5;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">⌨️</div>
-        <div style="text-align:center;">
-          <div style="font-weight:600;font-size:.95rem;margin-bottom:4px;" data-t="flow_step1_title">Vous tapez</div>
-          <div style="background:var(--black);color:white;border-radius:8px;padding:6px 14px;font-size:.85rem;font-weight:500;display:inline-block;">"fitness"</div>
-          <p style="color:var(--gray);font-size:.82rem;margin-top:6px;" data-t="flow_step1_sub">N'importe quelle niche</p>
+      <div style="display:flex;gap:20px;align-items:flex-start;padding:28px 0;border-bottom:1px solid var(--border);">
+        <div style="width:36px;height:36px;border-radius:10px;background:var(--black);color:white;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;flex-shrink:0;">1</div>
+        <div>
+          <div style="font-size:1.05rem;font-weight:600;margin-bottom:6px;">Vous tapez une niche</div>
+          <p style="color:var(--gray);font-size:.92rem;line-height:1.6;margin:0;">Par exemple : <strong style="color:var(--near-black);">"fitness"</strong>, <strong style="color:var(--near-black);">"mariage"</strong>, <strong style="color:var(--near-black);">"méditation"</strong>. N'importe quel thème, en une ou deux mots.</p>
         </div>
       </div>
-      <!-- Flèche -->
-      <div class="flow-arrow" style="display:flex;align-items:center;padding:0 8px;margin-top:16px;color:var(--gray);font-size:1.3rem;flex-shrink:0;">→</div>
       <!-- Étape 2 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;min-width:160px;flex:1;">
-        <div style="width:52px;height:52px;border-radius:14px;background:#f5f5f5;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">✨</div>
-        <div style="text-align:center;">
-          <div style="font-weight:600;font-size:.95rem;margin-bottom:6px;" data-t="flow_step2_title">L'IA génère</div>
-          <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#15803d;font-weight:500;">📄 Fitness Tracker HTML</div>
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#15803d;font-weight:500;">📄 Workout Planner HTML</div>
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#15803d;font-weight:500;">📄 Progress Dashboard HTML</div>
+      <div style="display:flex;gap:20px;align-items:flex-start;padding:28px 0;border-bottom:1px solid var(--border);">
+        <div style="width:36px;height:36px;border-radius:10px;background:var(--black);color:white;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;flex-shrink:0;">2</div>
+        <div>
+          <div style="font-size:1.05rem;font-weight:600;margin-bottom:6px;">L'IA génère en quelques minutes</div>
+          <p style="color:var(--gray);font-size:.92rem;line-height:1.6;margin:0 0 10px;">3 fichiers HTML interactifs prêts à vendre — planner, tracker, dashboard. Plus la fiche de vente complète pour chaque produit :</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span style="background:#f5f5f5;border-radius:6px;padding:4px 10px;font-size:.82rem;color:var(--near-black);">✓ Titre SEO</span>
+            <span style="background:#f5f5f5;border-radius:6px;padding:4px 10px;font-size:.82rem;color:var(--near-black);">✓ Description complète</span>
+            <span style="background:#f5f5f5;border-radius:6px;padding:4px 10px;font-size:.82rem;color:var(--near-black);">✓ 13 tags</span>
+            <span style="background:#f5f5f5;border-radius:6px;padding:4px 10px;font-size:.82rem;color:var(--near-black);">✓ Prix recommandé</span>
+            <span style="background:#f5f5f5;border-radius:6px;padding:4px 10px;font-size:.82rem;color:var(--near-black);">✓ Export ZIP</span>
           </div>
-          <p style="color:var(--gray);font-size:.82rem;margin-top:6px;" data-t="flow_step2_sub">3 fichiers interactifs</p>
         </div>
       </div>
-      <!-- Flèche -->
-      <div class="flow-arrow" style="display:flex;align-items:center;padding:0 8px;margin-top:16px;color:var(--gray);font-size:1.3rem;flex-shrink:0;">→</div>
       <!-- Étape 3 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;min-width:160px;flex:1;">
-        <div style="width:52px;height:52px;border-radius:14px;background:#f5f5f5;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">📋</div>
-        <div style="text-align:center;">
-          <div style="font-weight:600;font-size:.95rem;margin-bottom:6px;" data-t="flow_step3_title">+ La fiche de vente</div>
-          <div style="display:inline-flex;flex-direction:column;gap:3px;align-items:flex-start;">
-            <span style="font-size:.8rem;color:var(--gray);">✓ <span style="color:var(--black);font-weight:500;">Titre SEO</span> optimisé</span>
-            <span style="font-size:.8rem;color:var(--gray);">✓ <span style="color:var(--black);font-weight:500;">Description</span> complète</span>
-            <span style="font-size:.8rem;color:var(--gray);">✓ <span style="color:var(--black);font-weight:500;">13 tags</span> Etsy</span>
-            <span style="font-size:.8rem;color:var(--gray);">✓ <span style="color:var(--black);font-weight:500;">Prix</span> recommandé</span>
-          </div>
-          <p style="color:var(--gray);font-size:.82rem;margin-top:6px;" data-t="flow_step3_sub">Prête à copier-coller</p>
-        </div>
-      </div>
-      <!-- Flèche -->
-      <div class="flow-arrow" style="display:flex;align-items:center;padding:0 8px;margin-top:16px;color:var(--gray);font-size:1.3rem;flex-shrink:0;">→</div>
-      <!-- Étape 4 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;min-width:160px;flex:1;">
-        <div style="width:52px;height:52px;border-radius:14px;background:#f5f5f5;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🚀</div>
-        <div style="text-align:center;">
-          <div style="font-weight:600;font-size:.95rem;margin-bottom:6px;" data-t="flow_step4_title">Vous publiez</div>
-          <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
-            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#c2410c;font-weight:500;">Etsy</div>
-            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#c2410c;font-weight:500;">Gumroad</div>
-            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:4px 10px;font-size:.8rem;color:#c2410c;font-weight:500;">Shopify</div>
-          </div>
-          <p style="color:var(--gray);font-size:.82rem;margin-top:6px;" data-t="flow_step4_sub">Et vous vendez</p>
+      <div style="display:flex;gap:20px;align-items:flex-start;padding:28px 0;">
+        <div style="width:36px;height:36px;border-radius:10px;background:var(--black);color:white;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;flex-shrink:0;">3</div>
+        <div>
+          <div style="font-size:1.05rem;font-weight:600;margin-bottom:6px;">Vous publiez et vendez</div>
+          <p style="color:var(--gray);font-size:.92rem;line-height:1.6;margin:0;">Téléchargez le ZIP, uploadez sur Etsy, Gumroad, Shopify ou Payhip. C'est fait.</p>
         </div>
       </div>
     </div>
-    <!-- CTA -->
-    <div style="text-align:center;margin-top:36px;padding-top:32px;border-top:1px solid var(--border);">
+    <div style="text-align:center;margin-top:36px;">
       <a href="app.html" style="display:inline-block;background:var(--black);color:white;padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;" data-t="cta_btn">Créer mon premier produit — gratuit</a>
       <p style="margin-top:8px;font-size:.82rem;color:var(--gray);">Sans carte bancaire · 3 produits offerts</p>
     </div>
@@ -1536,44 +1509,6 @@ footer {
   </div>
 </section>
 
-<section id="what-you-get" style="padding:60px 0;position:relative;z-index:1;">
-  <div class="section-wrap" style="max-width:800px;margin:0 auto;padding:40px 40px;">
-    <p class="eyebrow" data-t="wyg_eyebrow" style="text-align:center;">Ce que vous obtenez</p>
-    <h2 class="section-title" data-t="wyg_title" style="text-align:center;margin-bottom:8px;">Un produit complet, prêt à vendre</h2>
-    <p style="text-align:center;color:var(--gray);margin-bottom:36px;font-size:1rem;" data-t="wyg_sub">Pour chaque génération, vous recevez 3 produits digitaux avec tout ce qu'il faut pour les vendre.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
-        <span style="font-size:1.4rem;flex-shrink:0;">📄</span>
-        <div><strong data-t="wyg_item1_title">Fichier HTML interactif</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item1_desc">Planner, tracker ou dashboard autonome — animations, localStorage, design premium inclus.</span></div>
-      </div>
-      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
-        <span style="font-size:1.4rem;flex-shrink:0;">✏️</span>
-        <div><strong data-t="wyg_item2_title">Titre SEO optimisé</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item2_desc">Un titre accrocheur pensé pour Etsy et Gumroad, prêt à copier-coller.</span></div>
-      </div>
-      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
-        <span style="font-size:1.4rem;flex-shrink:0;">📝</span>
-        <div><strong data-t="wyg_item3_title">Description de vente</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item3_desc">Description complète avec bénéfices, format et instructions d'utilisation.</span></div>
-      </div>
-      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
-        <span style="font-size:1.4rem;flex-shrink:0;">🏷️</span>
-        <div><strong data-t="wyg_item4_title">13 tags Etsy</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item4_desc">Les 13 tags maximum Etsy, optimisés pour le référencement de votre niche.</span></div>
-      </div>
-      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border-radius:12px;border:1px solid var(--border);">
-        <span style="font-size:1.4rem;flex-shrink:0;">💰</span>
-        <div><strong data-t="wyg_item5_title">Prix recommandé</strong><br><span style="color:var(--gray);font-size:.9rem;" data-t="wyg_item5_desc">Suggestion de prix basée sur le marché de votre niche pour maximiser les ventes.</span></div>
-      </div>
-      <div class="wyg-card" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:var(--black);border-radius:12px;border:1px solid var(--black);">
-        <span style="font-size:1.4rem;flex-shrink:0;">📦</span>
-        <div>
-          <strong style="color:white;" data-t="wyg_item6_title">ZIP prêt à uploader</strong><br>
-          <span style="color:rgba(255,255,255,0.7);font-size:.9rem;" data-t="wyg_item6_desc">Tous vos fichiers + README.txt avec les instructions pas à pas. Un clic pour tout télécharger.</span>
-          <div style="margin-top:6px;font-size:.75rem;color:rgba(255,255,255,0.5);">Inclus dans tous les plans</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ─── FEATURES ─── -->
 <section class="s" id="features">
   <div class="section-wrap">
@@ -1583,22 +1518,22 @@ footer {
       <div class="feat-item">
         <div class="feat-icon-wrap purple">🎨</div>
         <div class="feat-title" data-t="feat1_title">Produits digitaux HTML interactifs</div>
-        <div class="feat-desc" data-t="feat1_desc">L'IA crée de vrais produits digitaux vendables — trackers, planners, dashboards — avec un design premium et des fonctionnalités interactives. Bien au-dessus des fichiers Excel classiques.</div>
+        <div class="feat-desc" data-t="feat1_desc">Trackers, planners, dashboards avec design premium et fonctionnalités interactives — bien au-dessus des fichiers Excel classiques.</div>
       </div>
       <div class="feat-item">
         <div class="feat-icon-wrap blue">🔍</div>
         <div class="feat-title" data-t="feat2_title">Fiche de vente complète incluse</div>
-        <div class="feat-desc" data-t="feat2_desc">Chaque produit est livré avec sa fiche de vente — titre optimisé, description SEO, 13 tags Etsy et prix recommandé. Copiez-collez et publiez, sans rien réécrire.</div>
+        <div class="feat-desc" data-t="feat2_desc">Titre SEO, description, 13 tags et prix recommandé générés automatiquement — copiez-collez et publiez.</div>
       </div>
       <div class="feat-item">
         <div class="feat-icon-wrap green">✏️</div>
         <div class="feat-title" data-t="feat3_title">Éditeur IA pour personnaliser</div>
-        <div class="feat-desc" data-t="feat3_desc">Modifiez vos fichiers générés avec des instructions en langage naturel. Changez les couleurs, ajoutez des sections, adaptez le contenu — l'IA applique vos modifications instantanément.</div>
+        <div class="feat-desc" data-t="feat3_desc">Modifiez vos produits en langage naturel — couleurs, sections, contenu — sans toucher au code.</div>
       </div>
       <div class="feat-item">
         <div class="feat-icon-wrap orange">🌍</div>
         <div class="feat-title" data-t="feat4_title">Bilingue français et anglais</div>
-        <div class="feat-desc" data-t="feat4_desc">Chaque fiche produit est générée simultanément en français et en anglais. Vous doublez votre audience sans effort supplémentaire, en accédant aux marchés internationaux.</div>
+        <div class="feat-desc" data-t="feat4_desc">Chaque produit généré en FR + EN simultanément — doublez votre audience sans effort supplémentaire.</div>
       </div>
     </div>
   </div>
@@ -1606,55 +1541,27 @@ footer {
 
 <!-- ─── CAS CONCRET ─── -->
 <section style="padding:60px 0;position:relative;z-index:1;">
-  <div class="section-wrap" style="max-width:800px;margin:0 auto;padding:40px 40px;">
-    <p style="text-align:center;font-size:.85rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;" data-t="case_eyebrow">En pratique</p>
-    <h2 style="text-align:center;font-size:1.6rem;font-weight:700;margin-bottom:32px;" data-t="case_title">Concrètement, voici ce que ça donne</h2>
-    <div style="background:#fafafa;border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6366f1,#8b5cf6);"></div>
-      <div class="case-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
-        <!-- Colonne gauche : le scénario -->
-        <div>
-          <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:16px;" data-t="case_scenario_label">Le scénario</div>
-          <div style="display:flex;flex-direction:column;gap:12px;">
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <span style="font-size:1.1rem;flex-shrink:0;">👤</span>
-              <div><strong data-t="case_who_title">Qui</strong><p style="color:var(--gray);font-size:.88rem;margin:2px 0 0;" data-t="case_who">Une personne qui veut vendre des produits digitaux sur Etsy, sans compétences techniques.</p></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <span style="font-size:1.1rem;flex-shrink:0;">🎯</span>
-              <div><strong data-t="case_niche_title">La niche choisie</strong><p style="color:var(--gray);font-size:.88rem;margin:2px 0 0;" data-t="case_niche">Fitness — tracker d'entraînement, planner nutrition, dashboard progression.</p></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <span style="font-size:1.1rem;flex-shrink:0;">⏱️</span>
-              <div><strong data-t="case_time_title">Ce qu'elle fait</strong><p style="color:var(--gray);font-size:.88rem;margin:2px 0 0;" data-t="case_time">Elle tape « fitness » dans StoreClone AI. L'IA génère 3 produits complets avec leurs fiches de vente. Elle les uploade sur Etsy.</p></div>
-            </div>
-          </div>
-        </div>
-        <!-- Colonne droite : le résultat -->
-        <div>
-          <div style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:16px;" data-t="case_result_label">Ce qu'elle obtient</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
-              <div><div style="font-size:.85rem;font-weight:600;">Fitness Progress Tracker</div><div style="font-size:.78rem;color:var(--gray);">Fichier HTML interactif</div></div>
-              <div style="font-size:1rem;font-weight:700;color:#15803d;">7,99 €</div>
-            </div>
-            <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
-              <div><div style="font-size:.85rem;font-weight:600;">Workout & Nutrition Planner</div><div style="font-size:.78rem;color:var(--gray);">Fichier HTML interactif</div></div>
-              <div style="font-size:1rem;font-weight:700;color:#15803d;">9,99 €</div>
-            </div>
-            <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
-              <div><div style="font-size:.85rem;font-weight:600;">90-Day Challenge Dashboard</div><div style="font-size:.78rem;color:var(--gray);">Fichier HTML interactif</div></div>
-              <div style="font-size:1rem;font-weight:700;color:#15803d;">12,99 €</div>
-            </div>
-            <div style="background:var(--black);border-radius:10px;padding:14px 16px;text-align:center;margin-top:4px;">
-              <div style="color:white;font-size:.85rem;font-weight:500;" data-t="case_total_label">3 produits prêts à vendre</div>
-              <div style="color:rgba(255,255,255,0.6);font-size:.78rem;margin-top:2px;" data-t="case_total_sub">Titre · Description · 13 tags · Prix · ZIP</div>
-            </div>
-          </div>
-        </div>
+  <div class="section-wrap" style="max-width:760px;margin:0 auto;padding:0 40px;">
+    <p style="text-align:center;font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;">En pratique — niche fitness</p>
+    <h2 style="text-align:center;font-size:1.7rem;font-weight:700;margin-bottom:32px;letter-spacing:-.5px;">3 produits générés depuis le mot "fitness"</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;" class="case-grid">
+      <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:20px;">
+        <div style="font-size:.95rem;font-weight:600;margin-bottom:4px;">Fitness Progress Tracker</div>
+        <div style="font-size:.8rem;color:var(--gray);margin-bottom:12px;">Fichier HTML interactif</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#15803d;">7,99 €</div>
+      </div>
+      <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:20px;">
+        <div style="font-size:.95rem;font-weight:600;margin-bottom:4px;">Workout & Nutrition Planner</div>
+        <div style="font-size:.8rem;color:var(--gray);margin-bottom:12px;">Fichier HTML interactif</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#15803d;">9,99 €</div>
+      </div>
+      <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:20px;">
+        <div style="font-size:.95rem;font-weight:600;margin-bottom:4px;">90-Day Challenge Dashboard</div>
+        <div style="font-size:.8rem;color:var(--gray);margin-bottom:12px;">Fichier HTML interactif</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#15803d;">12,99 €</div>
       </div>
     </div>
-    <p style="text-align:center;color:var(--gray);font-size:.85rem;margin-top:20px;" data-t="case_note">☝️ Les produits digitaux ne nécessitent aucun stock, aucune livraison, aucune compétence technique.</p>
+    <p style="text-align:center;color:var(--gray);font-size:.85rem;margin-top:16px;">Générés automatiquement depuis le mot "fitness". Titre · Description · 13 tags · Prix · ZIP inclus.</p>
   </div>
 </section>
 
@@ -1722,53 +1629,6 @@ footer {
         <button class="price-btn" id="lp-biz-btn" onclick="goLPCheckout('business')" data-t="p3btn">Passer en Business</button>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ─── TESTIMONIALS ─── -->
-<section class="s">
-  <div class="section-wrap">
-    <div class="section-eyebrow reveal" data-t="test_eyebrow">Témoignages</div>
-    <h2 class="section-title reveal reveal-delay-1" data-t-html="test_title">Ils développent<br>leur <em>activité avec nous.</em></h2>
-    <div class="testimonials-grid reveal reveal-delay-2 section-animate">
-      <div class="test-card">
-        <span class="test-quote">«</span>
-        <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t1">«&nbsp;J'ai généré mes 3 premiers produits en moins de 10 minutes. Les fichiers HTML sont vraiment interactifs, bien mieux que ce que j'aurais fait moi-même.&nbsp;»</div>
-        <div class="test-author">
-          <div class="test-avatar av-s">M</div>
-          <div>
-            <div class="test-name">Marie L.</div>
-            <div class="test-role" data-t="t1role">Vendeuse Etsy, niche planners</div>
-          </div>
-        </div>
-      </div>
-      <div class="test-card">
-        <span class="test-quote">«</span>
-        <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t2">«&nbsp;Ce qui m'a convaincu c'est de voir le vrai produit avant de m'inscrire. Les 13 tags Etsy générés automatiquement m'ont fait gagner un temps fou.&nbsp;»</div>
-        <div class="test-author">
-          <div class="test-avatar av-t">J</div>
-          <div>
-            <div class="test-name">Julien M.</div>
-            <div class="test-role" data-t="t2role">Créateur de templates digitaux</div>
-          </div>
-        </div>
-      </div>
-      <div class="test-card">
-        <span class="test-quote">«</span>
-        <div class="test-stars">★★★★★</div>
-        <div class="test-text" data-t="t3">«&nbsp;J'étais sceptique sur les outils IA mais les produits générés sont vraiment utilisables tels quels. J'ai vendu mon premier tracker fitness la semaine où je l'ai mis en ligne.&nbsp;»</div>
-        <div class="test-author">
-          <div class="test-avatar av-m">S</div>
-          <div>
-            <div class="test-name">Sophie R.</div>
-            <div class="test-role" data-t="t3role">Vendeuse Gumroad</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p style="text-align:center;font-size:11px;color:var(--gray);margin-top:20px;font-weight:300">* Résultats simulés à titre d'illustration</p>
   </div>
 </section>
 
@@ -1858,7 +1718,7 @@ const TR = {
   fr: {
     nav_how:'Comment ça marche', nav_features:'Fonctionnalités', nav_pricing:'Tarifs', nav_cta:'Essayer gratuitement',
     eyebrow:'Créez et vendez des produits digitaux grâce à l\'IA',
-    hero_title:'L\'IA crée vos produits digitaux.<br>Vous les vendez sur Etsy.',
+    hero_title:'L\'IA crée vos produits digitaux.<br>Vous les vendez où vous voulez.',
     hero_sub:'Entrez une niche. L\'IA génère 3 fichiers interactifs prêts à vendre — planner, tracker, dashboard — avec le titre, la description, les tags et le prix. Vous téléchargez, vous uploadez, c\'est vendu.',
     platforms_label:'Compatible avec',
     hero_cta1:'Créer mon premier produit — gratuit', hero_cta2:'Voir la démo',
@@ -1955,7 +1815,7 @@ const TR = {
   en: {
     nav_how:'How it works', nav_features:'Features', nav_pricing:'Pricing', nav_cta:'Try for free',
     eyebrow:'Create and sell digital products with AI',
-    hero_title:'AI creates your digital products.<br>You sell them on Etsy.',
+    hero_title:'AI creates your digital products.<br>You sell them wherever you want.',
     hero_sub:'Enter a niche. AI generates 3 interactive files ready to sell — planner, tracker, dashboard — with title, description, tags and price. You download, you upload, it\'s sold.',
     hero_cta1:'Create my first product — free', hero_cta2:'Watch demo',
     stat1:'products created in 1 click', stat2:'automated', stat3:'to get started',
