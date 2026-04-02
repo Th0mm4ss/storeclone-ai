@@ -342,8 +342,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       <div id="login-resend" style="display:none;margin-bottom:14px">
         <button class="bf" style="background:#f5f5f7;color:#1d1d1f;font-size:12px;height:36px" onclick="resendConfirmation()">Renvoyer l'email de confirmation</button>
       </div>
-      <div class="fg"><label>E-mail</label><input type="email" class="fi" id="loginEmail" placeholder="vous@exemple.com" onkeydown="if(event.key==='Enter')login()"></div>
-      <div class="fg"><label>Mot de passe</label><input type="password" class="fi" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+      <div class="fg"><label for="loginEmail">E-mail</label><input type="email" class="fi" id="loginEmail" autocomplete="email" placeholder="vous@exemple.com" onkeydown="if(event.key==='Enter')login()"></div>
+      <div class="fg"><label for="loginPass">Mot de passe</label><input type="password" class="fi" id="loginPass" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
       <div style="text-align:right;margin:-6px 0 14px"><a onclick="showForgot()" style="font-size:12px;color:var(--gray);cursor:pointer;text-decoration:none" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--gray)'">Mot de passe oublié ?</a></div>
       <button class="bf" id="loginBtn" onclick="login()">Se connecter</button>
       <div class="asw">Pas de compte ? <a onclick="showReg()">Créer un compte</a></div>
@@ -352,9 +352,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       <div class="auth-title">Créer un compte</div>
       <div class="auth-sub">Commencez gratuitement.</div>
       <div id="reg-msg" style="display:none;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin-bottom:14px"></div>
-      <div class="fg"><label>Prénom</label><input type="text" class="fi" id="regName" placeholder="Thomas"></div>
-      <div class="fg"><label>E-mail</label><input type="email" class="fi" id="regEmail" placeholder="vous@exemple.com"></div>
-      <div class="fg"><label>Mot de passe</label><input type="password" class="fi" id="regPass" placeholder="Minimum 8 caractères"></div>
+      <div class="fg"><label for="regName">Prénom</label><input type="text" class="fi" id="regName" autocomplete="given-name" placeholder="Thomas"></div>
+      <div class="fg"><label for="regEmail">E-mail</label><input type="email" class="fi" id="regEmail" autocomplete="email" placeholder="vous@exemple.com"></div>
+      <div class="fg"><label for="regPass">Mot de passe</label><input type="password" class="fi" id="regPass" autocomplete="new-password" placeholder="Minimum 8 caractères"></div>
       <button class="bf" id="regBtn" onclick="register()">Créer mon compte</button>
       <div class="asw">Déjà un compte ? <a onclick="showLogin()">Se connecter</a></div>
     </div>
@@ -362,7 +362,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       <div class="auth-title">Mot de passe oublié</div>
       <div class="auth-sub">Entrez votre email pour recevoir un lien de réinitialisation.</div>
       <div id="forgot-msg" style="display:none;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin-bottom:14px"></div>
-      <div class="fg"><label>E-mail</label><input type="email" class="fi" id="forgotEmail" placeholder="vous@exemple.com" onkeydown="if(event.key==='Enter')sendReset()"></div>
+      <div class="fg"><label for="forgotEmail">E-mail</label><input type="email" class="fi" id="forgotEmail" autocomplete="email" placeholder="vous@exemple.com" onkeydown="if(event.key==='Enter')sendReset()"></div>
       <button class="bf" id="forgotBtn" onclick="sendReset()">Envoyer le lien de réinitialisation</button>
       <div class="asw"><a onclick="showLogin()">← Retour à la connexion</a></div>
     </div>
@@ -370,7 +370,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       <div class="auth-title">Nouveau mot de passe</div>
       <div class="auth-sub">Choisissez un nouveau mot de passe sécurisé (8 caractères min.).</div>
       <div id="newpass-msg" style="display:none;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin-bottom:14px"></div>
-      <div class="fg"><label>Nouveau mot de passe</label><input type="password" class="fi" id="newPassInput" placeholder="Minimum 8 caractères" onkeydown="if(event.key==='Enter')submitNewPass()"></div>
+      <div class="fg"><label for="newPassInput">Nouveau mot de passe</label><input type="password" class="fi" id="newPassInput" autocomplete="new-password" placeholder="Minimum 8 caractères" onkeydown="if(event.key==='Enter')submitNewPass()"></div>
       <button class="bf" id="newPassBtn" onclick="submitNewPass()">Mettre à jour le mot de passe</button>
     </div>
   </div>
@@ -627,8 +627,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
       <div class="ph"><div class="pt">Paramètres</div><div class="ps">Gérez votre compte et votre abonnement.</div></div>
       <div style="max-width:680px;display:flex;flex-direction:column;gap:12px">
         <div class="card"><div class="ct">Mon compte</div>
-          <div class="fg"><label style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">Prénom</label><input type="text" class="fi" id="settingName"></div>
-          <div class="fg" style="margin-bottom:0"><label style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">E-mail</label><input type="email" class="fi" id="settingEmail" disabled style="opacity:0.5;cursor:not-allowed"></div>
+          <div class="fg"><label for="settingName" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">Prénom</label><input type="text" class="fi" id="settingName" autocomplete="given-name"></div>
+          <div class="fg" style="margin-bottom:0"><label for="settingEmail" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px">E-mail</label><input type="email" class="fi" id="settingEmail" autocomplete="email" disabled style="opacity:0.5;cursor:not-allowed"></div>
           <button class="bs primary" style="margin-top:14px" onclick="saveSettings()">Enregistrer</button>
         </div>
         <div class="card">

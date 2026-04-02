@@ -4,17 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoreClone AI — Créateur de produits digitaux vendables par IA</title>
-<meta name="description" content="Créez des produits digitaux interactifs vendables en quelques clics. L'IA génère des planners, trackers et dashboards HTML avec leur fiche de vente. Prêts pour Etsy, Gumroad et Shopify.">
+<meta name="description" content="Créez des produits digitaux interactifs prêts à vendre grâce à l'IA. Planners, trackers, dashboards — avec fiche de vente complète. Sans compétences techniques.">
 <meta property="og:title" content="StoreClone AI — Créateur de produits digitaux">
 <meta property="og:description" content="Créez des produits digitaux interactifs vendables en quelques clics. L'IA génère des planners, trackers et dashboards HTML avec leur fiche de vente. Prêts pour Etsy, Gumroad et Shopify.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://storeclone-ai.com">
-<meta property="og:image" content="https://storeclone-ai.com/og-image.html">
+<meta property="og:image" content="https://storeclone-ai.com/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:image" content="https://storeclone-ai.com/og-image.png" />
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23000' rx='20' width='100' height='100'/><text x='50' y='68' text-anchor='middle' fill='white' font-size='45' font-family='Arial' font-weight='bold'>SC</text></svg>">
+<link rel="canonical" href="https://storeclone-ai.com/" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500&display=swap" rel="stylesheet">
 <style>
@@ -1236,6 +1241,65 @@ footer {
 <link rel="alternate" hreflang="en" href="https://storeclone-ai.com/?lang=en" />
 <link rel="alternate" hreflang="x-default" href="https://storeclone-ai.com/" />
 <script defer src="/_vercel/insights/script.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "StoreClone AI",
+      "url": "https://storeclone-ai.com",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "Créez des produits digitaux interactifs prêts à vendre grâce à l'IA. Planners, trackers, dashboards avec fiche de vente complète.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    },
+    {
+      "@type": "Organization",
+      "name": "StoreClone AI",
+      "url": "https://storeclone-ai.com",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "contact@storeclone-ai.com",
+        "contactType": "customer support"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Est-ce que les fichiers HTML se vendent vraiment sur Etsy ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui, les fichiers HTML interactifs se vendent sur Etsy, Gumroad, Shopify et Payhip. Les acheteurs les téléchargent et les utilisent directement dans leur navigateur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "J'ai zéro compétence technique, est-ce que je peux utiliser StoreClone AI ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui. Vous tapez une niche en un mot, l'IA génère tout automatiquement. Aucune compétence technique requise."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Combien puis-je gagner avec ces produits ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cela dépend de votre niche et de votre boutique. Les produits digitaux sont vendus entre 5€ et 20€ en général, sans stock ni livraison."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -1269,6 +1333,8 @@ footer {
   </div>
 </nav>
 
+<main>
+
 <!-- ─── HERO ─── -->
 <section class="hero s">
   <div class="hero-eyebrow">
@@ -1292,7 +1358,7 @@ footer {
 </section>
 
 <!-- ─── COMMENT ÇA MARCHE ─── -->
-<section style="padding:64px 0 48px;position:relative;z-index:1;">
+<section id="how" style="padding:64px 0 48px;position:relative;z-index:1;">
   <div class="section-wrap" style="max-width:760px;margin:0 auto;padding:0 40px;">
     <p style="text-align:center;font-size:0.7rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#888;margin-bottom:12px;">Comment ça marche</p>
     <h2 style="text-align:center;font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px;letter-spacing:-0.02em;">Vous tapez une niche. <br>Vous recevez tout ça.</h2>
@@ -1412,6 +1478,7 @@ footer {
             </div>
           </div>
           <iframe id="demo-iframe" src="" data-src="examples/budget-tracker.html"
+            title="Démo du générateur StoreClone AI"
             style="width:100%;height:500px;border:none;display:block;"
             sandbox="allow-scripts allow-same-origin allow-forms">
           </iframe>
@@ -1488,7 +1555,7 @@ footer {
         <div style="width:12px;height:12px;border-radius:50%;background:#28C840;flex-shrink:0;"></div>
         <span style="margin-left:auto;font-size:12px;color:#999;font-family:monospace;" id="exampleUrl">storeclone-ai.com/examples/budget-tracker.html</span>
       </div>
-      <iframe id="exampleFrame" src="examples/budget-tracker.html" style="width:100%;height:600px;border:none;display:block;" loading="lazy"></iframe>
+      <iframe id="exampleFrame" src="examples/budget-tracker.html" title="Exemple de produit digital — Budget Tracker interactif" style="width:100%;height:600px;border:none;display:block;" loading="lazy"></iframe>
     </div>
 
     <div style="text-align:center;margin-top:20px;">
@@ -1669,6 +1736,8 @@ footer {
     <a href="/app.html" class="cta-btn" data-t="cta_btn">Créer mon premier produit — gratuit</a>
   </div>
 </section>
+
+</main>
 
 <!-- ─── FOOTER ─── -->
 <footer class="s">
