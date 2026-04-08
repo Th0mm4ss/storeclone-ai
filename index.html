@@ -2218,8 +2218,8 @@ var LP_LINKS = {
   business: { monthly: 'https://buy.stripe.com/00wdR95Th4hb24UdvddMI02', quarterly: 'https://buy.stripe.com/6oUfZh95tfZTgZOdvddMI01', yearly: 'https://buy.stripe.com/aFa8wP3L96pj38YgHpdMI00' }
 };
 var LP_PRICES = {
-  pro:      { monthly: { amount: '19', label: 'par mois, sans engagement', period: 'par mois, sans engagement' }, quarterly: { amount: '17', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '15', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } },
-  business: { monthly: { amount: '49', label: 'par mois, sans engagement', period: 'par mois, sans engagement' }, quarterly: { amount: '44', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '39', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } }
+  pro:      { monthly: { amount: '19', label: '', period: 'par mois, sans engagement' }, quarterly: { amount: '17', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '15', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } },
+  business: { monthly: { amount: '49', label: '', period: 'par mois, sans engagement' }, quarterly: { amount: '44', label: 'Économisez 10%', period: 'par mois (facturé par trimestre)' }, yearly: { amount: '39', label: 'Économisez 20%', period: 'par mois (facturé annuellement)' } }
 };
 var lpPeriod = 'monthly';
 
@@ -2247,7 +2247,7 @@ function setLPPeriod(newPeriod) {
   if (proPrice) proPrice.textContent = proData.amount;
   if (proSavings) {
     proSavings.textContent = proData.label;
-    proSavings.style.display = 'inline-block';
+    proSavings.style.display = proData.label ? 'inline-block' : 'none';
   }
   if (proPeriod) proPeriod.textContent = proData.period;
 
@@ -2259,7 +2259,7 @@ function setLPPeriod(newPeriod) {
   if (bizPrice) bizPrice.textContent = bizData.amount;
   if (bizSavings) {
     bizSavings.textContent = bizData.label;
-    bizSavings.style.display = 'inline-block';
+    bizSavings.style.display = bizData.label ? 'inline-block' : 'none';
   }
   if (bizPeriod) bizPeriod.textContent = bizData.period;
 }
