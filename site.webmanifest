@@ -1,0 +1,13 @@
+{
+  "name": "StoreClone AI",
+  "short_name": "StoreClone",
+  "description": "Créez des produits digitaux vendables par IA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "/favicon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

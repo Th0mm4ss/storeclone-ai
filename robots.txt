@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
 Disallow: /app.html
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
 Sitemap: https://storeclone-ai.com/sitemap.xml
