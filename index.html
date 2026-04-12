@@ -409,6 +409,32 @@ nav.scrolled {
   color: #888;
   margin-top: 24px;
 }
+
+/* ─── FOR WHO ─── */
+.for-who-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 40px;
+}
+.for-who-item {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  padding: 24px;
+}
+.for-who-icon { font-size: 28px; display: block; margin-bottom: 12px; }
+.for-who-item h3 { font-size: 1rem; font-weight: 700; color: #111; margin-bottom: 8px; }
+.for-who-item p { font-size: 0.9rem; color: #666; line-height: 1.6; margin: 0; }
+@media (max-width: 640px) { .for-who-grid { grid-template-columns: 1fr; } }
+
+/* ─── SOCIAL COUNTER ─── */
+.social-counter {
+  margin-top: 14px;
+  font-size: 0.82rem;
+  color: var(--gray);
+  text-align: center;
+}
 .price-anchor {
   display: block;
   font-size: 0.78rem;
@@ -1460,6 +1486,7 @@ footer {
     <div style="text-align:center;margin-top:36px;">
       <a href="app.html" style="display:inline-block;background:var(--black);color:white;padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;" data-t="cta_btn">Créer mon premier produit — gratuit</a>
       <p style="margin-top:8px;font-size:.82rem;color:var(--gray);">Sans carte bancaire · 3 produits offerts</p>
+      <p class="social-counter">Déjà <strong id="gen-counter">—</strong> produits digitaux créés</p>
     </div>
   </div>
 </section>
@@ -1664,6 +1691,36 @@ footer {
   </div>
 </section>
 
+<!-- ─── POUR QUI ─── -->
+<section class="for-who s">
+  <div class="section-wrap">
+    <p class="section-eyebrow reveal" style="justify-content:center;">Pour qui</p>
+    <h2 class="section-title reveal reveal-delay-1" style="text-align:center;">Fait pour vous si...</h2>
+    <div class="for-who-grid">
+      <div class="for-who-item">
+        <span class="for-who-icon">🛍️</span>
+        <h3>Vous voulez lancer une boutique en ligne</h3>
+        <p>Sans savoir coder, sans designer, sans budget de départ.</p>
+      </div>
+      <div class="for-who-item">
+        <span class="for-who-icon">💸</span>
+        <h3>Vous cherchez un revenu passif</h3>
+        <p>Créez une fois, vendez à l'infini. Zéro stock, zéro livraison.</p>
+      </div>
+      <div class="for-who-item">
+        <span class="for-who-icon">🎨</span>
+        <h3>Vous êtes créateur de contenu</h3>
+        <p>Monétisez votre audience avec des produits digitaux à votre image.</p>
+      </div>
+      <div class="for-who-item">
+        <span class="for-who-icon">⚡</span>
+        <h3>Vous manquez de temps</h3>
+        <p>Tout est généré en 2 minutes. Vous n'avez qu'à publier.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ─── CAS CONCRET ─── -->
 <section style="padding:60px 0;position:relative;z-index:1;">
   <div class="section-wrap" style="max-width:760px;margin:0 auto;padding:0 40px;">
@@ -1799,6 +1856,22 @@ footer {
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">Quelle est votre politique de remboursement ? <span class="faq-arrow">▸</span></button>
         <div class="faq-a">Nous offrons un remboursement complet sous 7 jours suivant votre abonnement, sans conditions. Contactez-nous à <a href="mailto:contact@storeclone-ai.com" style="color:var(--near-black);">contact@storeclone-ai.com</a>.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Que se passe-t-il si une marketplace interdit les fichiers HTML ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Les fichiers HTML interactifs sont vendus et acceptés sur Gumroad, Shopify, Payhip et de nombreuses autres plateformes. Si une plateforme spécifique change ses règles, vos fichiers restent entièrement fonctionnels et téléchargeables.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Combien de temps faut-il pour publier un produit après génération ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Environ 10 à 15 minutes. Vous téléchargez le ZIP, uploadez le fichier HTML sur votre boutique, copiez-collez le titre, la description et les 13 tags déjà générés. C'est tout.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Puis-je vendre les mêmes produits sur plusieurs plateformes en même temps ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Oui, absolument. Vous êtes propriétaire des produits que vous générez. Vous pouvez les vendre simultanément sur Gumroad, Shopify, Payhip, ou toute autre plateforme sans restriction.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Y a-t-il des frais cachés ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Non. Le plan Starter est gratuit pour toujours. Les plans Pro et Business sont au tarif affiché, sans frais de setup ni surprises. Vous pouvez annuler à tout moment.</div>
       </div>
     </div>
   </div>
@@ -2379,6 +2452,23 @@ detectAndSetLang();
     }
   });
 })();
+
+// ─── COMPTEUR DYNAMIQUE ───────────────────────────────────────────────────────
+async function loadCounter() {
+  try {
+    const SUPA_URL = 'https://hbaaqukxtoqxaxcbqmkj.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYWFxdWt4dG9xeGF4Y2JxbWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTUzMDAsImV4cCI6MjA4OTUzMTMwMH0.xGjjmNPzDcYMj-Y4FcOqArNXagxHdj1RXYAEA11LVhQ';
+    const resp = await fetch(SUPA_URL + '/rest/v1/generations?select=id', {
+      method: 'HEAD',
+      headers: { 'apikey': SUPA_KEY, 'Prefer': 'count=exact' }
+    });
+    const range = resp.headers.get('content-range');
+    const total = range && range.split('/')[1];
+    const el = document.getElementById('gen-counter');
+    if (el && total && total !== '*') el.textContent = parseInt(total).toLocaleString('fr-FR') + '+';
+  } catch(e) {}
+}
+loadCounter();
 </script>
 
 <div id="sticky-cta" style="display:none;position:fixed;bottom:0;left:0;right:0;padding:12px 16px 20px;background:white;border-top:1px solid var(--border);box-shadow:0 -4px 20px rgba(0,0,0,0.08);z-index:999;text-align:center;">

@@ -1,12 +1,8 @@
 {
-  "cleanUrls": true,
   "redirects": [
-    { "source": "/app", "destination": "/app.html", "permanent": true },
-    { "source": "/cgv", "destination": "/cgv.html", "permanent": true },
-    { "source": "/mentions-legales", "destination": "/mentions-legales.html", "permanent": true },
-    { "source": "/confidentialite", "destination": "/confidentialite.html", "permanent": true }
-  ],
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" }
+    { "source": "/app", "destination": "/app.html", "permanent": false },
+    { "source": "/cgv", "destination": "/cgv.html", "permanent": false },
+    { "source": "/mentions-legales", "destination": "/mentions-legales.html", "permanent": false },
+    { "source": "/confidentialite", "destination": "/confidentialite.html", "permanent": false }
   ]
 }
