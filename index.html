@@ -2453,22 +2453,8 @@ detectAndSetLang();
   });
 })();
 
-// ─── COMPTEUR DYNAMIQUE ───────────────────────────────────────────────────────
-async function loadCounter() {
-  try {
-    const SUPA_URL = 'https://hbaaqukxtoqxaxcbqmkj.supabase.co';
-    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYWFxdWt4dG9xeGF4Y2JxbWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTUzMDAsImV4cCI6MjA4OTUzMTMwMH0.xGjjmNPzDcYMj-Y4FcOqArNXagxHdj1RXYAEA11LVhQ';
-    const resp = await fetch(SUPA_URL + '/rest/v1/generations?select=id', {
-      method: 'HEAD',
-      headers: { 'apikey': SUPA_KEY, 'Prefer': 'count=exact' }
-    });
-    const range = resp.headers.get('content-range');
-    const total = range && range.split('/')[1];
-    const el = document.getElementById('gen-counter');
-    if (el && total && total !== '*') el.textContent = parseInt(total).toLocaleString('fr-FR') + '+';
-  } catch(e) {}
-}
-loadCounter();
+// ─── COMPTEUR (statique — Edge Function à venir) ─────────────────────────────
+document.getElementById('gen-counter').textContent = '6+';
 </script>
 
 <div id="sticky-cta" style="display:none;position:fixed;bottom:0;left:0;right:0;padding:12px 16px 20px;background:white;border-top:1px solid var(--border);box-shadow:0 -4px 20px rgba(0,0,0,0.08);z-index:999;text-align:center;">
