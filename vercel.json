@@ -1,7 +1,12 @@
 {
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "status": 404, "dest": "/404.html" }
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/app", "destination": "/app.html", "permanent": true },
+    { "source": "/cgv", "destination": "/cgv.html", "permanent": true },
+    { "source": "/mentions-legales", "destination": "/mentions-legales.html", "permanent": true },
+    { "source": "/confidentialite", "destination": "/confidentialite.html", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" }
   ]
 }

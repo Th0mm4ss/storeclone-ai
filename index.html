@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoreClone AI — Créateur de produits digitaux vendables par IA</title>
 <meta name="description" content="Créez des produits digitaux interactifs prêts à vendre grâce à l'IA. Planners, trackers, dashboards — avec fiche de vente complète. Sans compétences techniques.">
-<meta property="og:title" content="StoreClone AI — Créateur de produits digitaux">
+<meta property="og:title" content="StoreClone AI — Créateur de produits digitaux vendables par IA">
 <meta property="og:description" content="Créez des produits digitaux interactifs vendables en quelques clics. L'IA génère des planners, trackers et dashboards HTML avec leur fiche de vente. Prêts pour Etsy, Gumroad et Shopify.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://storeclone-ai.com">
@@ -24,6 +24,10 @@
 <meta name="theme-color" content="#0a0a0a" />
 <meta name="msapplication-TileColor" content="#0a0a0a" />
 <link rel="canonical" href="https://storeclone-ai.com/" />
+<link rel="alternate" hreflang="fr" href="https://storeclone-ai.com/" />
+<link rel="alternate" hreflang="en" href="https://storeclone-ai.com/" />
+<link rel="alternate" hreflang="x-default" href="https://storeclone-ai.com/" />
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
@@ -386,18 +390,34 @@ nav.scrolled {
 .btn-outline {
   padding: 15px 32px;
   background: transparent;
-  color: var(--near-black);
+  color: rgba(0,0,0,0.65);
   border-radius: 980px;
   font-size: 15px;
   font-weight: 400;
   text-decoration: none;
   transition: all 0.2s;
-  border: 1.5px solid var(--border-dark);
+  border: 2px solid rgba(0,0,0,0.25);
   cursor: pointer;
   font-family: 'Inter', sans-serif;
   letter-spacing: -0.2px;
 }
-.btn-outline:hover { border-color: #999; background: var(--off); }
+.btn-outline:hover { border-color: rgba(0,0,0,0.5); background: var(--off); color: var(--near-black); }
+
+.pricing-guarantee {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 24px;
+}
+.price-anchor {
+  display: block;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.55);
+  font-weight: 400;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  letter-spacing: 0;
+}
 
 .hero-numbers {
   display: flex;
@@ -1163,15 +1183,8 @@ footer {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.reveal {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
-}
-.reveal.in { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal { opacity: 1; transform: none; }
+.reveal.in { opacity: 1; transform: none; }
 
 /* ─── MOBILE RESPONSIVE ─── */
 @media (max-width: 768px) {
@@ -1332,6 +1345,14 @@ footer {
   ]
 }
 </script>
+<!-- Google Analytics 4 — remplacer G-XXXXXXXXXX par votre ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
 </head>
 <body>
 
@@ -1434,12 +1455,6 @@ footer {
   </div>
 </section>
 
-<!-- ─── SOCIAL PROOF ─── -->
-<div style="text-align:center;padding:0 48px 40px;position:relative;z-index:1;">
-  <span style="font-size:13px;color:var(--gray);font-weight:300;letter-spacing:0.3px;">
-    Déjà <strong style="color:var(--near-black);font-weight:600;">100+</strong> produits digitaux créés
-  </span>
-</div>
 
 <!-- ─── DEMO ─── -->
 <section class="demo-section s reveal" id="demo">
@@ -1705,6 +1720,7 @@ footer {
         <div class="price-amount"><sup>€</sup><span id="lp-pro-price">19</span></div>
         <div id="lp-pro-savings" class="price-savings-lp"></div>
         <div class="price-period" id="lp-pro-period">par mois, sans engagement</div>
+        <span class="price-anchor">soit moins d'une vente pour générer 30 produits</span>
         <div class="price-divider"></div>
         <div class="price-feats">
           <div class="price-feat" data-t="p2f1">30 produits digitaux par mois</div>
@@ -1733,6 +1749,7 @@ footer {
         <button class="price-btn" id="lp-biz-btn" onclick="goLPCheckout('business')" data-t="p3btn">Passer en Business</button>
       </div>
     </div>
+    <p class="pricing-guarantee">🔒 Satisfait ou remboursé sous 7 jours — sans questions.</p>
   </div>
 </section>
 
@@ -1761,6 +1778,18 @@ footer {
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">Quelle est la différence entre les plans ? <span class="faq-arrow">▸</span></button>
         <div class="faq-a">Le plan Starter est gratuit et vous donne 3 générations par mois — parfait pour tester. Le plan Pro (19€/mois) donne 30 générations, l'accès aux options avancées et la régénération. Le plan Business est illimité pour les créateurs prolifiques.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Les produits générés sont-ils compatibles avec tous les appareils ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Oui. Les fichiers HTML s'ouvrent directement dans n'importe quel navigateur — ordinateur, mobile, tablette. Aucune installation requise pour l'acheteur.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Puis-je modifier les produits après génération ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Oui. Chaque fichier HTML est entièrement modifiable. Le plan Pro inclut un éditeur IA intégré pour modifier vos produits en langage naturel.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Quelle est votre politique de remboursement ? <span class="faq-arrow">▸</span></button>
+        <div class="faq-a">Nous offrons un remboursement complet sous 7 jours suivant votre abonnement, sans conditions. Contactez-nous à <a href="mailto:contact@storeclone-ai.com" style="color:var(--near-black);">contact@storeclone-ai.com</a>.</div>
       </div>
     </div>
   </div>
@@ -2347,5 +2376,27 @@ detectAndSetLang();
   <a href="app.html" style="display:block;background:var(--black);color:white;padding:14px 24px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;" data-t="cta_btn">Créer mon premier produit — gratuit</a>
   <p style="margin-top:6px;font-size:.8rem;color:var(--gray);">Sans carte bancaire · 3 produits offerts</p>
 </div>
+
+<!-- Bandeau cookies RGPD -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0a0a0a;color:rgba(255,255,255,0.8);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13px;border-top:1px solid rgba(255,255,255,0.1);">
+  <span>Nous utilisons des cookies pour améliorer votre expérience et analyser le trafic. <a href="/mentions-legales.html" style="color:white;text-decoration:underline;">En savoir plus</a></span>
+  <div style="display:flex;gap:10px;flex-shrink:0;">
+    <button onclick="rejectCookies()" style="background:transparent;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.6);padding:8px 16px;border-radius:100px;cursor:pointer;font-size:12px;">Refuser</button>
+    <button onclick="acceptCookies()" style="background:white;border:none;color:#0a0a0a;padding:8px 16px;border-radius:100px;cursor:pointer;font-size:12px;font-weight:600;">Accepter</button>
+  </div>
+</div>
+<script>
+  function acceptCookies() {
+    localStorage.setItem('cookie_consent', 'accepted');
+    document.getElementById('cookie-banner').style.display = 'none';
+  }
+  function rejectCookies() {
+    localStorage.setItem('cookie_consent', 'rejected');
+    document.getElementById('cookie-banner').style.display = 'none';
+  }
+  if (!localStorage.getItem('cookie_consent')) {
+    document.getElementById('cookie-banner').style.display = 'flex';
+  }
+</script>
 </body>
 </html>
