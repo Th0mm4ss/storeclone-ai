@@ -1351,19 +1351,7 @@ function showPage(p){
   document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p)?.classList.add('active');
   document.getElementById('nav-'+p)?.classList.add('active');
-  if(p==='history'){
-    // Re-fetch depuis Supabase pour s'assurer que l'historique est à jour
-    sb.from('generations')
-      .select('id,niche,boutique,products,zip_downloaded,created_at')
-      .eq('user_id',authUser.id)
-      .order('created_at',{ascending:false})
-      .limit(50)
-      .then(({data,error})=>{
-        if(error){console.error('[History] fetch error →',error.message,error);renderHistory();return;}
-        if(data){generations=data;console.log('[History] refreshed →',data.length,'entries');}
-        renderHistory();
-      });
-  }
+  if(p==='history') loadHistory();
   if(p==='settings'){renderPlanCards();updateQuotaBar();}
   if(p==='generator'){updateUpsellWidget();renderQuota();}
   if(p==='plans')renderAppPlanCards();
@@ -1722,6 +1710,29 @@ async function regenerate(){
 }
 
 // ─── Historique & Stats ───────────────────────────────────────────────────────
+async function loadHistory(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){
+    console.warn('[History] No active session');
+    renderHistory();
+    return;
+  }
+  const{data,error}=await sb
+    .from('generations')
+    .select('id,niche,boutique,products,zip_downloaded,created_at')
+    .eq('user_id',session.user.id)
+    .order('created_at',{ascending:false})
+    .limit(50);
+  if(error){
+    console.error('[History] fetch error →',error.message,error);
+    renderHistory();
+    return;
+  }
+  generations=data||[];
+  console.log('[History] loaded:',generations.length,'generations');
+  renderHistory();
+}
+
 function hashCode(s){let h=0;for(let i=0;i<s.length;i++){h=Math.imul(31,h)+s.charCodeAt(i)|0;}return h;}
 function renderHistory(){
   const el=document.getElementById('historyContent');
