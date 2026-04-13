@@ -523,7 +523,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
             <div id="advancedOptions" style="display:none;margin-top:12px;gap:12px;flex-direction:column;">
               <div class="fg">
                 <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Fourchette de prix</label>
-                <select class="fi" id="optPrice" style="cursor:pointer;">
+                <select class="fi" id="optPrice" style="cursor:pointer;" aria-label="Fourchette de prix">
                   <option value="economique">Économique (5–10 €)</option>
                   <option value="standard" selected>Standard (10–20 €)</option>
                   <option value="premium">Premium (20–35 €)</option>
@@ -531,7 +531,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
               </div>
               <div class="fg">
                 <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Ton</label>
-                <select class="fi" id="optTone" style="cursor:pointer;">
+                <select class="fi" id="optTone" style="cursor:pointer;" aria-label="Ton du contenu">
                   <option value="professionnel" selected>Professionnel</option>
                   <option value="decontracte">Décontracté</option>
                   <option value="luxe">Luxe</option>
@@ -539,7 +539,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
               </div>
               <div class="fg">
                 <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Langue principale</label>
-                <select class="fi" id="optLang" style="cursor:pointer;">
+                <select class="fi" id="optLang" style="cursor:pointer;" aria-label="Langue principale">
                   <option value="both" selected>Français + Anglais</option>
                   <option value="fr">Français uniquement</option>
                   <option value="en">Anglais uniquement</option>
@@ -725,7 +725,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
 </div>
 
 <!-- Feedback widget -->
-<button id="feedback-btn" onclick="toggleFeedback()">💬 Une idée ?</button>
+<button id="feedback-btn" onclick="toggleFeedback()" aria-label="Donner un feedback">💬 Une idée ?</button>
 <div id="feedback-modal">
   <h4>Votre avis compte 🙏</h4>
   <p>Un bug, une suggestion, une idée ?</p>
@@ -978,6 +978,8 @@ async function loadUserData(){
   generations = genRes.data  || [];
   monthlyCount= countRes.count ?? 0;
 
+  if(genRes.error) console.error('[Data] generations error →', genRes.error.message, genRes.error);
+  if(subRes.error) console.error('[Data] subscription error →', subRes.error.message, subRes.error);
   console.log('[Data] profile →', profile.name, '| plan →', subscription.plan, '| gens →', generations.length, '| monthlyCount →', monthlyCount);
 }
 
@@ -1011,6 +1013,7 @@ function bootApp(){
     if(sEmailDisp)sEmailDisp.textContent=authUser.email;
 
     renderPlanCards();
+    renderAppPlanCards();
     updateStats();
     renderDashRecent();
     renderMiniChart();
@@ -1348,7 +1351,19 @@ function showPage(p){
   document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p)?.classList.add('active');
   document.getElementById('nav-'+p)?.classList.add('active');
-  if(p==='history')renderHistory();
+  if(p==='history'){
+    // Re-fetch depuis Supabase pour s'assurer que l'historique est à jour
+    sb.from('generations')
+      .select('id,niche,boutique,products,zip_downloaded,created_at')
+      .eq('user_id',authUser.id)
+      .order('created_at',{ascending:false})
+      .limit(50)
+      .then(({data,error})=>{
+        if(error){console.error('[History] fetch error →',error.message,error);renderHistory();return;}
+        if(data){generations=data;console.log('[History] refreshed →',data.length,'entries');}
+        renderHistory();
+      });
+  }
   if(p==='settings'){renderPlanCards();updateQuotaBar();}
   if(p==='generator'){updateUpsellWidget();renderQuota();}
   if(p==='plans')renderAppPlanCards();
