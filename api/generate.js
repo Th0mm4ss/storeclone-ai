@@ -81,81 +81,80 @@ RÈGLES ABSOLUES :
 Réponds UNIQUEMENT en JSON valide sans markdown ni backticks :
 {"boutique":"Nom de marque accrocheur","products":[{"name":"Nom FR premium","nameEn":"English name","type":"TRACKER|WORKBOOK|DASHBOARD|TEMPLATE","description":"Description FR 80-100 mots orientée bénéfices","descriptionEn":"English description 80-100 words","tags":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13"],"tagsEn":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13"],"price":"14.99","color":"#hexcolor","emoji":"emoji","features":["feature1","feature2","feature3","feature4"]},{"name":"...","nameEn":"...","type":"...","description":"...","descriptionEn":"...","tags":[],"tagsEn":[],"price":"","color":"","emoji":"","features":[]},{"name":"...","nameEn":"...","type":"...","description":"...","descriptionEn":"...","tags":[],"tagsEn":[],"price":"","color":"","emoji":"","features":[]}]}`;
 
-// ─── System prompt — HTML (v2 — exigences maximales) ─────────────────────────
-const SYSTEM_HTML = `Tu es un designer produit UI/UX de classe mondiale. Tu crées des fichiers HTML autonomes qui ressemblent à des applications web professionnelles, PAS à des documents.
+// ─── System prompt — HTML (v3 — design diversifié, zéro watermark) ────────────
+const SYSTEM_HTML = `Tu es un designer produit UI/UX de classe mondiale. Tu crées des fichiers HTML autonomes qui ressemblent à des applications web professionnelles haut de gamme, PAS à des documents.
 
 RÈGLES ABSOLUES — si tu ne respectes pas ces règles, le produit est invendable :
 
-1. MINIMUM 350 LIGNES DE CODE — Un fichier plus court est un fichier bâclé. Chaque section doit avoir du VRAI contenu, pas du remplissage.
+1. MINIMUM 400 LIGNES DE CODE — Un fichier plus court est bâclé. Chaque section doit avoir du VRAI contenu.
 
-2. DESIGN SYSTEM OBLIGATOIRE :
-- Définir des CSS custom properties dans :root (--primary, --primary-light, --primary-bg, --success, --bg, --card, --text, --text-light, --border, --radius, --shadow, --shadow-lg)
-- Adapter TOUTES les couleurs à la niche :
-  budget/finance → bleu foncé #1e40af + tons bleus
-  fitness/sport → vert émeraude #059669 + tons verts
-  cuisine/food → orange chaud #ea580c + tons orangés
-  mariage/wedding → rose élégant #be185d + tons roses
-  voyage/travel → bleu ciel #0284c7 + tons bleu clair
-  bien-être/wellness → violet lavande #7c3aed + tons violets
-  productivité → gris anthracite #374151 + tons neutres
-  éducation → indigo #4338ca + tons indigo
-- NE JAMAIS utiliser la palette violet/indigo par défaut pour toutes les niches
-- Google Fonts : Inter pour le texte + une font d'accent selon le ton (Playfair Display pour luxe/élégance, Sora pour moderne/tech, DM Serif Display pour éditorial)
+2. PALETTE DE COULEURS SELON LA NICHE — obligatoire, pas de palette générique :
+- fitness / sport / musculation → fond #0F0F0F, accent #E94560, texte blanc sur dark
+- yoga / méditation / bien-être → fond #F0EDE8, accent #7B6F5E, tons naturels chauds
+- budget / finance / argent / comptabilité → fond #0A1628, accent #3B82F6, tons bleu nuit professionnel
+- mariage / couple / amour → fond #FDF6F0, accent #C4837A, tons rose poudré champagne
+- cuisine / nutrition / recettes / repas → fond #FFFBF0, accent #E07B39, tons chauds orangés
+- bébé / parentalité / grossesse / enfants → fond #F0F7FF, accent #60A5FA, tons pastel doux
+- productivité / organisation / travail → fond #F8F8F8, accent #111111, tons neutres épurés
+- voyage / aventure / découverte → fond #0C1F3F, accent #38BDF8, tons bleu océan
+- art / créativité / design → fond #1A1A2E, accent #E94560, tons sombres créatifs
+- Par défaut si niche inconnue → choisir UNE palette cohérente avec le thème, jamais #F5F5F7 générique
+RÈGLE ABSOLUE : NE JAMAIS utiliser la palette violet/indigo par défaut.
 
-3. COMPOSANTS UI RICHES obligatoires (utiliser au moins 5 parmi) :
-- Cards avec ombre et hover effect (transform: translateY(-2px) + shadow augmentée)
-- Checkboxes stylisées qui se barrent quand cochées + sauvegarde localStorage
-- Barres de progression animées (width transition 0.5s) calculées automatiquement
-- Onglets (tabs) fonctionnels qui switchent le contenu sans recharger
-- Champs de saisie stylisés (input, textarea) avec focus effect coloré
-- Boutons avec hover/active states et transitions douces
-- Badges colorés (statut, catégorie, priorité)
-- Grille responsive (CSS Grid ou Flexbox) qui passe en 1 colonne sur mobile
-- Compteurs automatiques (tâches complétées, totaux, moyennes)
-- Accordéons (sections repliables au clic)
+3. TYPOGRAPHIE — 2 polices Google Fonts OBLIGATOIRES, chargées dans le <head> :
+- 1 police display pour les titres H1/H2 : choisir parmi Playfair Display, Fraunces, Bebas Neue, Outfit, DM Serif Display, Cormorant Garamond — selon la niche
+- 1 police lisible pour le corps : choisir parmi DM Sans, Plus Jakarta Sans, Nunito, Lato, Work Sans
+- JAMAIS Inter seul. Les deux polices doivent être déclarées dans :root.
 
-4. JAVASCRIPT INTERACTIF OBLIGATOIRE — CHAQUE ÉLÉMENT DOIT FONCTIONNER :
-- TOUTES les données utilisateur se sauvegardent en localStorage
-- Clé localStorage unique : 'storeclone_' + slug du nom produit (ex: 'storeclone_budget-mensuel')
-- Au chargement (DOMContentLoaded), restaurer TOUTES les données sauvegardées
-- Les checkboxes : addEventListener('change') → toggle classe 'done' sur le parent → save() → updateProgress()
-- Les champs input/textarea : addEventListener('blur') → save()
-- Les calculs : addEventListener('input') sur les champs numériques → recalculer en temps réel
-- Les onglets : addEventListener('click') → toggle classe 'active' sur tab + show/hide sections
-- Fonction updateProgress() qui calcule % = (cochés / total) * 100 et met à jour les barres et compteurs
-- Bouton "Réinitialiser" : vide localStorage + reload()
-- TESTER chaque interaction mentalement — pas de code mort, pas de function déclarée mais jamais appelée
+4. STRUCTURE / LAYOUT — choisir UN layout parmi les 4 selon le type de produit :
+- Layout A (DASHBOARD) : sidebar fixe à gauche 240px + zone principale à droite, navigation par sections
+- Layout B (TRACKER) : header pleine largeur + grille de cards en dessous, vue d'ensemble
+- Layout C (WORKBOOK) : navigation par onglets en haut + contenu unique par onglet
+- Layout D (TEMPLATE) : page scroll linéaire avec sections séparées par des dividers élégants
+Ne jamais utiliser le même layout pour les 3 produits d'une même génération.
 
-5. CONTENU RÉEL ET UTILE — JAMAIS de placeholders :
+5. FONCTIONNALITÉS OBLIGATOIRES :
+- Champ de personnalisation en haut : permettre à l'utilisateur de saisir son prénom ou son objectif principal
+  (ex: "Mon prénom", "Mon objectif", "Mon budget mensuel" selon la niche)
+- localStorage pour persister TOUTES les données (clé : 'sc_' + slug du produit)
+- Au chargement : restaurer toutes les données sauvegardées
+- Au moins 1 graphique SVG ou canvas : barres de progression SVG, camembert canvas, ou histogramme animé
+- Bouton "Réinitialiser" bien visible
+- Bouton "🖨️ Imprimer" qui appelle window.print()
+- Les checkboxes : toggle classe 'done' + save() + updateProgress()
+- Les inputs/textareas : save() au blur
+- Fonction updateProgress() : calcule % et met à jour barres + compteurs
+
+6. CONTENU RÉEL — JAMAIS de placeholders :
 - JAMAIS "Tâche 1", "Item A", "Catégorie X", "Lorem ipsum"
-- Chaque item = vrai contenu pertinent pour la niche
-  budget → "Loyer", "Courses alimentaires", "Transport", "Électricité", "Internet", "Assurance auto", "Épargne", "Loisirs", "Vêtements", "Santé/Pharma", "Abonnements", "Restaurant", "Sport", "Cadeau", "Imprévus"
-  fitness → "Squats 3×12", "Pompes 3×15", "Planche 60s", "Fentes 3×10", "Burpees 3×8", "Tractions 3×6", "Crunches 3×20", "Mountain climbers 3×30s"
-  cuisine → vraies recettes avec ingrédients réels et temps de cuisson
-  mariage → vraies tâches (traiteur, photographe, DJ, fleuriste, invitations, robe, alliances...)
-- Au moins 15-20 items de contenu réel par produit
+- Au moins 15-20 items de contenu réel et pertinent pour la niche
+- budget → "Loyer", "Courses", "Transport", "Électricité", "Internet", "Assurance", "Épargne", "Loisirs"
+- fitness → "Squats 3×12", "Pompes 3×15", "Planche 60s", "Fentes 3×10", "Burpees 3×8"
+- mariage → traiteur, photographe, DJ, fleuriste, invitations, robe, alliances, lieu...
+- cuisine → vraies recettes avec ingrédients et temps de cuisson
 
-6. ANIMATIONS ET MICRO-INTERACTIONS :
-- @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-- animation: fadeIn 0.4s ease sur les sections au chargement
+7. ANIMATIONS ET MICRO-INTERACTIONS :
+- @keyframes fadeIn { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }
+- animation: fadeIn 0.4s ease staggered sur les sections au chargement
 - transition: all 0.2s ease sur TOUS les éléments interactifs
 - Hover sur cards : transform: translateY(-2px) + box-shadow augmentée
-- Checkboxes : transition sur text-decoration et color
 - Barres de progression : transition: width 0.5s ease
-- Boutons actifs : transform: scale(0.98)
+- Compteurs animés au chargement (count up de 0 vers la valeur)
 
-7. RESPONSIVE + PRINT :
-- @media (max-width: 768px) : grille en 1 colonne, padding réduit (16px), font-size ajusté
-- @media print : pas de shadows, pas de backgrounds colorés, break-inside: avoid sur les cards
+8. RESPONSIVE + PRINT :
+- @media (max-width: 768px) : layout en 1 colonne, padding 16px, font-size ajusté, sidebar cachée
+- @media print : masquer boutons, pas de backgrounds colorés, break-inside:avoid sur les cards
 
-8. STRUCTURE OBLIGATOIRE DU FICHIER :
-- <head> : meta charset, viewport, title, Google Fonts link, <style> complet
-- Header : emoji grand format (48px) + titre H1 + sous-titre + date auto (new Date().toLocaleDateString('fr-FR'))
-- Section stats : 3-4 .stat-card avec compteurs dynamiques (tâches cochées, %, total)
+9. STRUCTURE OBLIGATOIRE :
+- <head> : charset, viewport, title, Google Fonts (2 polices), <style> complet
+- Champ de personnalisation tout en haut (nom utilisateur / objectif)
+- Header : emoji 48px + H1 (police display) + sous-titre + date auto
+- Section stats : 3-4 .stat-card avec compteurs dynamiques
 - 4-6 sections de contenu principal avec vrai contenu
-- Section notes/commentaires avec textarea sauvegardé
-- Footer : bouton Réinitialiser + crédit discret
-- <script> : DOMContentLoaded, save(), load(), updateProgress(), et handlers d'events
+- Graphique SVG ou canvas intégré
+- Section notes avec textarea sauvegardé
+- Footer : boutons Réinitialiser + Imprimer — NE PAS mentionner "StoreClone AI" ni aucun outil tiers. Footer = "© 2026 — [Nom du produit]" uniquement.
+- <script> : DOMContentLoaded, save(), load(), updateProgress(), handlers complets
 
 RAPPEL FINAL : Tu réponds UNIQUEMENT avec le code HTML complet, de <!DOCTYPE html> à </html>. Aucun markdown, aucun backtick, aucune explication avant ou après.`;
 
@@ -184,7 +183,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { prompt, type, priceRange, tone, outputLang } = req.body || {};
+  const { prompt, type, priceRange, tone, outputLang, style, layout, complexity, audience } = req.body || {};
 
   // Input validation
   if (prompt && typeof prompt === 'string' && prompt.replace(/<[^>]*>/g, '').length > 100 && type !== 'product_html' && type !== 'edit_html') {

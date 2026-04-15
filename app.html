@@ -518,9 +518,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
           </div>
           <div style="margin-bottom:16px;">
             <button type="button" onclick="toggleAdvanced()" style="background:none;border:none;font-size:13px;color:var(--gray);cursor:pointer;font-family:'Inter',sans-serif;padding:0;display:flex;align-items:center;gap:4px;">
-              <span id="advArrow">▸</span> Options avancées
+              <span id="advArrow">▾</span> Options avancées
             </button>
-            <div id="advancedOptions" style="display:none;margin-top:12px;gap:12px;flex-direction:column;">
+            <div id="advancedOptions" style="display:flex;margin-top:12px;gap:12px;flex-direction:column;">
               <div class="fg">
                 <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Fourchette de prix</label>
                 <select class="fi" id="optPrice" style="cursor:pointer;" aria-label="Fourchette de prix">
@@ -543,6 +543,44 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--off);color:va
                   <option value="both" selected>Français + Anglais</option>
                   <option value="fr">Français uniquement</option>
                   <option value="en">Anglais uniquement</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Style visuel</label>
+                <select class="fi" id="optStyle" style="cursor:pointer;" aria-label="Style visuel">
+                  <option value="auto" selected>Auto (adapté à la niche)</option>
+                  <option value="minimaliste">Minimaliste</option>
+                  <option value="moderne">Moderne & coloré</option>
+                  <option value="luxe">Luxe & sombre</option>
+                  <option value="playful">Ludique & fun</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Mise en page</label>
+                <select class="fi" id="optLayout" style="cursor:pointer;" aria-label="Mise en page">
+                  <option value="auto" selected>Auto (adapté au produit)</option>
+                  <option value="dashboard">A — Dashboard (sidebar + contenu)</option>
+                  <option value="tracker">B — Tracker (grille de suivi)</option>
+                  <option value="workbook">C — Workbook (onglets)</option>
+                  <option value="template">D — Template (scroll long)</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Complexité</label>
+                <select class="fi" id="optComplexity" style="cursor:pointer;" aria-label="Complexité du produit">
+                  <option value="simple">Simple (débutant)</option>
+                  <option value="intermediate" selected>Intermédiaire</option>
+                  <option value="advanced">Avancé (expert)</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label class="fl" style="font-size:12px;font-weight:500;display:block;margin-bottom:6px;">Audience cible</label>
+                <select class="fi" id="optAudience" style="cursor:pointer;" aria-label="Audience cible">
+                  <option value="general" selected>Grand public</option>
+                  <option value="pro">Professionnels / B2B</option>
+                  <option value="students">Étudiants / jeunes</option>
+                  <option value="seniors">Seniors</option>
+                  <option value="parents">Parents</option>
                 </select>
               </div>
             </div>
@@ -1389,7 +1427,7 @@ function updateUpsellWidget(){
 }
 function setNiche(v){document.getElementById('nicheInput').value=v;document.getElementById('nicheInput').focus();}
 
-var _advOpen = false;
+var _advOpen = true;
 function toggleAdvanced() {
   const plan=subscription?.plan||'starter';
   if(plan==='starter'){
@@ -1458,6 +1496,10 @@ async function generate(){
   const optPrice=document.getElementById('optPrice')?.value||'standard';
   const optTone=document.getElementById('optTone')?.value||'professionnel';
   const optLang=document.getElementById('optLang')?.value||'both';
+  const optStyle=document.getElementById('optStyle')?.value||'auto';
+  const optLayout=document.getElementById('optLayout')?.value||'auto';
+  const optComplexity=document.getElementById('optComplexity')?.value||'intermediate';
+  const optAudience=document.getElementById('optAudience')?.value||'general';
   const btn=document.getElementById('genBtn');
   btn.disabled=true;
   document.getElementById('genResults').classList.remove('visible');
@@ -1493,8 +1535,12 @@ Niche : ${niche}
 Nom du produit : ${p.name}
 Type : ${p.type}
 Description : ${p.description}
-${optPrice&&optPrice!=='standard'?`Style de prix : ${optPrice}`:''}
+${optPrice&&optPrice!=='standard'?`Fourchette de prix : ${optPrice}`:''}
 ${optTone&&optTone!=='professionnel'?`Ton : ${optTone}`:''}
+${optStyle&&optStyle!=='auto'?`Style visuel : ${optStyle}`:'Style visuel : adapté à la niche'}
+${optLayout&&optLayout!=='auto'?`Mise en page : ${optLayout}`:'Mise en page : choisir le layout le mieux adapté au type de produit'}
+Complexité : ${optComplexity}
+Audience cible : ${optAudience}
 
 Palette de couleurs adaptée à la niche "${niche}" — NE PAS utiliser le violet par défaut du template, choisis des couleurs qui évoquent cette niche.
 
