@@ -155,7 +155,8 @@ body {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  will-change: transform;
+  will-change: auto;
+  transform: translateZ(0);
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   animation-direction: alternate;
@@ -295,8 +296,16 @@ nav.scrolled {
 /* ─── SECTION WRAPPER ─── */
 .s { position: relative; z-index: 1; }
 
+/* ─── FIX SCROLL RENDERING (GPU compositing conflict) ─── */
+main {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  isolation: isolate;
+}
+
 /* ─── HERO ─── */
 .hero {
+  will-change: auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

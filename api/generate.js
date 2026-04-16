@@ -113,6 +113,15 @@ RÈGLE ABSOLUE : NE JAMAIS utiliser la palette violet/indigo par défaut.
 - Layout D (TEMPLATE) : page scroll linéaire avec sections séparées par des dividers élégants
 Ne jamais utiliser le même layout pour les 3 produits d'une même génération.
 
+4bis. VARIATION DE COULEUR ACCENT ENTRE LES 3 PRODUITS :
+Les 3 produits d'une même collection partagent la même palette de base (fond + couleur principale) mais ont chacun une couleur d'ACCENT secondaire différente selon leur position :
+- Produit 1 (accent A) : couleur accent principale de la niche
+- Produit 2 (accent B) : variante complémentaire (ex: si accent A = rouge → accent B = vert complémentaire)
+- Produit 3 (accent C) : variante triadique (ex: si accent A = rouge → accent C = jaune/orangé)
+Exemple fitness dark : accent A = #E94560 (rouge), accent B = #00D4AA (teal), accent C = #FFB347 (orange)
+Exemple yoga naturel : accent A = #7B6F5E (brun), accent B = #6B9E7A (vert sauge), accent C = #C9A86C (doré)
+Cela rend chaque produit reconnaissable tout en maintenant la cohérence de la collection.
+
 5. FONCTIONNALITÉS OBLIGATOIRES :
 - Champ de personnalisation en haut : permettre à l'utilisateur de saisir son prénom ou son objectif principal
   (ex: "Mon prénom", "Mon objectif", "Mon budget mensuel" selon la niche)
