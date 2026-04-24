@@ -343,10 +343,11 @@ main {
 .eyebrow-line { width: 24px; height: 1px; background: var(--gray); }
 
 .hero-title {
-  font-size: clamp(56px, 8vw, 112px);
+  font-size: clamp(2rem, 5vw + 1rem, 4rem);
   font-weight: 600;
-  letter-spacing: -3px;
-  line-height: 1.0;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  word-spacing: 0.05em;
   color: var(--near-black);
   margin-bottom: 28px;
   opacity: 0;
@@ -1316,6 +1317,45 @@ footer {
   .cta-btn { display: block; width: 100%; text-align: center; box-sizing: border-box; }
   .cta-section { padding: 48px 24px; border-radius: 20px; margin: 0 16px; }
 }
+
+/* ─── FIX OVERFLOW HORIZONTAL MOBILE ─── */
+html { overflow-x: hidden; max-width: 100%; }
+.demo-input { width: 100%; min-width: 0; }
+.demo-run { flex-shrink: 0; }
+#exampleUrl, .example-url { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
+.feat-item { min-width: 0; box-sizing: border-box; padding-inline: 1rem; }
+.demo-chat { max-width: 100%; overflow: hidden; }
+
+/* ─── STICKY CTA MOBILE ─── */
+#sticky-cta { left: 1rem; right: 1rem; bottom: env(safe-area-inset-bottom, 1rem); padding: 14px 20px; border-radius: 999px; max-height: 56px; white-space: nowrap; }
+.cta-short { display: none; }
+@media (max-width: 480px) {
+  .cta-long { display: none; }
+  .cta-short { display: inline; }
+  #sticky-cta p, #sticky-cta small, #sticky-cta .cta-subtext { display: none !important; }
+}
+
+/* ─── HERO GUARANTEE ─── */
+.hero-guarantee { font-size: 0.8rem; color: rgba(0,0,0,0.4); text-align: center; margin-top: 12px; }
+
+/* ─── BENEFITS BAR ─── */
+.benefits-bar { display: flex; align-items: center; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 24px 0; font-size: 0.9rem; color: #555; }
+.benefit-item { display: flex; align-items: center; gap: 6px; }
+.benefit-sep { width: 1px; height: 20px; background: #e0e0e0; }
+@media (max-width: 480px) { .benefit-sep { display: none; } }
+
+/* ─── HAMBURGER LABEL ─── */
+.hamburger-label { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; margin-left: 4px; vertical-align: middle; }
+
+/* ─── PLAN COMPARE TABLE ─── */
+.plan-compare-wrap { margin: 40px auto; max-width: 800px; }
+.compare-title { text-align: center; font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; color: #888; }
+.table-scroll { overflow-x: auto; }
+.plan-compare { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.plan-compare th, .plan-compare td { padding: 12px 16px; text-align: center; border-bottom: 1px solid #e8e8e8; }
+.plan-compare td:first-child { text-align: left; color: #555; }
+.plan-compare .featured-col { background: rgba(0,0,0,0.03); font-weight: 700; }
+.plan-compare thead th { font-weight: 700; color: #111; font-size: 0.95rem; }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <script type="application/ld+json">
@@ -1440,7 +1480,7 @@ footer {
   <div class="blob blob-4"></div>
 </div>
 
-<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
+<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="Menu">☰ <span class="hamburger-label">Menu</span></button>
 <div class="mobile-menu" id="mobileMenu">
   <button onclick="document.getElementById('mobileMenu').classList.remove('open')" style="position:absolute;top:20px;right:20px;font-size:24px;background:none;border:none;cursor:pointer;color:var(--gray)">✕</button>
   <a href="#how" onclick="document.getElementById('mobileMenu').classList.remove('open')">Comment ça marche</a>
@@ -1467,16 +1507,19 @@ footer {
 
 <!-- ─── HERO ─── -->
 <section class="hero s">
-  <div class="hero-eyebrow">
-    <span class="eyebrow-line"></span>
-    <span data-t="eyebrow">Créez et vendez des produits digitaux grâce à l'IA</span>
-    <span class="eyebrow-line"></span>
-  </div>
-  <h1 class="hero-title" data-t-html="hero_title">L'IA crée vos produits digitaux.<br><em>Vous les vendez où vous voulez.</em></h1>
+  <h1 class="hero-title" data-t-html="hero_title">Lancez votre boutique digitale en 2 minutes avec l'IA.<br><em>3 produits prêts à vendre, sans coder.</em></h1>
   <p class="hero-sub" data-t="hero_sub">Entrez une niche. L'IA génère 3 produits interactifs + leur fiche de vente complète. Prêts à vendre.</p>
   <div class="hero-actions">
-    <a href="/app.html" class="btn-black" data-t="hero_cta1">Créer mon premier produit — gratuit</a>
+    <a href="/app.html" class="btn-black" id="hero-cta" data-t="hero_cta1">Créer mon premier produit — gratuit</a>
     <a href="#demo" class="btn-outline" data-t="hero_cta2">Voir la démo</a>
+  </div>
+  <p class="hero-guarantee">✅ Sans carte bancaire · 3 produits offerts · Remboursé sous 7 jours si insatisfait</p>
+  <div class="benefits-bar">
+    <div class="benefit-item"><span>⏱</span><span><strong>2 min</strong> au lieu de 8h</span></div>
+    <div class="benefit-sep"></div>
+    <div class="benefit-item"><span>💶</span><span><strong>0€</strong> de design requis</span></div>
+    <div class="benefit-sep"></div>
+    <div class="benefit-item"><span>📦</span><span><strong>3 produits</strong> par génération</span></div>
   </div>
   <div class="platforms-row">
     <span class="platforms-label" data-t="platforms_label">Compatible avec</span>
@@ -1818,7 +1861,7 @@ footer {
           <div class="price-feat" data-t="p1f3">Bilingue FR + EN</div>
           <div class="price-feat" data-t="p1f4">Export ZIP immédiat</div>
         </div>
-        <button class="price-btn" onclick="window.location.href='app.html'" data-t="p1btn">Commencer gratuitement</button>
+        <a class="price-btn" href="/app.html" data-t="p1btn">Commencer gratuitement</a>
       </div>
 
       <div class="price-card featured">
@@ -1837,7 +1880,7 @@ footer {
           <div class="price-feat" data-t="p2f5">Génération bilingue automatique</div>
           <div class="price-feat" data-t="p2f6">Assistance prioritaire</div>
         </div>
-        <button class="price-btn" id="lp-pro-btn" onclick="goLPCheckout('pro')" data-t="p2btn">Passer en Pro</button>
+        <a class="price-btn" id="lp-pro-btn" href="/app.html" onclick="event.preventDefault();goLPCheckout('pro')" data-t="p2btn">Passer en Pro</a>
       </div>
 
       <div class="price-card">
@@ -1848,12 +1891,39 @@ footer {
         <div class="price-period" id="lp-biz-period">par mois, sans engagement</div>
         <div class="price-divider"></div>
         <div class="price-feats">
-          <div class="price-feat" data-t="p3f1">Produits digitaux illimités</div>
-          <div class="price-feat" data-t="p3f2">Tout le plan Pro</div>
-          <div class="price-feat" data-t="p3f3">Accès prioritaire aux nouvelles fonctionnalités</div>
-          <div class="price-feat" data-t="p3f4">Support dédié</div>
+          <div class="price-feat">✓ Générations illimitées</div>
+          <div class="price-feat">✓ Éditeur IA intégré</div>
+          <div class="price-feat">✓ White-label (sans branding)</div>
+          <div class="price-feat">✓ Accès API</div>
+          <div class="price-feat">✓ Génération en batch (50 niches)</div>
+          <div class="price-feat">✓ Support dédié sous 24h</div>
+          <div class="price-feat">✓ Early access nouvelles fonctionnalités</div>
         </div>
-        <button class="price-btn" id="lp-biz-btn" onclick="goLPCheckout('business')" data-t="p3btn">Passer en Business</button>
+        <a class="price-btn" id="lp-biz-btn" href="/app.html" onclick="event.preventDefault();goLPCheckout('business')" data-t="p3btn">Passer en Business</a>
+      </div>
+    </div>
+    <div class="plan-compare-wrap">
+      <h3 class="compare-title">Comparaison détaillée</h3>
+      <div class="table-scroll">
+        <table class="plan-compare">
+          <thead>
+            <tr><th></th><th>Starter</th><th class="featured-col">Pro</th><th>Business</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Produits / mois</td><td>3</td><td>30</td><td>Illimité</td></tr>
+            <tr><td>Fichiers HTML / produit</td><td>3</td><td>3</td><td>3</td></tr>
+            <tr><td>Tags SEO inclus</td><td>13</td><td>13</td><td>13</td></tr>
+            <tr><td>Export ZIP</td><td>✓</td><td>✓</td><td>✓</td></tr>
+            <tr><td>Fiche de vente complète</td><td>✓</td><td>✓</td><td>✓</td></tr>
+            <tr><td>Génération bilingue FR+EN</td><td>✓</td><td>✓</td><td>✓</td></tr>
+            <tr><td>Éditeur IA intégré</td><td>—</td><td>✓</td><td>✓</td></tr>
+            <tr><td>White-label</td><td>—</td><td>—</td><td>✓</td></tr>
+            <tr><td>Accès API</td><td>—</td><td>—</td><td>✓</td></tr>
+            <tr><td>Génération en batch</td><td>—</td><td>—</td><td>✓</td></tr>
+            <tr><td>Support</td><td>Email</td><td>Prioritaire</td><td>Dédié 24h</td></tr>
+            <tr><td>Garantie remboursement</td><td>—</td><td>7 jours</td><td>7 jours</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <p class="pricing-guarantee">🔒 Satisfait ou remboursé sous 7 jours — sans questions.</p>
@@ -1976,7 +2046,7 @@ const TR = {
   fr: {
     nav_how:'Comment ça marche', nav_features:'Fonctionnalités', nav_pricing:'Tarifs', nav_cta:'Essayer gratuitement',
     eyebrow:'Créez et vendez des produits digitaux grâce à l\'IA',
-    hero_title:'L\'IA crée vos produits digitaux.<br>Vous les vendez où vous voulez.',
+    hero_title:'Lancez votre boutique digitale en 2 minutes avec l\'IA.<br>3 produits prêts à vendre, sans coder.',
     hero_sub:'Entrez une niche. L\'IA génère 3 produits interactifs + leur fiche de vente complète. Prêts à vendre.',
     platforms_label:'Compatible avec',
     hero_cta1:'Créer mon premier produit — gratuit', hero_cta2:'Voir la démo',
@@ -2073,7 +2143,7 @@ const TR = {
   en: {
     nav_how:'How it works', nav_features:'Features', nav_pricing:'Pricing', nav_cta:'Try for free',
     eyebrow:'Create and sell digital products with AI',
-    hero_title:'AI creates your digital products.<br>You sell them wherever you want.',
+    hero_title:'Launch your digital store in 2 minutes with AI.<br>3 products ready to sell, no coding required.',
     hero_sub:'Enter a niche. AI generates 3 interactive products + complete listing. Ready to sell.',
     hero_cta1:'Create my first product — free', hero_cta2:'Watch demo',
     stat1:'products created in 1 click', stat2:'automated', stat3:'to get started',
@@ -2416,8 +2486,22 @@ function setLPPeriod(newPeriod) {
   if (bizPeriod) bizPeriod.textContent = bizData.period;
 }
 
-function goLPCheckout(plan) {
-  window.location.href = LP_LINKS[plan][lpPeriod];
+async function goLPCheckout(plan) {
+  let email = '';
+  try {
+    const sb = window._supabase;
+    if (sb) {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user?.email) email = session.user.email;
+    }
+  } catch(e) {}
+  if (!email) {
+    email = prompt('Entrez votre email pour continuer :');
+    if (!email || !email.includes('@')) return;
+  }
+  const base = LP_LINKS[plan]?.[lpPeriod] || LP_LINKS[plan]?.monthly;
+  if (!base) return;
+  window.location.href = base + '?prefilled_email=' + encodeURIComponent(email);
 }
 
 function toggleFaq(btn) {
@@ -2487,7 +2571,11 @@ detectAndSetLang();
     if (window.scrollY > 400) {
       var el = document.getElementById('sticky-cta');
       if (el && window.innerWidth <= 768) {
-        el.style.display = 'block';
+        el._wasShown = true;
+        updateStickyVisibility();
+        if (!el.style.display || el.style.display === 'none') {
+          el.style.display = 'block';
+        }
         shown = true;
       }
     }
@@ -2496,9 +2584,11 @@ detectAndSetLang();
 
 </script>
 
-<div id="sticky-cta" style="display:none;position:fixed;bottom:0;left:0;right:0;padding:12px 16px 20px;background:white;border-top:1px solid var(--border);box-shadow:0 -4px 20px rgba(0,0,0,0.08);z-index:999;text-align:center;">
-  <a href="app.html" style="display:block;background:var(--black);color:white;padding:14px 24px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;" data-t="cta_btn">Créer mon premier produit — gratuit</a>
-  <p style="margin-top:6px;font-size:.8rem;color:var(--gray);">Sans carte bancaire · 3 produits offerts</p>
+<div id="sticky-cta" style="display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);box-shadow:0 -4px 20px rgba(0,0,0,0.08);z-index:998;text-align:center;transition:opacity 0.3s ease;">
+  <a href="/app.html" style="display:inline-block;background:var(--black);color:white;padding:14px 24px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;" data-t="cta_btn">
+    <span class="cta-long">Créer mon premier produit — gratuit</span>
+    <span class="cta-short">Commencer gratuitement →</span>
+  </a>
 </div>
 
 <!-- Bandeau cookies RGPD -->
@@ -2510,17 +2600,47 @@ detectAndSetLang();
   </div>
 </div>
 <script>
+  function updateStickyVisibility() {
+    var stickyCta = document.getElementById('sticky-cta');
+    var cookieBanner = document.getElementById('cookie-banner');
+    if (!stickyCta) return;
+    var cookieVisible = cookieBanner &&
+      window.getComputedStyle(cookieBanner).display !== 'none' &&
+      !localStorage.getItem('cookie_consent');
+    if (cookieVisible) {
+      stickyCta.style.display = 'none';
+    } else if (stickyCta._wasShown) {
+      stickyCta.style.display = '';
+    }
+  }
   function acceptCookies() {
     localStorage.setItem('cookie_consent', 'accepted');
     document.getElementById('cookie-banner').style.display = 'none';
+    updateStickyVisibility();
   }
   function rejectCookies() {
     localStorage.setItem('cookie_consent', 'rejected');
     document.getElementById('cookie-banner').style.display = 'none';
+    updateStickyVisibility();
   }
   if (!localStorage.getItem('cookie_consent')) {
     document.getElementById('cookie-banner').style.display = 'flex';
   }
+  // Hero CTA intersection → fade sticky when hero CTA is visible
+  document.addEventListener('DOMContentLoaded', function() {
+    var heroCta = document.getElementById('hero-cta');
+    var stickyCta = document.getElementById('sticky-cta');
+    if (heroCta && stickyCta) {
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          stickyCta.style.opacity = e.isIntersecting ? '0' : '1';
+          stickyCta.style.pointerEvents = e.isIntersecting ? 'none' : 'auto';
+        });
+      }, { threshold: 0.5 });
+      obs.observe(heroCta);
+    }
+    updateStickyVisibility();
+  });
 </script>
 </body>
 </html>
